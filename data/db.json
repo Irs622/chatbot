@@ -1,0 +1,273 @@
+{
+  "conversations": [
+    {
+      "id": "conv_1790149561917_gob3e",
+      "session_id": "sess_1790149561916_dbpz",
+      "started_at": "2026-09-23T07:46:01.917Z",
+      "user_intent": "profitability",
+      "created_at": "2026-09-23T07:46:01.917Z"
+    },
+    {
+      "id": "conv_1790149602041_d7r5d",
+      "session_id": "sess_1790149602040_lcjr",
+      "started_at": "2026-09-23T07:46:42.041Z",
+      "user_intent": "funding",
+      "created_at": "2026-09-23T07:46:42.041Z"
+    },
+    {
+      "id": "conv_1790149607539_2xzdh",
+      "session_id": "sess_1790149607539_mor5",
+      "started_at": "2026-09-23T07:46:47.539Z",
+      "user_intent": "contact",
+      "created_at": "2026-09-23T07:46:47.539Z"
+    },
+    {
+      "id": "conv_1790149641234_hlzhz",
+      "session_id": "sess_1790149641233_dbe6",
+      "started_at": "2026-09-23T07:47:21.234Z",
+      "user_intent": "unknown",
+      "created_at": "2026-09-23T07:47:21.234Z"
+    }
+  ],
+  "messages": [
+    {
+      "conversation_id": "conv_1790149561917_gob3e",
+      "sender": "user",
+      "message": "Perusahaan saya sedang berkembang tetapi profit margin menurun. Apakah Inpartner bisa membantu?",
+      "id": "msg_1790149561917_34il5",
+      "created_at": "2026-09-23T07:46:01.917Z"
+    },
+    {
+      "conversation_id": "conv_1790149561917_gob3e",
+      "sender": "bot",
+      "message": "Tentu, **Inpartner dapat sangat membantu** permasalahan ini melalui pilar **Profitability & Operational Excellence**.\n\nSituasi di mana omzet meningkat namun laba bersih tertekan adalah tantangan umum yang sering dihadapi perusahaan berkembang (*growth paradox*). Hal ini biasanya dipicu oleh:\n- **Inefisiensi Alur Kerja:** Proses operasional yang belum terstandardisasi seiring bertambahnya volume kerja.\n- **Pembengkakan Biaya Operasional (OPEX):** Beban operasional yang tumbuh lebih cepat dibandingkan pertambahan pendapatan.\n- **Kebocoran Rantai Pasok:** Biaya pengadaan bahan dan logistik yang belum teroptimalkan (*procurement inefficiencies*).\n- **Strategi Penetapan Harga (Pricing):** Margin per produk belum memperhitungkan kenaikan biaya variabel secara akurat.\n\n### Bagaimana Inpartner Membantu Anda:\n1. **Audit Alur Operasional Menyeluruh:** Mengidentifikasi bottleneck dan memangkas proses yang tidak bernilai tambah (*waste elimination*).\n2. **Analisis Struktur Biaya & Unit Economics:** Membedah HPP dan OPEX untuk menemukan sumber kebocoran margin.\n3. **Penyelarasan People, Process, Technology & Data:** Membangun Dashboard KPI real-time dan SOP yang terukur agar skala ekonomi (*economies of scale*) benar-benar terwujud menjadi keuntungan bersih.\n\nTim konsultan Inpartner siap mendampingi perusahaan Anda untuk mengembalikan profitabilitas yang sehat. Anda dapat meninggalkan kontak di bawah atau langsung terhubung dengan tim kami via WhatsApp di **[0896 2831 0192](https://wa.me/6289628310192)**.",
+      "intent": "profitability",
+      "metadata": {
+        "recommended_service": "Profitability & Operational Excellence",
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Masalah Khas Klien & Solusi Inpartner:",
+          "Ruang Lingkup Layanan Profitability"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790149561930_058mz",
+      "created_at": "2026-09-23T07:46:01.930Z"
+    },
+    {
+      "conversation_id": "conv_1790149602041_d7r5d",
+      "sender": "user",
+      "message": "Apakah Inpartner menyediakan pinjaman uang atau modal langsung?",
+      "id": "msg_1790149602042_qk4ne",
+      "created_at": "2026-09-23T07:46:42.042Z"
+    },
+    {
+      "conversation_id": "conv_1790149602041_d7r5d",
+      "sender": "bot",
+      "message": "Inpartner **bukan lembaga keuangan pemberi pinjaman langsung** (*not a direct lender* atau perbankan). \n\nNamun, melalui pilar **Funding & Investment Advisory**, Inpartner membantu perusahaan dalam:\n- **Investment Readiness:** Mengevaluasi kesiapan bisnis, merapikan model keuangan (*financial model*), dan menyusun materi presentasi investor (*Investment Teaser & Pitch Deck*) berstandar institusi.\n- **Valuasi Bisnis Obyektif:** Menentukan nilai wajar perusahaan secara independen.\n- **Penataan Struktur Permodalan:** Membantu memilih struktur permodalan yang tepat (*equity*, *convertible note*, atau *mezzanine*).\n- **Akses ke Jejaring Investor:** Menghubungkan bisnis Anda dengan ekosistem investor terverifikasi (Venture Capital, Private Equity, Family Offices, dan mitra strategis).\n\nApakah perusahaan Anda sedang merencanakan penghimpunan modal untuk ekspansi? Tim Inpartner dapat memberikan panduan kesiapan investasi awal.",
+      "intent": "funding",
+      "metadata": {
+        "recommended_service": "Funding & Investment Advisory",
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Ruang Lingkup Layanan Funding",
+          "Kapan Perusahaan Membutuhkan Layanan Funding?"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790149602044_c9wbv",
+      "created_at": "2026-09-23T07:46:42.044Z"
+    },
+    {
+      "conversation_id": "conv_1790149607539_2xzdh",
+      "sender": "user",
+      "message": "Berapa harga tiket pesawat ke planet mars?",
+      "id": "msg_1790149607540_wcrsk",
+      "created_at": "2026-09-23T07:46:47.540Z"
+    },
+    {
+      "conversation_id": "conv_1790149607539_2xzdh",
+      "sender": "bot",
+      "message": "Anda dapat menghubungi tim resmi **Inpartner (PT Inpartner Optima Integra)** melalui saluran berikut:\n\n📍 **Kantor Pusat Jakarta:**\nPakuwon Tower Lantai 10, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, Jakarta Selatan.\n\n📍 **Kantor Surabaya:**\nJemur Sari Street V No. 10, Surabaya, Jawa Timur.\n\n📞 **Telepon & WhatsApp:**\n[0896 2831 0192](https://wa.me/6289628310192)\n\n✉️ **Email Resmi:**\n[corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)\n\n🕒 **Jam Operasional:**\nSenin – Jumat, pukul 09.00 – 17.00 WIB.\n\nSilakan sampaikan kebutuhan bisnis Anda atau jadwalkan sesi konsultasi awal dengan tim kami!",
+      "intent": "contact",
+      "metadata": {
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Contoh Proyek Unggulan",
+          "Ruang Lingkup Layanan Profitability"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790149607543_gb2u6",
+      "created_at": "2026-09-23T07:46:47.543Z"
+    },
+    {
+      "conversation_id": "conv_1790149641234_hlzhz",
+      "sender": "user",
+      "message": "xyz123 qwerty asdfgh",
+      "id": "msg_1790149641235_gzb90",
+      "created_at": "2026-09-23T07:47:21.235Z"
+    },
+    {
+      "conversation_id": "conv_1790149641234_hlzhz",
+      "sender": "bot",
+      "message": "Maaf, saya belum memiliki informasi resmi yang memadai mengenai pertanyaan tersebut dalam knowledge base Inpartner.\n\nUntuk mendiskusikan kebutuhan bisnis spesifik Anda secara komprehensif, tim konsultan Inpartner siap membantu melalui konsultasi langsung.\n\nAnda dapat:\n1. Memilih salah satu dari 4 pilar utama layanan kami: **Funding**, **Growth**, **Profitability**, atau **Capacity Building**.\n2. Meninggalkan informasi kontak Anda melalui formulir di bawah.\n3. Langsung menghubungi tim kami melalui WhatsApp di **[0896 2831 0192](https://wa.me/6289628310192)** atau email **corporatesecretary@inpartner.id**.",
+      "intent": "unknown",
+      "metadata": {
+        "sources": [
+          "FAQ & Kontak Inpartner"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790149641239_6r8c9",
+      "created_at": "2026-09-23T07:47:21.239Z"
+    }
+  ],
+  "leads": [
+    {
+      "id": "lead-sample-1",
+      "name": "Budi Santoso",
+      "company": "PT Sentosa Logistik Indonesia",
+      "email": "budi.santoso@sentosalogistik.co.id",
+      "phone": "081234567890",
+      "business_need": "Profitability & Operational Process Optimization",
+      "notes": "Omzet naik 30% tahun ini tapi profit margin turun akibat OPEX logistik tinggi.",
+      "created_at": "2026-09-22T07:43:23.656Z",
+      "status": "new"
+    },
+    {
+      "id": "lead-sample-2",
+      "name": "Siti Rahmawati",
+      "company": "PT Bio Farma Prima",
+      "email": "siti.r@biopharmaprima.com",
+      "phone": "081987654321",
+      "business_need": "Funding & Investment Readiness",
+      "notes": "Mencari investor strategis untuk perluasan fasilitas laboratorium bioteknologi.",
+      "created_at": "2026-09-21T07:43:23.659Z",
+      "status": "contacted"
+    },
+    {
+      "id": "lead_1790149650735_j118a",
+      "created_at": "2026-09-23T07:47:30.735Z",
+      "status": "contacted",
+      "name": "Hendro Wijaya",
+      "company": "PT Nusantara Agro Mandiri",
+      "email": "hendro@nusantaraagro.com",
+      "phone": "081345678901",
+      "business_need": "Business Growth & Market Expansion",
+      "notes": "Sudah dihubungi via WA, menjadwalkan Zoom meeting hari Jumat."
+    }
+  ],
+  "analytics_events": [
+    {
+      "id": "evt_1790149561917_2e33o",
+      "created_at": "2026-09-23T07:46:01.917Z",
+      "event_name": "conversation_started",
+      "session_id": "sess_1790149561916_dbpz",
+      "conversation_id": "conv_1790149561917_gob3e",
+      "metadata": {}
+    },
+    {
+      "id": "evt_1790149561918_nd7uy",
+      "created_at": "2026-09-23T07:46:01.918Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790149561916_dbpz",
+      "conversation_id": "conv_1790149561917_gob3e",
+      "metadata": {
+        "query": "Perusahaan saya sedang berkembang tetapi profit margin menurun. Apakah Inpartner bisa membantu?"
+      }
+    },
+    {
+      "id": "evt_1790149602042_y4m4j",
+      "created_at": "2026-09-23T07:46:42.042Z",
+      "event_name": "conversation_started",
+      "session_id": "sess_1790149602040_lcjr",
+      "conversation_id": "conv_1790149602041_d7r5d",
+      "metadata": {}
+    },
+    {
+      "id": "evt_1790149602042_bn8w8",
+      "created_at": "2026-09-23T07:46:42.042Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790149602040_lcjr",
+      "conversation_id": "conv_1790149602041_d7r5d",
+      "metadata": {
+        "query": "Apakah Inpartner menyediakan pinjaman uang atau modal langsung?"
+      }
+    },
+    {
+      "id": "evt_1790149607540_0cpii",
+      "created_at": "2026-09-23T07:46:47.540Z",
+      "event_name": "conversation_started",
+      "session_id": "sess_1790149607539_mor5",
+      "conversation_id": "conv_1790149607539_2xzdh",
+      "metadata": {}
+    },
+    {
+      "id": "evt_1790149607541_jn6w7",
+      "created_at": "2026-09-23T07:46:47.541Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790149607539_mor5",
+      "conversation_id": "conv_1790149607539_2xzdh",
+      "metadata": {
+        "query": "Berapa harga tiket pesawat ke planet mars?"
+      }
+    },
+    {
+      "id": "evt_1790149641235_5na0y",
+      "created_at": "2026-09-23T07:47:21.235Z",
+      "event_name": "conversation_started",
+      "session_id": "sess_1790149641233_dbe6",
+      "conversation_id": "conv_1790149641234_hlzhz",
+      "metadata": {}
+    },
+    {
+      "id": "evt_1790149641236_vkaja",
+      "created_at": "2026-09-23T07:47:21.236Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790149641233_dbe6",
+      "conversation_id": "conv_1790149641234_hlzhz",
+      "metadata": {
+        "query": "xyz123 qwerty asdfgh"
+      }
+    },
+    {
+      "id": "evt_1790149641240_14max",
+      "created_at": "2026-09-23T07:47:21.240Z",
+      "event_name": "human_handoff",
+      "session_id": "sess_1790149641233_dbe6",
+      "conversation_id": "conv_1790149641234_hlzhz",
+      "metadata": {
+        "reason": "fallback_unknown_query"
+      }
+    }
+  ]
+}
