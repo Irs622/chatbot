@@ -1,4 +1,5 @@
 import { Lead } from './db';
+import { INPARTNER_CONFIG } from './config';
 
 export interface NotificationResult {
   webhookSent: boolean;
@@ -123,7 +124,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
 
   // 3. Email Notification via Resend (Optional)
   const resendApiKey = process.env.RESEND_API_KEY;
-  const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL || 'corporatesecretary@inpartner.id';
+  const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL || INPARTNER_CONFIG.email;
 
   if (resendApiKey && notificationEmail) {
     try {

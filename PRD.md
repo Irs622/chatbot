@@ -105,10 +105,11 @@ Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim
 ### F. Tombol Cepat ke WhatsApp Resmi
 - Di setiap akhir percakapan, tersedia tombol 1-klik menuju **WhatsApp Resmi Inpartner** (`0896 2831 0192`) bagi calon klien yang ingin obrolan langsung manusia.
 
-### G. Penyimpanan Otomatis ke Google Sheets & Notifikasi Email — ✨ Fitur Terintegrasi
-- Setiap kali calon klien menekan tombol *"Kirim Informasi"* pada formulir konsultasi, sistem langsung menjalankan 2 aksi otomatis:
-  1. **Tercatat Otomatis ke Google Sheets:** Seluruh data prospek (Nama, Perusahaan, WhatsApp, Email, Kebutuhan Layanan, Catatan, dan Waktu) langsung tercatat menjadi baris baru di **Google Spreadsheet** tim Business Development. Tim internal tidak perlu lagi melakukan rekap manual.
-  2. **Notifikasi Instan Masuk ke Email:** Sistem otomatis mengirimkan email pemberitahuan ke email resmi Inpartner (`corporatesecretary@inpartner.id` / tim Sales), berisi profil lengkap calon klien dan tautan tombol 1-klik untuk langsung membuka chat WhatsApp dengan klien.
+### G. Notifikasi Otomatis Prospek Masuk (*Instant Lead Alerts*) — ✨ Fitur Baru
+- Setiap kali calon klien menekan tombol *"Kirim Informasi"* pada formulir konsultasi, sistem secara otomatis mengirimkan pemberitahuan seketika (*real-time*) ke tim internal tanpa perlu menunggu tim mengecek dashboard manual:
+  1. **Tercatat Otomatis ke Google Sheets:** Setiap data prospek baru langsung masuk menjadi baris baru di Google Spreadsheet tim Business Development.
+  2. **Notifikasi Instan ke Telegram Tim Sales:** Mengirimkan pesan ringkas ke grup Telegram tim BD lengkap dengan tombol link yang bila diklik langsung membuka obrolan WhatsApp dengan calon klien.
+  3. **Notifikasi Email Resmi:** Mengirimkan rincian kebutuhan calon klien ke email resmi Inpartner (`corporatesecretary@inpartner.id`).
 
 ---
 
@@ -137,15 +138,15 @@ AI menawarkan: "Ingin mendiskusikan masalah ini dengan konsultan Inpartner?"
         ┌──────┴──────────────────────────┐
         ▼                                 ▼
 [Opsi A: Isi Form Konsultasi]    [Opsi B: Klik Chat WhatsApp]
-Data nama & no WA diisi klien.    Langsung terhubung ke PIC Inpartner.
+Data nama & no WA tersimpan.     Langsung terhubung ke PIC Inpartner.
         │                                 │
         ▼                                 │
-[6. Data Otomatis Tersimpan ke           │
- Google Sheets & Email Alert Terkirim]    │
+[6. Notifikasi Otomatis Berbunyi]         │
+(Google Sheets / Telegram / Email)        │
         │                                 │
         └────────────────┬────────────────┘
                          ▼
-        [7. Tim Sales/BD Membuka Email & Hubungi Klien]
+        [7. Tim Sales/BD Langsung Menghubungi Klien]
         Klien dijadwalkan sesi meeting diagnostik awal dalam < 1x24 jam.
 ```
 

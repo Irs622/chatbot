@@ -15,6 +15,7 @@ import AnalyticsView from '@/components/AnalyticsView';
 import KnowledgeView from '@/components/KnowledgeView';
 import EmbedGuide from '@/components/EmbedGuide';
 import Link from 'next/link';
+import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'leads' | 'analytics' | 'knowledge' | 'embed'>('leads');
@@ -49,7 +50,7 @@ export default function AdminPage() {
 
           <div className="flex items-center gap-2 text-xs">
             <a
-              href="https://inpartner.id/"
+              href={INPARTNER_CONFIG.websiteUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 font-medium"
@@ -58,13 +59,13 @@ export default function AdminPage() {
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
             <a
-              href="https://wa.me/6289628310192"
+              href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors font-medium shadow-xs"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>WA 0896 2831 0192</span>
+              <span>WA {INPARTNER_CONFIG.whatsappDisplay}</span>
             </a>
           </div>
         </div>

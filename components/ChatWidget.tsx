@@ -17,6 +17,7 @@ import {
   MessageSquare,
   ExternalLink
 } from 'lucide-react';
+import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 
 interface ChatMessage {
   id: string;
@@ -386,7 +387,7 @@ export default function ChatWidget({
                   </button>
 
                   <a
-                    href="https://wa.me/6289628310192"
+                    href={getWhatsAppUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
@@ -396,7 +397,7 @@ export default function ChatWidget({
                   </a>
 
                   <a
-                    href="https://inpartner.id"
+                    href={INPARTNER_CONFIG.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
@@ -590,7 +591,7 @@ export default function ChatWidget({
                             Isi Form Konsultasi
                           </button>
                           <a
-                            href="https://wa.me/6289628310192"
+                            href={getWhatsAppUrl('Halo tim Inpartner, saya ingin konsultasi lebih lanjut terkait solusi bisnis.')}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 shadow-2xs transition-all"
