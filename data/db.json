@@ -1092,6 +1092,38 @@
       },
       "id": "msg_1790167973585_m7z8l",
       "created_at": "2026-09-23T12:52:53.585Z"
+    },
+    {
+      "conversation_id": "conv_1790167890687_eo69h",
+      "sender": "user",
+      "message": "Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.",
+      "intent": "Funding",
+      "id": "msg_1790175816791_hdxzb",
+      "created_at": "2026-09-23T15:03:36.791Z"
+    },
+    {
+      "conversation_id": "conv_1790167890687_eo69h",
+      "sender": "bot",
+      "message": "Layanan **Funding & Investment** Inpartner mendampingi perusahaan dalam merencanakan, menstrukturkan, dan memperoleh akses permodalan dari mitra investor institusional.\n\n### Ruang Lingkup Layanan:\n- **Investment Readiness Assessment:** Memastikan kesiapan tata kelola, legalitas, dan finansial perusahaan sebelum bertemu investor.\n- **Valuasi & Financial Modeling:** Penyusunan proyeksi keuangan yang realistis dan valuasi bisnis yang dapat dipertanggungjawabkan.\n- **Penyusunan Materi Investasi:** Membuat *Pitch Deck* dan *Investment Teaser* terstruktur berstandar internasional.\n- **Koneksi Mitra Modal:** Membuka akses ke ekosistem Venture Capital, Private Equity, Family Offices, maupun pembiayaan alternatif di sektor-sektor unggulan seperti ESG, energi terbarukan, F&B, dan teknologi.\n\n*Catatan: Inpartner bukan direct lender dan mematuhi regulasi integritas profesional konsultan independen.*",
+      "intent": "funding",
+      "metadata": {
+        "recommended_service": "Funding & Investment Advisory",
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Ruang Lingkup Layanan Profitability",
+          "Ruang Lingkup Layanan Funding"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790175816801_doul5",
+      "created_at": "2026-09-23T15:03:36.801Z"
     }
   ],
   "leads": [
@@ -1127,6 +1159,17 @@
       "phone": "081345678901",
       "business_need": "Business Growth & Market Expansion",
       "notes": "Sudah dihubungi via WA, menjadwalkan Zoom meeting hari Jumat."
+    },
+    {
+      "id": "lead_1790177150769_2zdzx",
+      "created_at": "2026-09-23T15:25:50.769Z",
+      "status": "new",
+      "name": "Budi Santoso",
+      "company": "PT Inovasi Maju",
+      "email": "budi@inovasimaju.com",
+      "phone": "08123456789",
+      "business_need": "Profitability & Cost Optimization",
+      "notes": "Tes notifikasi otomatis"
     }
   ],
   "analytics_events": [
@@ -2196,6 +2239,27 @@
       "event_name": "chatbot_opened",
       "session_id": "sess_1790167865314_ike3f",
       "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790175816794_pq97x",
+      "created_at": "2026-09-23T15:03:36.794Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790167865314_ike3f",
+      "conversation_id": "conv_1790167890687_eo69h",
+      "metadata": {
+        "query": "Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.",
+        "selectedNeed": "Funding"
+      }
+    },
+    {
+      "id": "evt_1790175816845_4gfk3",
+      "created_at": "2026-09-23T15:03:36.845Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790167865314_ike3f",
+      "conversation_id": "conv_1790167890687_eo69h",
       "metadata": {
         "page": "/"
       }

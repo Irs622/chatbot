@@ -108,6 +108,40 @@ Jika website utama Anda juga menggunakan Next.js App Router:
 
 ---
 
+## 📊 Cara Menghubungkan Form Leads ke Google Sheets Otomatis (Webhook)
+
+Jika tim Sales ingin data prospek otomatis tercatat di Google Spreadsheet setiap kali ada calon klien yang mengisi form:
+
+1. Buat **Google Spreadsheet** baru, beri header kolom:
+   `Waktu | Nama | Perusahaan | WhatsApp | Email | Kebutuhan | Catatan`
+2. Buka menu **Extensions > Apps Script**, tempelkan kode singkat ini:
+   ```javascript
+   function doPost(e) {
+     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+     var data = JSON.parse(e.postData.contents);
+     var lead = data.lead || {};
+     sheet.appendRow([
+       new Date(),
+       lead.name,
+       lead.company,
+       lead.phone,
+       lead.email,
+       lead.business_need,
+       lead.notes
+     ]);
+     return ContentService.createTextOutput(JSON.stringify({ result: 'success' }))
+       .setMimeType(ContentService.MimeType.JSON);
+   }
+   ```
+3. Klik **Deploy > New deployment > Web app**, pilih *Who has access: Anyone*.
+4. Salin URL Web App yang didapat, lalu masukkan ke file `.env.local` atau Environment Variables di Vercel:
+   ```env
+   LEAD_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
+   ```
+5. Selesai! Setiap prospek baru otomatis muncul seketika di Google Sheets.
+
+---
+
 ## 🧪 Pengujian Setelah Integrasi
 
 Setelah kode dipasang di website:

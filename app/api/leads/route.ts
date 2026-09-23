@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllLeads, createLead, logAnalyticsEvent } from '@/lib/db';
+import { sendLeadNotification } from '@/lib/notifications';
 
 export async function GET() {
   try {
@@ -42,10 +43,17 @@ export async function POST(req: NextRequest) {
       status: 'new'
     });
 
+    // Dispatch real-time lead notifications (Webhook, Telegram, Email)
+    const notificationResult = await sendLeadNotification(lead).catch((err) => {
+      console.warn('Lead notification background error:', err);
+      return null;
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Lead berhasil disimpan. Tim Inpartner akan segera menghubungi Anda.',
-      lead
+      lead,
+      notification: notificationResult
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

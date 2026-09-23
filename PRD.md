@@ -105,11 +105,17 @@ Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim
 ### F. Tombol Cepat ke WhatsApp Resmi
 - Di setiap akhir percakapan, tersedia tombol 1-klik menuju **WhatsApp Resmi Inpartner** (`0896 2831 0192`) bagi calon klien yang ingin obrolan langsung manusia.
 
+### G. Notifikasi Otomatis Prospek Masuk (*Instant Lead Alerts*) — ✨ Fitur Baru
+- Setiap kali calon klien menekan tombol *"Kirim Informasi"* pada formulir konsultasi, sistem secara otomatis mengirimkan pemberitahuan seketika (*real-time*) ke tim internal tanpa perlu menunggu tim mengecek dashboard manual:
+  1. **Tercatat Otomatis ke Google Sheets:** Setiap data prospek baru langsung masuk menjadi baris baru di Google Spreadsheet tim Business Development.
+  2. **Notifikasi Instan ke Telegram Tim Sales:** Mengirimkan pesan ringkas ke grup Telegram tim BD lengkap dengan tombol link yang bila diklik langsung membuka obrolan WhatsApp dengan calon klien.
+  3. **Notifikasi Email Resmi:** Mengirimkan rincian kebutuhan calon klien ke email resmi Inpartner (`corporatesecretary@inpartner.id`).
+
 ---
 
 ## 7. Alur Perjalanan Pengunjung (User Journey)
 
-Berikut gambaran alur yang dialami calon klien dari awal hingga menjadi prospek:
+Berikut gambaran alur yang dialami calon klien dari awal hingga ditindaklanjuti oleh tim:
 
 ```text
 [1. Pengunjung Buka inpartner.id]
@@ -134,10 +140,14 @@ AI menawarkan: "Ingin mendiskusikan masalah ini dengan konsultan Inpartner?"
 [Opsi A: Isi Form Konsultasi]    [Opsi B: Klik Chat WhatsApp]
 Data nama & no WA tersimpan.     Langsung terhubung ke PIC Inpartner.
         │                                 │
+        ▼                                 │
+[6. Notifikasi Otomatis Berbunyi]         │
+(Google Sheets / Telegram / Email)        │
+        │                                 │
         └────────────────┬────────────────┘
                          ▼
-        [6. Tim Sales/BD Menghubungi Klien]
-        Klien dijadwalkan sesi meeting diagnostik awal.
+        [7. Tim Sales/BD Langsung Menghubungi Klien]
+        Klien dijadwalkan sesi meeting diagnostik awal dalam < 1x24 jam.
 ```
 
 ---

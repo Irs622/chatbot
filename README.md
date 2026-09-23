@@ -135,6 +135,7 @@ chatbot/
 │   ├── ai.ts                        # Orkestrasi AI (Gemini 1.5 Flash + Offline Grounded RAG)
 │   ├── db.ts                        # Abstraksi database lokal (CRUD session, messages, leads)
 │   ├── intent.ts                    # Algoritma klasifikasi intensi pengguna
+│   ├── notifications.ts             # Dispatcher notifikasi prospek (Webhook/Google Sheets, Telegram, Email)
 │   └── rag.ts                       # Mesin parser markdown, chunking, & semantic scoring
 ├── public/
 │   ├── widget.js                    # Script universal untuk embed di website mana pun
@@ -143,6 +144,7 @@ chatbot/
 ├── .env.local.example               # Contoh variabel lingkungan
 ├── INTEGRATION_GUIDE.md             # Panduan teknis serah terima ke Web Developer
 ├── KNOWLEDGE_BASE_GUIDE.md          # Panduan update materi/data untuk tim internal
+├── PRD.md                           # Dokumen Persyaratan Produk (PRD) Non-Teknis
 ├── README.md                        # Dokumentasi utama proyek
 └── package.json
 ```
@@ -168,21 +170,33 @@ npm run dev
 ```
 
 Server aktif di:
-- **Landing & Simulator Portal:** [http://localhost:3000](http://localhost:3000)
+- **Tampilan Chatbot Utama:** [http://localhost:3000](http://localhost:3000)
 - **Tampilan Embed Widget Langsung:** [http://localhost:3000/embed-view](http://localhost:3000/embed-view)
+- **Dashboard Admin & Leads CRM:** [http://localhost:3000/admin](http://localhost:3000/admin)
 
 ### 3. Konfigurasi Lingkungan (`.env.local`)
-Secara *default*, sistem telah dilengkapi dengan **Intelligent Offline RAG Engine** yang dapat menjawab pertanyaan resmi Inpartner secara instan (< 200ms) tanpa memerlukan API key eksternal.
+Salin file `.env.local.example` menjadi `.env.local`:
+```bash
+cp .env.local.example .env.local
+```
 
-Jika ingin mengaktifkan model LLM cloud Google Gemini:
-1. Salin `.env.local.example` menjadi `.env.local`:
-   ```bash
-   cp .env.local.example .env.local
-   ```
-2. Isi API Key Anda:
-   ```env
-   GEMINI_API_KEY=AIzaSy...
-   ```
+Variabel yang didukung:
+```env
+# 1. Model AI Generatif Cloud (Opsional - default: Offline RAG cepat < 200ms)
+GEMINI_API_KEY=AIzaSy...
+
+# 2. Notifikasi Otomatis Leads Masuk ke Tim Sales:
+# Webhook (Google Sheets via Apps Script, Make, Zapier, Slack, atau Discord)
+LEAD_WEBHOOK_URL=https://...
+
+# Notifikasi Instan ke Grup Telegram Tim Sales (Gratis)
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_CHAT_ID=...
+
+# Notifikasi Email via Resend
+RESEND_API_KEY=re_...
+LEAD_NOTIFICATION_EMAIL=corporatesecretary@inpartner.id
+```
 
 ---
 
