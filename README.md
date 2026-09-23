@@ -1,159 +1,226 @@
-# Inpartner AI Business Consultation Assistant
+# Inpartner AI Business Consultation Assistant (Inpartner Agent)
 
-> Asisten Percakapan AI Resmi untuk Website [Inpartner](https://inpartner.id/) (PT Inpartner Optima Integra) — Berbasis PRD & Knowledge Retrieval-Augmented Generation (RAG).
+> Asisten Percakapan AI Resmi untuk Website [Inpartner](https://inpartner.id/) (PT Inpartner Optima Integra) — Berbasis Knowledge Retrieval-Augmented Generation (RAG) & Desain Minimalis Modern Inpartner Blue (`#0d5f8a`).
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-sky)
-![Status](https://img.shields.io/badge/PRD%20Compliance-100%25-emerald)
+![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-sky?logo=tailwindcss)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-emerald)
 
 ---
 
 ## 📌 Ringkasan Produk
 
-Sistem **Inpartner AI Business Consultation Assistant** adalah solusi chatbot cerdas yang dirancang untuk membantu pengunjung website **https://inpartner.id/** memahami empat area layanan utama bisnis Inpartner:
-1. **💰 Funding & Investment Advisory**
-2. **📈 Business Growth & Market Expansion**
-3. **📊 Profitability & Operational Excellence**
-4. **👥 Capacity Building (The Executive Business Program)**
+**Inpartner Agent** adalah asisten konsultasi bisnis cerdas yang dirancang untuk mendampingi calon klien dan pengunjung website **[inpartner.id](https://inpartner.id/)**. Asisten ini mengubah navigasi website pasif menjadi dialog solutif terarah, mengidentifikasi tantangan bisnis pengunjung, merekomendasikan solusi tepat, dan memfasilitasi penjadwalan konsultasi resmi dengan tim konsultan Inpartner.
 
-Asisten ini mengubah pengalaman navigasi website yang statis menjadi percakapan interaktif (*conversational layer*), menjawab pertanyaan seputar konsultasi bisnis berbasis data resmi tanpa halusinasi, melakukan kualifikasi awal kebutuhan visitor, dan mengonversinya menjadi prospek klien (*qualified leads*) untuk ditindaklanjuti oleh tim internal Inpartner.
+### 4 Pilar Layanan Utama Inpartner:
+1. **📈 Business Growth & Market Expansion:** Strategi pertumbuhan, penetrasi pasar baru, dan roadmap penjualan.
+2. **💰 Funding & Investment Advisory:** Kesiapan investasi, valuasi independen, financial model, dan penghubung jaringan investor institusional (VC, PE, Family Offices). *(Bukan direct lender/pinjol)*.
+3. **📊 Profitability & Operational Excellence:** Bedah struktur biaya (COGS & OPEX), pemangkasan inefisiensi, dan pengembalian margin laba sehat.
+4. **👥 Capacity Building (The Executive Business Program):** Pembinaan eksekutif, leadership coaching, dan penyelarasan KPI lintas divisi.
 
 ---
 
-## 🎯 Pemenuhan Kebutuhan PRD (Feature Checklist)
+## 🎨 Tampilan & Desain
+- **Skema Warna:** Inpartner Blue (`#0d5f8a` primary, `#083c5a` dark hover, soft blue tints).
+- **Layout Minimalis:**
+  - *Header:* Brand geometric icon Inpartner + drop-down opsi (*New conversation*, *Schedule consultation*, *Official WhatsApp*, *Visit inpartner.id*).
+  - *Welcome Screen:* Headline terarah, Hero Card (`>_ Business Growth`), divider *"and more"*, serta kartu sekunder (*Funding & Profitability*, *Not sure what I need*).
+  - *Active Chat Thread:* Bubble pesan biru Inpartner, badge layanan rekomendasi terverifikasi, chip pertanyaan lanjutan 1-klik, dan kartu CTA konsultasi.
+  - *Input Bar:* Input melengkung dengan tombol kirim panah atas (↑) dan disclaimer kepatuhan AI.
 
-| Kode PRD | Kebutuhan Fungsional | Status | Penjelasan Implementasi |
-| :--- | :--- | :---: | :--- |
-| **FR-01** | **Chatbot Widget** | ✅ Selesai | Floating widget responsif di desktop & mobile, dengan launcher elegan bertema branding Inpartner. |
-| **FR-02** | **Welcome Message** | ✅ Selesai | Pesan pembuka ramah otomatis dengan 4 pilihan cepat: Funding, Growth, Profitability, Capacity Building. |
-| **FR-03** | **Intent Detection** | ✅ Selesai | Deteksi 9 kategori intent: funding, growth, profitability, capacity_building, company_info, service_info, contact, other, unknown. |
-| **FR-04** | **Service Recommendation** | ✅ Selesai | Rekomendasi layanan terarah yang sesuai dengan problem klien (misal: laba turun dialihkan ke Profitability). |
-| **FR-05** | **Knowledge-Based Answer** | ✅ Selesai | Jawaban AI murni berbasis RAG dokumen resmi Inpartner (9 modul markdown di folder `knowledge/`). |
-| **FR-06** | **Follow-up Questions** | ✅ Selesai | Rekomendasi pertanyaan lanjutan 1-klik untuk memperdalam kebutuhan visitor secara minim hambatan. |
-| **FR-07** | **Lead Capture** | ✅ Selesai | Form penangkapan prospek (Nama, Perusahaan, WhatsApp/Email, Kebutuhan Bisnis, Catatan) dengan persetujuan privasi eksplisit. |
-| **FR-08** | **Conversation Persistence** | ✅ Selesai | Penyimpanan sesi percakapan, transkrip, dan pesan pada database lokal aman (`data/db.json`). |
-| **FR-09** | **Human Handoff** | ✅ Selesai | Tombol langsung WhatsApp resmi (`0896 2831 0192`), Email (`corporatesecretary@inpartner.id`), dan alamat kantor Pakuwon Tower & Surabaya. |
-| **FR-10** | **Transparent Fallback** | ✅ Selesai | Menolak berhalusinasi jika data tidak ada di knowledge base, dan langsung menawarkan bantuan tim manusia. |
-| **Sec 15**| **Admin / CRM Dashboard** | ✅ Selesai | Dashboard internal untuk melihat lead baru, status follow-up (`new`, `contacted`, `converted`, dll), serta transkrip chat terkait. |
-| **Sec 16**| **Analytics & KPI Tracker** | ✅ Selesai | Penghitungan otomatis Engagement Rate, Service Discovery Rate, Lead Capture Rate, dan Human Handoff Rate. |
+---
+
+## 🔌 Cara Integrasi ke Website yang Sudah Ada (`inpartner.id`)
+
+Chatbot ini dirancang **100% plug-and-play**. Anda tidak perlu membongkar struktur website utama Inpartner yang sudah berjalan.
+
+### Metode 1: Menggunakan Script Widget (Sangat Direkomendasikan)
+Setelah projek ini di-deploy di subdomain (misal `https://chat.inpartner.id` atau Vercel), tim developer website utama cukup menambahkan 1 baris script sebelum tag penutup `</body>`:
+
+```html
+<!-- Inpartner AI Chatbot Widget -->
+<script src="https://chat.inpartner.id/widget.js" defer></script>
+```
+
+> **Hasil:** Tombol bulat biru khas Inpartner otomatis melayang di pojok kanan bawah. Saat diklik, jendela konsultasi terbuka mulus, responsif untuk layar HP maupun desktop.
+
+### Metode 2: Menggunakan iFrame Langsung
+Jika ingin menyematkan chatbot di halaman tertentu (misalnya halaman `/konsultasi-ai`):
+
+```html
+<iframe 
+  src="https://chat.inpartner.id/embed-view" 
+  width="100%" 
+  height="720" 
+  frameborder="0"
+  style="border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);"
+></iframe>
+```
+
+> 📖 **Panduan Lengkap Integrasi:** Lihat berkas [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) untuk petunjuk detail pada WordPress, Webflow, Laravel/PHP, dan React/Next.js.
 
 ---
 
 ## 🏛️ Arsitektur Sistem
 
 ```text
-                      PENGUNJUNG WEBSITE (inpartner.id)
+                     PENGUNJUNG WEBSITE (inpartner.id)
                                     │
                                     ▼
-                         [ CHATBOT WIDGET ]
-                    (Floating Drawer / Embed Script)
+                 [ Widget Loader: public/widget.js ]
                                     │
                                     ▼
-                        POST /api/chat (Next.js)
-                                    │
-                    ┌───────────────┴───────────────┐
-                    ▼                               ▼
-            [ Intent Detection ]           [ RAG Knowledge Retrieval ]
-         (lib/intent.ts - 9 Intents)       (lib/rag.ts - BM25 & Semantic)
-                    │                               │
-                    └───────────────┬───────────────┘
-                                    ▼
-                         [ Grounded AI Engine ]
-                     (lib/ai.ts - Gemini / Offline RAG)
+             [ Iframe View: app/embed-view/page.tsx ]
                                     │
                                     ▼
-                      [ Conversation Manager & DB ]
-                      (data/db.json: convs, leads, msgs)
+                  [ Chat UI: components/ChatWidget.tsx ]
                                     │
-                    ┌───────────────┴───────────────┐
-                    ▼                               ▼
-         [ Jawaban Terarah & CTAs ]      [ Lead Capture Modal ]
-         (Layanan, Follow-ups, WA Link)   (Nama, Perusahaan, Kontak)
-                                                    │
-                                                    ▼
-                                       [ Tim BD Inpartner / CRM ]
-                                       (Admin Dashboard & Follow-up)
+                                    ▼ (POST /api/chat)
+        ┌───────────────────────────┴───────────────────────────┐
+        ▼                                                       ▼
+ [ Intent Detection ]                               [ Knowledge Retrieval (RAG) ]
+(lib/intent.ts - 9 Intents)                        (lib/rag.ts - Tokenizer & Ranking)
+        │                                                       │
+        └───────────────────────────┬───────────────────────────┘
+                                    ▼
+                        [ Grounded AI Engine ]
+                   (lib/ai.ts - Gemini / Offline RAG)
+                                    │
+                                    ▼
+                      [ Local Database & Analytics ]
+                     (data/db.json via lib/db.ts)
+                                    │
+        ┌───────────────────────────┴───────────────────────────┐
+        ▼                                                       ▼
+ [ Jawaban AI Terverifikasi ]                           [ Lead Capture CRM ]
+(Layanan, Follow-ups, Link WA)                    (Nama, Perusahaan, Kontak, Kebutuhan)
 ```
 
 ---
 
-## 📂 Struktur Knowledge Base (`knowledge/`)
+## 📁 Struktur Direktori Proyek
 
-Knowledge base disusun secara modular sesuai PRD Bagian 10 dan bersumber dari website resmi Inpartner:
-- `knowledge/company/company-profile.md` — Profil PT Inpartner Optima Integra (berdiri sejak 2009), visi, misi, nilai (*Go Beyond than Just Consultancy*), dan komitmen ESG.
-- `knowledge/services/funding.md` — Layanan kesiapan investasi, valuasi, pitch deck, dan penghubung investor (VC, PE, Family Offices). Penegasan bahwa Inpartner bukan *direct lender*.
-- `knowledge/services/growth.md` — Strategi pertumbuhan bisnis, penetrasi pasar, studi segmen industri, ekspansi geografis, dan kemitraan.
-- `knowledge/services/profitability.md` — Solusi paradoks omzet naik tapi profit turun, audit kebocoran OPEX/COGS, optimalisasi alur kerja, dan Lean operations.
-- `knowledge/services/capacity-building.md` — The Executive Business Program (Inpartner Academy), pelatihan eksekutif, leadership coaching, dan mentoring.
-- `knowledge/sectors/sectors.md` — 13 sektor industri: ESG, F&B, Industrial Gas, Pendidikan, Energi Terbarukan, Bioteknologi, EV, Properti, IT, dll.
-- `knowledge/projects/projects.md` — Rekam jejak: Kebijakan ESG Fund Level, ICT-BTF, Capacity Building eksekutif, dll.
-- `knowledge/faq/faq.md` — Tanya jawab resmi seputar skema kerja sama, kantor, dan biaya jasa.
-- `knowledge/contact/contact.md` — Alamat Pakuwon Tower Lt. 10 Jakarta Selatan, Jemur Sari Surabaya, WhatsApp 0896 2831 0192, dan email.
+```text
+chatbot/
+├── app/
+│   ├── api/
+│   │   ├── analytics/route.ts       # Endpoint logging KPI & metrik interaksi
+│   │   ├── chat/route.ts            # Endpoint pemrosesan pesan chatbot & RAG
+│   │   ├── conversations/route.ts   # Endpoint riwayat percakapan
+│   │   ├── embed.js/route.ts        # Endpoint dinamis embed loader
+│   │   ├── knowledge/route.ts       # Endpoint inspeksi knowledge base
+│   │   └── leads/route.ts           # Endpoint penerimaan data prospek konsultasi
+│   ├── embed-view/page.tsx          # Halaman iframe chatbot mandiri (zero-layout)
+│   ├── favicon.ico
+│   ├── globals.css                  # Style global Tailwind
+│   ├── layout.tsx                   # Root HTML layout & fonts
+│   └── page.tsx                     # Portal dashboard lengkap (Simulator, CRM, Analytics)
+├── components/
+│   └── ChatWidget.tsx               # Komponen utama chatbot (Inpartner Blue + Hostinger Layout)
+├── data/
+│   └── db.json                      # Penyimpanan lokal (percakapan, leads, analytics)
+├── knowledge/                       # Basis data dokumen resmi untuk RAG (Format Markdown)
+│   ├── company/company-profile.md   # Profil PT Inpartner Optima Integra, visi, misi, nilai
+│   ├── contact/contact.md           # Alamat kantor Jakarta, Surabaya, telp, email, WA
+│   ├── faq/faq.md                   # Tanya jawab umum calon klien
+│   ├── projects/projects.md         # Rekam jejak & studi kasus proyek
+│   ├── sectors/sectors.md           # 13 sektor industri fokus Inpartner
+│   └── services/                    # Detail 4 pilar layanan
+│       ├── capacity-building.md
+│       ├── funding.md
+│       ├── growth.md
+│       └── profitability.md
+├── lib/
+│   ├── ai.ts                        # Orkestrasi AI (Gemini 1.5 Flash + Offline Grounded RAG)
+│   ├── db.ts                        # Abstraksi database lokal (CRUD session, messages, leads)
+│   ├── intent.ts                    # Algoritma klasifikasi intensi pengguna
+│   └── rag.ts                       # Mesin parser markdown, chunking, & semantic scoring
+├── public/
+│   ├── widget.js                    # Script universal untuk embed di website mana pun
+│   ├── inpartner_blue_chat.png      # Screenshot hasil verifikasi percakapan
+│   └── inpartner_blue_welcome.png   # Screenshot hasil verifikasi welcome screen
+├── .env.local.example               # Contoh variabel lingkungan
+├── INTEGRATION_GUIDE.md             # Panduan teknis serah terima ke Web Developer
+├── KNOWLEDGE_BASE_GUIDE.md          # Panduan update materi/data untuk tim internal
+├── README.md                        # Dokumentasi utama proyek
+└── package.json
+```
 
 ---
 
-## 🚀 Panduan Menjalankan Aplikasi
+## 🚀 Panduan Menjalankan Lokal
 
 ### 1. Prasyarat
-- Node.js versi 18+ (Sudah teruji di Node v25)
-- npm versi 9+
+- **Node.js**: Versi 18 ke atas (Direkomendasikan Node.js 20 LTS atau 22+)
+- **npm**: Versi 9 ke atas
 
-### 2. Instalasi & Menjalankan Development Server
+### 2. Instalasi & Jalankan Server
 ```bash
-# Clone atau buka direktori proyek
-cd /Users/mac/Downloads/chatbot
+# Masuk ke folder proyek
+cd chatbot
 
-# Jalankan server Next.js (port 3000)
+# Install dependencies (jika baru pertama kali)
+npm install
+
+# Jalankan server development
 npm run dev
 ```
 
-Buka peramban di: **`http://localhost:3000`**
+Server aktif di:
+- **Landing & Simulator Portal:** [http://localhost:3000](http://localhost:3000)
+- **Tampilan Embed Widget Langsung:** [http://localhost:3000/embed-view](http://localhost:3000/embed-view)
 
-### 3. Production Build
+### 3. Konfigurasi Lingkungan (`.env.local`)
+Secara *default*, sistem telah dilengkapi dengan **Intelligent Offline RAG Engine** yang dapat menjawab pertanyaan resmi Inpartner secara instan (< 200ms) tanpa memerlukan API key eksternal.
+
+Jika ingin mengaktifkan model LLM cloud Google Gemini:
+1. Salin `.env.local.example` menjadi `.env.local`:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+2. Isi API Key Anda:
+   ```env
+   GEMINI_API_KEY=AIzaSy...
+   ```
+
+---
+
+## 🚢 Panduan Deployment ke Production
+
+### Opsi A: Vercel (Paling Cepat & Gratis)
+1. Push repository ini ke GitHub / GitLab.
+2. Buka [vercel.com](https://vercel.com) dan impor repositori ini.
+3. Klik **Deploy** (Pengaturan build Next.js otomatis terdeteksi).
+4. Di menu Settings > Domains, arahkan domain/subdomain resmi perusahaan, contoh: `chat.inpartner.id`.
+
+### Opsi B: VPS / Docker (Ubuntu / Linux)
 ```bash
+# Build aplikasi untuk production
 npm run build
-npm start
+
+# Jalankan dengan process manager (PM2)
+pm2 start npm --name "inpartner-chatbot" -- start -- -p 3000
 ```
 
 ---
 
-## 🌐 Cara Memasang Widget di Website `https://inpartner.id/`
+## 📚 Mengelola & Memperbarui Data (Knowledge Base)
 
-Chatbot ini menyediakan script embed mandiri. Tim pengembang website Inpartner cukup menambahkan 1 baris script sebelum tag penutup `</body>`:
-
-```html
-<!-- INPARTNER AI BUSINESS CONSULTATION ASSISTANT -->
-<script 
-  src="https://[DOMAIN_CHATBOT]/api/embed.js" 
-  defer
-></script>
-```
-
-Widget akan otomatis muncul di pojok kanan bawah website, responsif untuk mobile dan desktop, tanpa mengganggu layout dan navigasi utama inpartner.id.
+Untuk memastikan chatbot selalu memberikan informasi terkini dan tidak berhalusinasi:
+- Cukup edit berkas Markdown yang relevan di folder [`knowledge/`](./knowledge/).
+- Contoh: Jika ada nomor kantor baru, ubah di [`knowledge/contact/contact.md`](./knowledge/contact/contact.md).
+- Sistem RAG akan otomatis membaca pembaruan tersebut tanpa perlu kompilasi ulang kode.
+- Baca panduan lengkapnya di [`KNOWLEDGE_BASE_GUIDE.md`](./KNOWLEDGE_BASE_GUIDE.md).
 
 ---
 
-## 📊 Tampilan Aplikasi Multi-Tab
-
-Aplikasi ini dilengkapi 6 modul terpadu yang dapat diakses langsung dari navigasi atas:
-
-1. **🌐 Website Simulator (`inpartner.id`):**
-   Simulasi langsung tampilan homepage Inpartner dengan tombol widget asisten terapung di pojok kanan bawah.
-2. **💬 Fullscreen Assistant:**
-   Layar konsultasi penuh untuk pengalaman interaktif mendalam.
-3. **👥 Leads CRM & Transkrip:**
-   Manajemen prospek untuk tim Business Development Inpartner (filter status, catatan internal, satu-klik hubungi via WhatsApp, dan transkrip chat).
-4. **📈 Analitik & KPI:**
-   Monitor *Engagement Rate*, *Service Discovery Rate*, *Lead Capture Rate*, *Human Handoff Rate*, dan log aktivitas live.
-5. **📚 Knowledge Base & RAG Tester:**
-   Pemeriksa seluruh dokumen sumber dan pengujian live algoritma pencarian semantik RAG.
-6. **🔌 Panduan Embed:**
-   Instruksi integrasi teknis dan kode embed.
+## 🔒 Privasi Data & Keamanan
+- **Anti-Halusinasi:** AI dibatasi hanya menjawab dari dokumen resmi yang terdaftar di knowledge base.
+- **Persetujuan Eksplisit (Consent):** Formulir kontak menyertakan klausul persetujuan privasi data sebelum disimpan.
+- **Human Escalation:** Akses langsung ke WhatsApp resmi Inpartner (`0896 2831 0192`) tersedia di setiap percakapan.
 
 ---
 
-## 🔒 Keamanan & Kebijakan Privasi
-- **Zero Client Credential:** Frontend tidak menyimpan API Key apa pun.
-- **Persetujuan Eksplisit:** Formulir Lead Capture memiliki checkbox consent sesuai regulasi privasi data.
-- **Integritas Konsultasi:** Sistem tidak memberikan janji persentase profit atau jaminan investasi, melainkan mengarahkan ke audit dan konsultasi resmi.
+## 📄 Lisensi
+Hak Cipta © 2026 PT Inpartner Optima Integra (Inpartner). Seluruh hak cipta dilindungi undang-undang.

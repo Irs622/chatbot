@@ -2,25 +2,20 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  MessageSquare,
-  X,
-  Send,
-  Sparkles,
-  Briefcase,
-  TrendingUp,
-  DollarSign,
-  GraduationCap,
-  Users,
+  ChevronDown,
   ChevronRight,
+  ArrowUp,
+  TrendingUp,
+  HelpCircle,
+  X,
+  RefreshCw,
   Phone,
   Mail,
-  MapPin,
-  CheckCircle2,
+  Building2,
   AlertCircle,
-  RefreshCw,
-  ExternalLink,
-  ShieldCheck,
-  Building2
+  Sparkles,
+  MessageSquare,
+  ExternalLink
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -53,6 +48,31 @@ export default function ChatWidget({
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
+
+  // Inpartner Agent Configuration
+  const agentConfig = {
+    name: 'Inpartner Agent',
+    title: 'What are you setting up?',
+    subtitle: "I'm Inpartner Agent. I'll match you with the right business solution in under 2 minutes.",
+    featured: {
+      title: "Business Growth — I'll scale my business",
+      desc: 'Market expansion, sales roadmap with full advisory',
+      query: 'Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?',
+      intent: 'Growth'
+    },
+    secondary1: {
+      title: 'Funding & Profitability',
+      query: 'Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.',
+      intent: 'Funding'
+    },
+    secondary2: {
+      title: 'Not sure what I need',
+      query: 'Saya belum yakin solusi apa yang paling dibutuhkan perusahaan saya saat ini. Mohon panduan diagnosis kebutuhan bisnis dari Inpartner.',
+      intent: 'other'
+    },
+    inputPlaceholder: 'Message Inpartner Agent...'
+  };
 
   // Lead Form State
   const [leadForm, setLeadForm] = useState({
@@ -69,39 +89,34 @@ export default function ChatWidget({
 
   // Messages state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [mounted, setMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Initialize session
   useEffect(() => {
+    setMounted(true);
     let sess = localStorage.getItem('inpartner_chat_session');
     if (!sess) {
       sess = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
       localStorage.setItem('inpartner_chat_session', sess);
     }
     setSessionId(sess);
-
-    // Initial Welcome Message
-    const welcomeMsg: ChatMessage = {
-      id: 'welcome-1',
-      sender: 'bot',
-      text: `Selamat datang di **Inpartner AI Business Consultation Assistant**! 👋\n\nSebagai mitra konsultan strategis bisnis & manajemen terpercaya di Indonesia, Inpartner siap membantu perusahaan Anda menghadapi tantangan dan merealisasikan potensi pertumbuhan.\n\nApa fokus kebutuhan utama bisnis Anda saat ini?`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      quickActions: [
-        '💰 Funding & Investment',
-        '📈 Business Growth',
-        '📊 Profitability',
-        '👥 Capacity Building',
-        '🏢 Profil Inpartner'
-      ],
-      followUpQuestions: [
-        'Bagaimana Inpartner membantu perusahaan saya?',
-        'Perusahaan saya ingin ekspansi pasar baru',
-        'Omzet naik tapi profit margin menurun'
-      ]
-    };
-    setMessages([welcomeMsg]);
   }, []);
+
+  // Close dropdown menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    }
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showMenu]);
 
   // Track chatbot open
   useEffect(() => {
@@ -121,7 +136,9 @@ export default function ChatWidget({
 
   // Scroll to bottom on new message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, isLoading]);
 
   const handleSendMessage = async (textToSend?: string, needCategory?: string) => {
@@ -158,7 +175,6 @@ export default function ChatWidget({
         setConversationId(data.conversationId);
       }
 
-      // Pre-fill lead form business need if detected
       if (data.recommendedService && !leadForm.businessNeed) {
         setLeadForm((prev) => ({ ...prev, businessNeed: data.recommendedService }));
       }
@@ -181,7 +197,7 @@ export default function ChatWidget({
       const errorMsg: ChatMessage = {
         id: `err_${Date.now()}`,
         sender: 'bot',
-        text: 'Mohon maaf, terjadi kendala koneksi ke server. Silakan hubungi tim Inpartner melalui WhatsApp di [0896 2831 0192](https://wa.me/6289628310192) atau coba kembali sebentar lagi.',
+        text: 'Mohon maaf, terjadi kendala koneksi ke server. Silakan coba kembali atau hubungi via WhatsApp di [0896 2831 0192](https://wa.me/6289628310192).',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isFallback: true
       };
@@ -192,25 +208,6 @@ export default function ChatWidget({
     }
   };
 
-  const handleSelectBusinessNeed = (need: string, queryText: string) => {
-    setSelectedNeed(need);
-    setLeadForm((prev) => ({ ...prev, businessNeed: need }));
-
-    // Track analytics: intent_selected
-    fetch('/api/analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event_name: 'intent_selected',
-        session_id: sessionId,
-        conversation_id: conversationId,
-        metadata: { selected_need: need }
-      })
-    }).catch(() => {});
-
-    handleSendMessage(queryText, need);
-  };
-
   const handleResetConversation = () => {
     const newSess = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     localStorage.setItem('inpartner_chat_session', newSess);
@@ -219,20 +216,8 @@ export default function ChatWidget({
     setSelectedNeed(null);
     setLeadSubmitted(false);
     setShowLeadModal(false);
-
-    const welcomeMsg: ChatMessage = {
-      id: `welcome_${Date.now()}`,
-      sender: 'bot',
-      text: `Sesi percakapan telah diperbarui. Silakan pilih pilar konsultasi atau tanyakan tantangan bisnis Anda kepada Inpartner:`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      quickActions: [
-        '💰 Funding & Investment',
-        '📈 Business Growth',
-        '📊 Profitability',
-        '👥 Capacity Building'
-      ]
-    };
-    setMessages([welcomeMsg]);
+    setMessages([]);
+    setShowMenu(false);
   };
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
@@ -278,11 +263,10 @@ export default function ChatWidget({
       setLeadSubmitted(true);
       setShowLeadModal(false);
 
-      // Add bot confirmation message
       const confirmMsg: ChatMessage = {
         id: `sys_lead_${Date.now()}`,
         sender: 'bot',
-        text: `✅ **Terima kasih, Bapak/Ibu ${leadForm.name}!**\n\nInformasi Anda telah diteruskan ke tim Business Development & Konsultan Inpartner. Kami akan mempelajari kebutuhan bisnis perusahaan Anda (**${leadForm.company || 'Perusahaan Anda'}**) dan menghubungi Anda dalam 1x24 jam kerja.\n\nJika membutuhkan respons instan, Anda juga dapat langsung berdiskusi via WhatsApp resmi di **[0896 2831 0192](https://wa.me/6289628310192)**.`,
+        text: `✅ **Terima kasih, Bapak/Ibu ${leadForm.name}!**\n\nInformasi Anda telah kami terima. Tim kami akan meninjau kebutuhan bisnis Anda (**${leadForm.company || 'Perusahaan Anda'}**) dan segera menghubungi Anda.\n\nJika membutuhkan respons cepat, Anda dapat menghubungi via WhatsApp di **[0896 2831 0192](https://wa.me/6289628310192)**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, confirmMsg]);
@@ -293,18 +277,16 @@ export default function ChatWidget({
     }
   };
 
-  const handleContactClick = (channel: string) => {
-    fetch('/api/analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event_name: 'contact_clicked',
-        session_id: sessionId,
-        conversation_id: conversationId,
-        metadata: { channel }
-      })
-    }).catch(() => {});
-  };
+  if (!mounted) {
+    if (embeddedMode) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-white">
+          <div className="w-6 h-6 border-2 border-[#0d5f8a] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      );
+    }
+    return null;
+  }
 
   return (
     <>
@@ -312,383 +294,393 @@ export default function ChatWidget({
       {!embeddedMode && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
           {!isOpen && (
-            <div className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3 py-2 rounded-full shadow-lg border border-slate-200 animate-bounce">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all"
+            >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Ada kendala bisnis? Konsultasikan di sini
-            </div>
+              Message {agentConfig.name}
+            </button>
           )}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? 'Tutup Chatbot' : 'Buka Chatbot Inpartner'}
-            className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-[#0d5f8a] to-[#083c5a] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-300"
+            aria-label={isOpen ? 'Tutup Chatbot' : `Buka ${agentConfig.name}`}
+            className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#0d5f8a] hover:bg-[#083c5a] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200"
           >
             {isOpen ? (
-              <X className="w-6 h-6 transition-transform group-hover:rotate-90 duration-200" />
+              <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
             ) : (
-              <>
-                <MessageSquare className="w-7 h-7" />
-                <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 text-[9px] font-bold text-white items-center justify-center">
-                    AI
-                  </span>
-                </span>
-              </>
+              <div className="flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C12.8 5.5 14.5 8 18 9C14.5 10 12.8 12.5 12 16C11.2 12.5 9.5 10 6 9C9.5 8 11.2 5.5 12 2Z" />
+                  <circle cx="12" cy="12" r="2.2" />
+                </svg>
+              </div>
             )}
           </button>
         </div>
       )}
 
-      {/* Main Chat Drawer / Window */}
+      {/* Main Chat Window */}
       {(isOpen || embeddedMode) && (
         <div
           className={`${
             embeddedMode
               ? 'w-full h-full'
-              : 'fixed bottom-24 right-4 sm:right-6 z-50 w-[95vw] sm:w-[440px] h-[640px] max-h-[85vh] rounded-2xl shadow-2xl border border-slate-200/80'
-          } flex flex-col bg-white overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-4`}
+              : 'fixed bottom-24 right-4 sm:right-6 z-50 w-[95vw] sm:w-[410px] h-[720px] max-h-[88vh] rounded-3xl shadow-2xl border border-slate-200/80'
+          } flex flex-col bg-white overflow-hidden transition-all duration-300 font-sans`}
         >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-[#0d5f8a] via-[#0b4d70] to-[#083c5a] text-white px-5 py-4 flex items-center justify-between shadow-md">
+          {/* Minimalist Top Header */}
+          <div className="relative px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0 z-20">
+            {/* Left: Brand Geometric Mark + Agent Title */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center font-bold text-amber-300 text-lg shadow-inner">
-                IN
+              {/* Modern geometric icon mark */}
+              <div className="w-6 h-6 flex items-center justify-center text-[#0d5f8a]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5.5 3.5L11 9L7.5 12.5L2 7L5.5 3.5Z" />
+                  <path d="M18.5 3.5L22 7L16.5 12.5L13 9L18.5 3.5Z" />
+                  <path d="M12 14.5L15.5 20.5L8.5 20.5L12 14.5Z" />
+                </svg>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-sm tracking-wide">Inpartner Assistant</h3>
-                  <span className="bg-amber-400/20 text-amber-300 text-[10px] font-medium px-2 py-0.5 rounded-full border border-amber-300/30">
-                    AI Consultant
-                  </span>
-                </div>
-                <p className="text-[11px] text-sky-100 flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                  Online • PT Inpartner Optima Integra
-                </p>
-              </div>
+              <h2 className="font-bold text-base text-slate-900 tracking-tight">
+                {agentConfig.name}
+              </h2>
             </div>
 
-            <div className="flex items-center gap-1">
+            {/* Right: Chevron Down / Dropdown trigger */}
+            <div className="relative" ref={menuRef}>
               <button
-                onClick={handleResetConversation}
-                title="Mulai Ulang Percakapan"
-                className="p-1.5 rounded-lg text-sky-200 hover:text-white hover:bg-white/10 transition-colors"
-                aria-label="Mulai ulang chat"
+                onClick={() => {
+                  if (!embeddedMode && !showMenu) {
+                    setIsOpen(false);
+                  } else {
+                    setShowMenu(!showMenu);
+                  }
+                }}
+                className="p-1 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100/80 transition-colors focus:outline-none"
+                aria-label="Options"
               >
-                <RefreshCw className="w-4 h-4" />
+                <ChevronDown className="w-5 h-5 transition-transform duration-200" />
               </button>
-              {!embeddedMode && (
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-sky-200 hover:text-white hover:bg-white/10 transition-colors"
-                  aria-label="Tutup jendela chat"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+
+              {/* Header Dropdown Menu */}
+              {showMenu && (
+                <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150 text-xs">
+                  <button
+                    onClick={handleResetConversation}
+                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                    <span>New conversation</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowLeadModal(true);
+                      setShowMenu(false);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                  >
+                    <Building2 className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Schedule consultation</span>
+                  </button>
+
+                  <a
+                    href="https://wa.me/6289628310192"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Official WhatsApp</span>
+                  </a>
+
+                  <a
+                    href="https://inpartner.id"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Visit inpartner.id</span>
+                  </a>
+
+                  {!embeddedMode && (
+                    <div className="border-t border-slate-100 mt-1 pt-1">
+                      <button
+                        onClick={() => {
+                          setIsOpen(false);
+                          setShowMenu(false);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Close chat</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>
 
-          {/* Business Needs Quick Bar (PRD Section 5.1 & 7 FR-02) */}
-          <div className="bg-slate-50 border-b border-slate-200 px-3 py-2.5 overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-2 text-xs whitespace-nowrap">
-              <span className="text-slate-500 font-medium text-[11px] flex items-center gap-1">
-                <Briefcase className="w-3.5 h-3.5 text-[#0d5f8a]" /> Fokus:
-              </span>
-              <button
-                onClick={() => handleSelectBusinessNeed('Funding', 'Saya membutuhkan bantuan terkait Funding & Investment')}
-                className={`px-2.5 py-1 rounded-full border transition-all ${
-                  selectedNeed === 'Funding'
-                    ? 'bg-[#0d5f8a] text-white border-[#0d5f8a] shadow-sm font-semibold'
-                    : 'bg-white text-slate-700 border-slate-300 hover:border-[#0d5f8a] hover:text-[#0d5f8a]'
-                }`}
-              >
-                💰 Funding
-              </button>
-              <button
-                onClick={() => handleSelectBusinessNeed('Growth', 'Bagaimana Inpartner membantu strategi Business Growth & ekspansi pasar?')}
-                className={`px-2.5 py-1 rounded-full border transition-all ${
-                  selectedNeed === 'Growth'
-                    ? 'bg-[#0d5f8a] text-white border-[#0d5f8a] shadow-sm font-semibold'
-                    : 'bg-white text-slate-700 border-slate-300 hover:border-[#0d5f8a] hover:text-[#0d5f8a]'
-                }`}
-              >
-                📈 Growth
-              </button>
-              <button
-                onClick={() => handleSelectBusinessNeed('Profitability', 'Perusahaan saya sedang berkembang tetapi profit margin menurun. Apakah Inpartner bisa membantu?')}
-                className={`px-2.5 py-1 rounded-full border transition-all ${
-                  selectedNeed === 'Profitability'
-                    ? 'bg-[#0d5f8a] text-white border-[#0d5f8a] shadow-sm font-semibold'
-                    : 'bg-white text-slate-700 border-slate-300 hover:border-[#0d5f8a] hover:text-[#0d5f8a]'
-                }`}
-              >
-                📊 Profitability
-              </button>
-              <button
-                onClick={() => handleSelectBusinessNeed('Capacity Building', 'Saya ingin mengetahui program Capacity Building / Inpartner Academy')}
-                className={`px-2.5 py-1 rounded-full border transition-all ${
-                  selectedNeed === 'Capacity Building'
-                    ? 'bg-[#0d5f8a] text-white border-[#0d5f8a] shadow-sm font-semibold'
-                    : 'bg-white text-slate-700 border-slate-300 hover:border-[#0d5f8a] hover:text-[#0d5f8a]'
-                }`}
-              >
-                👥 Capacity Building
-              </button>
-            </div>
-          </div>
+          {/* Main Body Area */}
+          <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col justify-between">
+            {messages.length === 0 ? (
+              /* State 1: Clean Minimalist Welcome Screen (Matching Screenshot) */
+              <div className="my-auto max-w-sm mx-auto w-full py-2 flex flex-col items-center">
+                {/* Heading */}
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 text-center tracking-tight">
+                  {agentConfig.title}
+                </h1>
 
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${
-                  msg.sender === 'user' ? 'items-end' : 'items-start'
-                }`}
-              >
-                <div
-                  className={`max-w-[88%] rounded-2xl p-3.5 text-xs sm:text-sm leading-relaxed shadow-sm ${
-                    msg.sender === 'user'
-                      ? 'bg-[#0d5f8a] text-white rounded-br-none'
-                      : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none'
-                  }`}
+                {/* Subtitle */}
+                <p className="text-xs sm:text-sm text-slate-600 text-center mt-2 leading-relaxed max-w-[320px]">
+                  {agentConfig.subtitle}
+                </p>
+
+                {/* Featured / Hero Card */}
+                <button
+                  type="button"
+                  onClick={() => handleSendMessage(agentConfig.featured.query, agentConfig.featured.intent)}
+                  className="mt-7 w-full p-4 rounded-2xl bg-[#0d5f8a]/10 hover:bg-[#0d5f8a]/15 border border-[#0d5f8a]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-xs hover:shadow-md text-left group active:scale-[0.99]"
                 >
-                  {/* Message Content with Markdown rendering */}
-                  <div className="whitespace-pre-line prose prose-sm max-w-none">
-                    {formatBotMessage(msg.text)}
+                  {/* Blue Rounded Icon with terminal >_ */}
+                  <div className="w-12 h-12 rounded-xl bg-[#0d5f8a] text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <div className="w-6 h-5 rounded border border-white/80 flex items-center justify-center font-mono text-[10px] font-bold text-white tracking-tighter">
+                      &gt;_
+                    </div>
                   </div>
 
-                  {/* Sources tag if available */}
-                  {msg.sources && msg.sources.length > 0 && (
-                    <div className="mt-3 pt-2 border-t border-slate-100 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
-                      <span className="font-semibold text-slate-600">Sumber Resmi:</span>
-                      {msg.sources.map((s, idx) => (
-                        <span key={idx} className="bg-slate-100 px-2 py-0.5 rounded text-slate-600">
-                          {s}
-                        </span>
-                      ))}
+                  {/* Text Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-sm text-slate-900 group-hover:text-[#0d5f8a] transition-colors leading-snug">
+                      {agentConfig.featured.title}
                     </div>
-                  )}
-
-                  {/* Recommended Service Badge */}
-                  {msg.recommendedService && (
-                    <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-50 text-[#0d5f8a] border border-sky-200 rounded-lg text-xs font-semibold">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                      Layanan Relevan: {msg.recommendedService}
+                    <div className="text-xs text-slate-500 mt-0.5 leading-snug">
+                      {agentConfig.featured.desc}
                     </div>
-                  )}
-
-                  {/* Timestamp */}
-                  <div
-                    className={`mt-1.5 text-[10px] ${
-                      msg.sender === 'user' ? 'text-sky-100 text-right' : 'text-slate-400'
-                    }`}
-                  >
-                    {msg.timestamp}
                   </div>
+
+                  {/* Right Chevron */}
+                  <ChevronRight className="w-4 h-4 text-slate-700 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+
+                {/* "and more" Divider */}
+                <div className="my-6 relative flex items-center justify-center w-full">
+                  <div className="w-full border-t border-slate-200/80"></div>
+                  <span className="absolute bg-white px-3 text-xs text-slate-500 font-medium tracking-normal">
+                    and more
+                  </span>
                 </div>
 
-                {/* Lead Capture CTA Card (FR-07 & Section 13) */}
-                {msg.suggestLeadCapture && !leadSubmitted && (
-                  <div className="mt-2 w-[88%] bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-200 rounded-xl p-3 shadow-sm">
-                    <div className="flex items-start gap-2.5">
-                      <div className="p-1.5 bg-[#0d5f8a] text-white rounded-lg">
-                        <Users className="w-4 h-4" />
+                {/* 2-Column Grid Secondary Cards */}
+                <div className="grid grid-cols-2 gap-3 w-full">
+                  {/* Card 1: Funding & Profitability */}
+                  <button
+                    type="button"
+                    onClick={() => handleSendMessage(agentConfig.secondary1.query, agentConfig.secondary1.intent)}
+                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#0d5f8a]/40 hover:bg-[#0d5f8a]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-[#0d5f8a]/10 text-[#0d5f8a] flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <TrendingUp className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#0d5f8a] transition-colors leading-snug">
+                      {agentConfig.secondary1.title}
+                    </span>
+                  </button>
+
+                  {/* Card 2: Help / Not sure what I need */}
+                  <button
+                    type="button"
+                    onClick={() => handleSendMessage(agentConfig.secondary2.query, agentConfig.secondary2.intent)}
+                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#0d5f8a]/40 hover:bg-[#0d5f8a]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-[#0d5f8a]/10 text-[#0d5f8a] flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <HelpCircle className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#0d5f8a] transition-colors leading-snug">
+                      {agentConfig.secondary2.title}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* State 2: Active Chat Thread */
+              <div className="space-y-4 w-full max-w-2xl mx-auto py-2">
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex flex-col ${
+                      msg.sender === 'user' ? 'items-end' : 'items-start'
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
+                        msg.sender === 'user'
+                          ? 'bg-[#0d5f8a] text-white rounded-br-xs shadow-xs'
+                          : 'bg-slate-50 border border-slate-100 text-slate-800 rounded-bl-xs shadow-2xs'
+                      }`}
+                    >
+                      {/* Message Content with Markdown rendering */}
+                      <div className="whitespace-pre-line prose prose-sm max-w-none">
+                        {formatBotMessage(msg.text)}
                       </div>
-                      <div className="flex-1">
-                        <h4 className="text-xs font-bold text-slate-800">
-                          Ingin Konsultasi Langsung dengan Tim Inpartner?
+
+                      {/* Recommended Service Badge */}
+                      {msg.recommendedService && (
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#0d5f8a]/10 text-[#0d5f8a] border border-[#0d5f8a]/20 rounded-lg text-xs font-semibold">
+                          <Sparkles className="w-3.5 h-3.5 text-[#0d5f8a]" />
+                          Layanan: {msg.recommendedService}
+                        </div>
+                      )}
+
+                      {/* Official Sources */}
+                      {msg.sources && msg.sources.length > 0 && (
+                        <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
+                          <span className="font-semibold text-slate-600">Sumber:</span>
+                          {msg.sources.map((s, idx) => (
+                            <span key={idx} className="bg-white px-2 py-0.5 rounded border border-slate-200">
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Timestamp */}
+                      <div
+                        className={`mt-1.5 text-[10px] ${
+                          msg.sender === 'user' ? 'text-sky-100 text-right' : 'text-slate-400'
+                        }`}
+                      >
+                        {msg.timestamp}
+                      </div>
+                    </div>
+
+                    {/* Follow-up Questions Suggestions */}
+                    {msg.followUpQuestions && msg.followUpQuestions.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5 max-w-[85%]">
+                        {msg.followUpQuestions.map((q, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSendMessage(q)}
+                            className="text-left text-xs bg-white hover:bg-[#0d5f8a]/5 text-slate-700 hover:text-[#0d5f8a] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#0d5f8a]/40 transition-all shadow-2xs flex items-center gap-1.5"
+                          >
+                            <span>{q}</span>
+                            <ChevronRight className="w-3 h-3 text-slate-400" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Lead Capture CTA Card */}
+                    {msg.suggestLeadCapture && !leadSubmitted && (
+                      <div className="mt-2.5 w-[85%] bg-[#0d5f8a]/5 border border-[#0d5f8a]/20 rounded-2xl p-3.5 shadow-2xs">
+                        <h4 className="text-xs font-bold text-slate-900">
+                          Ingin Konsultasi Lebih Lanjut?
                         </h4>
                         <p className="text-[11px] text-slate-600 mt-0.5">
-                          Tinggalkan kontak bisnis Anda, konsultan kami akan memberikan telaah awal tanpa komitmen.
+                          Tinggalkan kontak bisnis Anda, konsultan kami akan menghubungi Anda.
                         </p>
                         <div className="mt-2.5 flex items-center gap-2">
                           <button
-                            onClick={() => {
-                              setShowLeadModal(true);
-                              fetch('/api/analytics', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                  event_name: 'lead_form_opened',
-                                  session_id: sessionId,
-                                  conversation_id: conversationId
-                                })
-                              }).catch(() => {});
-                            }}
-                            className="bg-[#0d5f8a] hover:bg-[#083c5a] text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-all"
+                            onClick={() => setShowLeadModal(true)}
+                            className="bg-[#0d5f8a] hover:bg-[#083c5a] text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs transition-all"
                           >
                             Isi Form Konsultasi
                           </button>
                           <a
-                            href="https://wa.me/6289628310192?text=Halo%20Inpartner,%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20bisnis."
+                            href="https://wa.me/6289628310192"
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={() => handleContactClick('whatsapp_direct')}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition-all"
+                            className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 shadow-2xs transition-all"
                           >
-                            <Phone className="w-3 h-3" /> Chat WhatsApp
+                            <Phone className="w-3 h-3" /> WhatsApp
                           </a>
                         </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Typing Indicator */}
+                {isLoading && (
+                  <div className="flex items-start">
+                    <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-bl-xs px-4 py-3 shadow-2xs">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce [animation-delay:0.2s]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce [animation-delay:0.4s]"></div>
+                        <span className="text-xs text-slate-500 font-medium ml-1.5">
+                          Thinking...
+                        </span>
                       </div>
                     </div>
                   </div>
                 )}
-
-                {/* Follow-up Questions Suggestions (FR-06) */}
-                {msg.followUpQuestions && msg.followUpQuestions.length > 0 && (
-                  <div className="mt-2 flex flex-col gap-1.5 w-[88%]">
-                    <span className="text-[11px] font-semibold text-slate-500">Pertanyaan Lanjutan:</span>
-                    {msg.followUpQuestions.map((q, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSendMessage(q)}
-                        className="text-left text-xs bg-white hover:bg-sky-50 text-slate-700 hover:text-[#0d5f8a] px-3 py-2 rounded-xl border border-slate-200 hover:border-sky-300 transition-all shadow-xs flex items-center justify-between group"
-                      >
-                        <span>{q}</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0d5f8a] group-hover:translate-x-0.5 transition-transform" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Human Handoff Contact Bar (FR-09 & FR-10) */}
-                {msg.isFallback && (
-                  <div className="mt-2 w-[88%] bg-amber-50/80 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 space-y-2">
-                    <div className="flex items-center gap-1.5 font-bold">
-                      <AlertCircle className="w-4 h-4 text-amber-600" />
-                      <span>Saluran Resmi Konsultan Inpartner:</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                      <a
-                        href="https://wa.me/6289628310192"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => handleContactClick('whatsapp_fallback')}
-                        className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 rounded-lg p-2 font-medium flex items-center gap-1.5 transition-colors"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>WA: 0896 2831 0192</span>
-                      </a>
-                      <a
-                        href="mailto:corporatesecretary@inpartner.id"
-                        onClick={() => handleContactClick('email_fallback')}
-                        className="bg-white hover:bg-sky-50 text-[#0d5f8a] border border-sky-300 rounded-lg p-2 font-medium flex items-center gap-1.5 transition-colors"
-                      >
-                        <Mail className="w-3.5 h-3.5" />
-                        <span>Kirim Email</span>
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {/* Typing Indicator */}
-            {isLoading && (
-              <div className="flex items-start gap-2">
-                <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-none px-4 py-3 shadow-xs">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce"></div>
-                    <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce [animation-delay:0.2s]"></div>
-                    <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce [animation-delay:0.4s]"></div>
-                    <span className="text-xs text-slate-500 font-medium ml-1.5">
-                      Menganalisis knowledge base Inpartner...
-                    </span>
-                  </div>
-                </div>
+                <div ref={messagesEndRef} />
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions Footer Pills */}
-          <div className="px-3 py-1.5 bg-slate-100/80 border-t border-slate-200 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            <button
-              onClick={() => handleSendMessage('Bagaimana cara Inpartner membantu masalah profit margin yang menurun?')}
-              className="text-[11px] bg-white hover:bg-sky-50 text-slate-600 hover:text-[#0d5f8a] border border-slate-200 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
-            >
-              📊 Solusi Profit Margin
-            </button>
-            <button
-              onClick={() => handleSendMessage('Apakah Inpartner menyediakan pinjaman dana investasi?')}
-              className="text-[11px] bg-white hover:bg-sky-50 text-slate-600 hover:text-[#0d5f8a] border border-slate-200 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
-            >
-              💰 Skema Funding
-            </button>
-            <button
-              onClick={() => handleSendMessage('Di mana alamat kantor dan kontak resmi Inpartner?')}
-              className="text-[11px] bg-white hover:bg-sky-50 text-slate-600 hover:text-[#0d5f8a] border border-slate-200 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
-            >
-              📍 Kantor & Kontak
-            </button>
-          </div>
-
-          {/* Chat Input Bar */}
-          <div className="p-3 bg-white border-t border-slate-200">
+          {/* Bottom Chat Input Bar */}
+          <div className="border-t border-slate-100 p-3 sm:p-4 bg-white shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-2"
+              className="relative flex items-center"
             >
               <input
                 ref={inputRef}
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Tanyakan kebutuhan bisnis Anda (misal: 'omzet naik tapi profit turun')..."
-                className="flex-1 bg-slate-100 hover:bg-slate-100/80 focus:bg-white text-slate-800 text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-transparent focus:border-[#0d5f8a] focus:outline-none transition-all placeholder:text-slate-400"
+                placeholder={agentConfig.inputPlaceholder}
+                className="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-slate-800 text-xs sm:text-sm pl-4 pr-12 py-3 rounded-2xl border border-slate-200/80 focus:border-[#0d5f8a] focus:ring-2 focus:ring-[#0d5f8a]/15 focus:outline-none transition-all placeholder:text-slate-400"
                 disabled={isLoading}
               />
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isLoading}
-                aria-label="Kirim Pesan"
-                className="bg-[#0d5f8a] hover:bg-[#083c5a] disabled:bg-slate-200 disabled:text-slate-400 text-white p-2.5 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-sky-400"
+                aria-label="Send message"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#0d5f8a] hover:bg-[#083c5a] text-white cursor-pointer active:scale-95 shadow-xs"
               >
-                <Send className="w-4 h-4" />
+                <ArrowUp className="w-4 h-4 stroke-[2.5]" />
               </button>
             </form>
-            <div className="flex items-center justify-between mt-2 text-[10px] text-slate-400 px-1">
-              <span>Didukung RAG resmi Inpartner Knowledge Base</span>
-              <button
-                onClick={() => setShowLeadModal(true)}
-                className="text-[#0d5f8a] hover:underline font-semibold"
-              >
-                Jadwalkan Konsultasi
-              </button>
+
+            {/* Disclaimer Matching Screenshot */}
+            <div className="text-center text-[11px] text-slate-400 mt-2 font-normal tracking-tight">
+              AI can make mistakes. Double-check replies.
             </div>
           </div>
         </div>
       )}
 
-      {/* Lead Capture Modal (PRD Section 5.4, 7 FR-07 & 13) */}
+      {/* Lead Capture Modal */}
       {showLeadModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#0d5f8a] to-[#083c5a] text-white px-6 py-4 flex items-center justify-between">
+            <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-base flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-amber-300" />
-                  Jadwalkan Konsultasi Bisnis Inpartner
+                  <Building2 className="w-5 h-5 text-sky-300" />
+                  Jadwalkan Konsultasi Bisnis
                 </h3>
-                <p className="text-xs text-sky-100 mt-0.5">
+                <p className="text-xs text-slate-300 mt-0.5">
                   Tim kami akan menganalisis kebutuhan Anda dan menghubungi kembali.
                 </p>
               </div>
               <button
                 onClick={() => setShowLeadModal(false)}
-                className="text-sky-200 hover:text-white p-1 rounded-lg hover:bg-white/10"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Modal Form */}
             <form onSubmit={handleLeadSubmit} className="p-6 space-y-4">
               {leadError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-lg flex items-center gap-2">
@@ -713,7 +705,7 @@ export default function ChatWidget({
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Nama Perusahaan / Organisasi
+                    Nama Perusahaan
                   </label>
                   <input
                     type="text"
@@ -741,13 +733,13 @@ export default function ChatWidget({
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Alamat Email Bisnis
+                    Alamat Email
                   </label>
                   <input
                     type="email"
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
-                    placeholder="nama@perusahaan.co.id"
+                    placeholder="nama@perusahaan.com"
                     className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
                   />
                 </div>
@@ -755,7 +747,7 @@ export default function ChatWidget({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Kebutuhan Bisnis Utama <span className="text-rose-500">*</span>
+                  Kebutuhan Utama <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={leadForm.businessNeed}
@@ -763,37 +755,28 @@ export default function ChatWidget({
                   className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none bg-white"
                   required
                 >
-                  <option value="">-- Pilih Kebutuhan Bisnis --</option>
-                  <option value="Profitability & Operational Process Optimization">
-                    Profitability & Optimalisasi Biaya / Margin
-                  </option>
-                  <option value="Funding & Investment Advisory">
-                    Funding & Pendampingan Investasi / Investor
-                  </option>
-                  <option value="Business Growth & Market Expansion">
-                    Growth & Strategi Ekspansi Pasar
-                  </option>
-                  <option value="Capacity Building (The Executive Business Program)">
-                    Capacity Building / Pelatihan Eksekutif
-                  </option>
-                  <option value="Other Consulting Service">Kebutuhan Konsultasi Lainnya</option>
+                  <option value="">-- Pilih Kebutuhan --</option>
+                  <option value="Profitability & Cost Optimization">Profitability & Margin Optimization</option>
+                  <option value="Funding & Investment Advisory">Funding & Investment Advisory</option>
+                  <option value="Business Growth & Market Expansion">Business Growth & Market Expansion</option>
+                  <option value="Capacity Building">Capacity Building / Executive Program</option>
+                  <option value="Other Consulting Service">Layanan Lainnya</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Catatan / Tantangan Bisnis yang Sedang Dihadapi
+                  Catatan / Kebutuhan Tambahan
                 </label>
                 <textarea
                   rows={3}
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
-                  placeholder="Ceritakan gambaran singkat tantangan bisnis yang ingin Anda selesaikan..."
+                  placeholder="Ceritakan gambaran singkat kebutuhan atau tantangan Anda..."
                   className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
                 />
               </div>
 
-              {/* Explicit Consent (PRD Section 5.4 & 8 Privacy) */}
               <div className="flex items-start gap-2 pt-1">
                 <input
                   type="checkbox"
@@ -803,7 +786,7 @@ export default function ChatWidget({
                   className="mt-0.5 rounded text-[#0d5f8a] focus:ring-[#0d5f8a]"
                 />
                 <label htmlFor="lead-consent" className="text-[11px] text-slate-600 leading-snug">
-                  Saya bersedia dihubungi oleh tim konsultan Inpartner untuk tujuan konsultasi bisnis dan memahami data saya disimpan secara aman sesuai kebijakan privasi Inpartner.
+                  Saya bersedia dihubungi untuk tindak lanjut dan memahami data saya disimpan secara aman.
                 </label>
               </div>
 
@@ -820,7 +803,7 @@ export default function ChatWidget({
                   disabled={leadSubmitting}
                   className="px-5 py-2 text-xs font-semibold text-white bg-[#0d5f8a] hover:bg-[#083c5a] rounded-lg shadow-sm transition-all disabled:bg-slate-300"
                 >
-                  {leadSubmitting ? 'Mengirim Data...' : 'Kirim Informasi Konsultasi'}
+                  {leadSubmitting ? 'Mengirim Data...' : 'Kirim Informasi'}
                 </button>
               </div>
             </form>

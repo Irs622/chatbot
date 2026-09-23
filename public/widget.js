@@ -1,19 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server';
-
-export async function GET(req: NextRequest) {
-  const host = req.headers.get('host') || 'localhost:3000';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  const baseUrl = `${protocol}://${host}`;
-
-  const jsContent = `
-(function() {
+(function () {
   if (window.__INPARTNER_CHAT_INITIALIZED__) return;
   window.__INPARTNER_CHAT_INITIALIZED__ = true;
 
-  const baseUrl = '${baseUrl}';
+  // Detect script source to resolve host automatically
+  var currentScript = document.currentScript || (function () {
+    var scripts = document.getElementsByTagName('script');
+    return scripts[scripts.length - 1];
+  })();
 
-  // Launcher button
-  const launcher = document.createElement('button');
+  var scriptSrc = currentScript ? currentScript.src : '';
+  var baseUrl = '';
+  if (scriptSrc) {
+    var a = document.createElement('a');
+    a.href = scriptSrc;
+    baseUrl = a.origin;
+  }
+  if (!baseUrl) {
+    baseUrl = window.location.origin;
+  }
+
+  // Create launcher button
+  var launcher = document.createElement('button');
   launcher.id = 'inpartner-chat-launcher';
   launcher.setAttribute('aria-label', 'Open Inpartner Agent');
   launcher.style.cssText =
@@ -38,8 +45,8 @@ export async function GET(req: NextRequest) {
     launcher.style.transform = 'scale(1)';
   };
 
-  // Iframe container
-  const container = document.createElement('div');
+  // Create iframe container
+  var container = document.createElement('div');
   container.id = 'inpartner-chat-container';
   container.style.cssText =
     'position: fixed; bottom: 92px; right: 24px; width: 420px; max-width: calc(100vw - 32px); ' +
@@ -48,13 +55,14 @@ export async function GET(req: NextRequest) {
     'background: white; border: 1px solid rgba(226, 232, 240, 0.8); transition: opacity 0.2s ease, transform 0.2s ease; ' +
     'opacity: 0; transform: translateY(10px);';
 
-  const iframe = document.createElement('iframe');
+  var iframe = document.createElement('iframe');
   iframe.src = baseUrl + '/embed-view';
   iframe.title = 'Inpartner Agent';
   iframe.style.cssText = 'width: 100%; height: 100%; border: none; display: block;';
   container.appendChild(iframe);
 
-  let isOpen = false;
+  var isOpen = false;
+
   function toggleChat() {
     isOpen = !isOpen;
     if (isOpen) {
@@ -84,6 +92,7 @@ export async function GET(req: NextRequest) {
 
   launcher.onclick = toggleChat;
 
+  // Responsive mobile adjust
   function handleResize() {
     if (window.innerWidth < 640) {
       container.style.bottom = '0';
@@ -110,12 +119,3 @@ export async function GET(req: NextRequest) {
   document.body.appendChild(launcher);
   document.body.appendChild(container);
 })();
-`;
-
-  return new NextResponse(jsContent, {
-    headers: {
-      'Content-Type': 'application/javascript; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
-    }
-  });
-}
