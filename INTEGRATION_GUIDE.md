@@ -108,27 +108,50 @@ Jika website utama Anda juga menggunakan Next.js App Router:
 
 ---
 
-## 📊 Cara Menghubungkan Form Leads ke Google Sheets Otomatis (Webhook)
+## 📊 Cara Menyimpan ke Google Sheets & Notifikasi Email Otomatis (100% Gratis)
 
-Jika tim Sales ingin data prospek otomatis tercatat di Google Spreadsheet setiap kali ada calon klien yang mengisi form:
+Melalui satu webhook Google Apps Script, setiap ada prospek masuk data akan **otomatis tercatat di Google Sheets** dan **email notifikasi langsung terkirim ke tim sales**:
 
 1. Buat **Google Spreadsheet** baru, beri header kolom:
    `Waktu | Nama | Perusahaan | WhatsApp | Email | Kebutuhan | Catatan`
-2. Buka menu **Extensions > Apps Script**, tempelkan kode singkat ini:
+2. Buka menu **Extensions > Apps Script**, tempelkan kode lengkap ini:
    ```javascript
    function doPost(e) {
      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
      var data = JSON.parse(e.postData.contents);
      var lead = data.lead || {};
+     
+     // 1. Simpan baris baru ke Google Sheets
      sheet.appendRow([
        new Date(),
        lead.name,
-       lead.company,
+       lead.company || '-',
        lead.phone,
-       lead.email,
+       lead.email || '-',
        lead.business_need,
-       lead.notes
+       lead.notes || '-'
      ]);
+
+     // 2. Kirim Notifikasi Email Otomatis ke Tim Inpartner
+     var targetEmail = "corporatesecretary@inpartner.id"; // Ubah bila ingin dikirim ke email lain
+     var waLink = lead.whatsapp_link || ("https://wa.me/" + lead.phone.replace(/[^0-9]/g, ''));
+     
+     MailApp.sendEmail({
+       to: targetEmail,
+       subject: "🚨 Prospek Baru (Inpartner Agent): " + lead.name + " - " + lead.business_need,
+       htmlBody: 
+         "<div style='font-family:sans-serif; padding:15px; border:1px solid #e2e8f0; border-radius:10px; max-width:550px;'>" +
+           "<h3 style='color:#0d5f8a; margin-top:0;'>Prospek Klien Baru dari Website</h3>" +
+           "<p><strong>Nama:</strong> " + lead.name + "</p>" +
+           "<p><strong>Perusahaan:</strong> " + (lead.company || "-") + "</p>" +
+           "<p><strong>WhatsApp:</strong> <a href='" + waLink + "'>" + lead.phone + " (Klik Chat WhatsApp)</a></p>" +
+           "<p><strong>Email:</strong> " + (lead.email || "-") + "</p>" +
+           "<p><strong>Kebutuhan Layanan:</strong> " + lead.business_need + "</p>" +
+           "<p><strong>Catatan:</strong> " + (lead.notes || "-") + "</p>" +
+           "<br><a href='" + waLink + "' style='background:#0d5f8a; color:#fff; padding:10px 16px; border-radius:6px; text-decoration:none; font-weight:bold;'>Hubungi Klien via WhatsApp</a>" +
+         "</div>"
+     });
+
      return ContentService.createTextOutput(JSON.stringify({ result: 'success' }))
        .setMimeType(ContentService.MimeType.JSON);
    }
@@ -138,7 +161,7 @@ Jika tim Sales ingin data prospek otomatis tercatat di Google Spreadsheet setiap
    ```env
    LEAD_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
    ```
-5. Selesai! Setiap prospek baru otomatis muncul seketika di Google Sheets.
+5. Selesai! Data otomatis masuk ke Google Sheets dan email alert langsung terkirim ke tim sales setiap ada formulir yang dikirim.
 
 ---
 
