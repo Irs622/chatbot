@@ -75,7 +75,7 @@ Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim
 ## 6. Fitur-Fitur Utama (Dijelaskan Secara Sederhana)
 
 ### A. Tampilan Bersih & Elegan (*Clean Minimalist Design*)
-- Memakai warna resmi **Biru Khas Inpartner** (`#0d5f8a`) yang terkesan profesional, tenang, dan terpercaya.
+- Memakai warna resmi **Biru Khas Inpartner** (`#005DAD`) yang terkesan profesional, tenang, dan terpercaya.
 - Tombol mengapung (*floating button*) di pojok kanan bawah yang ramah digunakan di layar handphone maupun laptop.
 
 ### B. Layar Sambutan Cepat (*Welcome Screen*)

@@ -153,7 +153,7 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold text-slate-800">Inpartner Leads & Consultation CRM</h2>
-            <span className="bg-[#0d5f8a]/10 text-[#0d5f8a] text-xs font-semibold px-2.5 py-0.5 rounded-full">
+            <span className="bg-[#005DAD]/10 text-[#005DAD] text-xs font-semibold px-2.5 py-0.5 rounded-full">
               Internal Team
             </span>
           </div>
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
           onClick={() => setFilterStatus('all')}
           className={`cursor-pointer p-4 rounded-xl border transition-all ${
             filterStatus === 'all'
-              ? 'bg-[#0d5f8a] text-white border-[#0d5f8a] shadow-md'
+              ? 'bg-[#005DAD] text-white border-[#005DAD] shadow-md'
               : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
           }`}
         >
@@ -255,7 +255,7 @@ export default function AdminDashboard() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari nama, perusahaan, kebutuhan..."
-                className="w-full text-xs pl-9 pr-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0d5f8a]"
+                className="w-full text-xs pl-9 pr-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD]"
               />
             </div>
 
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="text-xs px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0d5f8a] bg-white"
+                className="text-xs px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD] bg-white"
               >
                 <option value="all">Semua Status</option>
                 <option value="new">New</option>
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
                         onClick={() => handleSelectLead(lead)}
                         className={`cursor-pointer transition-colors ${
                           isSelected
-                            ? 'bg-sky-50/70 border-l-4 border-l-[#0d5f8a]'
+                            ? 'bg-sky-50/70 border-l-4 border-l-[#005DAD]'
                             : 'hover:bg-slate-50'
                         }`}
                       >
@@ -346,7 +346,7 @@ export default function AdminDashboard() {
                 <div>
                   <h3 className="font-bold text-lg text-slate-800">{selectedLead.name}</h3>
                   <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-0.5">
-                    <Building className="w-3.5 h-3.5 text-[#0d5f8a]" />
+                    <Building className="w-3.5 h-3.5 text-[#005DAD]" />
                     {selectedLead.company || 'Perusahaan Mandiri'}
                   </p>
                 </div>
@@ -374,7 +374,7 @@ export default function AdminDashboard() {
                     href={`mailto:${selectedLead.email}?subject=Konsultasi%20Bisnis%20Inpartner%20-%20${encodeURIComponent(
                       selectedLead.name
                     )}`}
-                    className="flex items-center justify-center gap-1.5 px-3 py-2 bg-[#0d5f8a] hover:bg-[#083c5a] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 bg-[#005DAD] hover:bg-[#004785] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
                   >
                     <Mail className="w-3.5 h-3.5" />
                     Kirim Email
@@ -398,7 +398,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="border-t border-slate-200/80 pt-2">
                   <span className="text-slate-500 block mb-1">Kebutuhan Bisnis:</span>
-                  <span className="font-semibold text-[#0d5f8a]">{selectedLead.business_need}</span>
+                  <span className="font-semibold text-[#005DAD]">{selectedLead.business_need}</span>
                 </div>
                 {selectedLead.notes && (
                   <div className="border-t border-slate-200/80 pt-2">
@@ -424,7 +424,7 @@ export default function AdminDashboard() {
                         disabled={updatingStatus}
                         className={`text-xs px-2.5 py-1 rounded-lg border capitalize transition-all ${
                           selectedLead.status === st
-                            ? 'bg-[#0d5f8a] text-white border-[#0d5f8a] font-semibold'
+                            ? 'bg-[#005DAD] text-white border-[#005DAD] font-semibold'
                             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                         }`}
                       >
@@ -439,7 +439,7 @@ export default function AdminDashboard() {
               <div className="pt-2 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <MessageSquare className="w-3.5 h-3.5 text-[#0d5f8a]" />
+                    <MessageSquare className="w-3.5 h-3.5 text-[#005DAD]" />
                     Transkrip Obrolan Chatbot:
                   </h4>
                   {selectedLeadConversation && (
@@ -456,7 +456,7 @@ export default function AdminDashboard() {
                         key={m.id}
                         className={`p-2 rounded-lg text-[11px] leading-relaxed ${
                           m.sender === 'user'
-                            ? 'bg-[#0d5f8a]/10 text-slate-800 ml-4'
+                            ? 'bg-[#005DAD]/10 text-slate-800 ml-4'
                             : 'bg-white text-slate-700 border border-slate-200 mr-4'
                         }`}
                       >

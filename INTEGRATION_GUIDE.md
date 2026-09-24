@@ -141,14 +141,14 @@ Melalui satu webhook Google Apps Script, setiap ada prospek masuk data akan **ot
        subject: "🚨 Prospek Baru (Inpartner Agent): " + lead.name + " - " + lead.business_need,
        htmlBody: 
          "<div style='font-family:sans-serif; padding:15px; border:1px solid #e2e8f0; border-radius:10px; max-width:550px;'>" +
-           "<h3 style='color:#0d5f8a; margin-top:0;'>Prospek Klien Baru dari Website</h3>" +
+           "<h3 style='color:#005DAD; margin-top:0;'>Prospek Klien Baru dari Website</h3>" +
            "<p><strong>Nama:</strong> " + lead.name + "</p>" +
            "<p><strong>Perusahaan:</strong> " + (lead.company || "-") + "</p>" +
            "<p><strong>WhatsApp:</strong> <a href='" + waLink + "'>" + lead.phone + " (Klik Chat WhatsApp)</a></p>" +
            "<p><strong>Email:</strong> " + (lead.email || "-") + "</p>" +
            "<p><strong>Kebutuhan Layanan:</strong> " + lead.business_need + "</p>" +
            "<p><strong>Catatan:</strong> " + (lead.notes || "-") + "</p>" +
-           "<br><a href='" + waLink + "' style='background:#0d5f8a; color:#fff; padding:10px 16px; border-radius:6px; text-decoration:none; font-weight:bold;'>Hubungi Klien via WhatsApp</a>" +
+           "<br><a href='" + waLink + "' style='background:#005DAD; color:#fff; padding:10px 16px; border-radius:6px; text-decoration:none; font-weight:bold;'>Hubungi Klien via WhatsApp</a>" +
          "</div>"
      });
 
@@ -169,7 +169,7 @@ Melalui satu webhook Google Apps Script, setiap ada prospek masuk data akan **ot
 
 Setelah kode dipasang di website:
 1. Buka website utama `inpartner.id` di peramban (gunakan *Incognito* / *Private Window*).
-2. Periksa apakah tombol lingkaran biru `#0d5f8a` muncul di pojok kanan bawah.
+2. Periksa apakah tombol lingkaran biru `#005DAD` muncul di pojok kanan bawah.
 3. Klik tombol tersebut dan pastikan:
    - Jendela sambutan terbuka mulus.
    - Opsi *"Business Growth"*, *"Funding & Profitability"*, dan *"Not sure what I need"* dapat diklik.

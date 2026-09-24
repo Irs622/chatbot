@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --inpartner-primary: #0d5f8a;
-  --inpartner-dark: #083c5a;
+  --inpartner-primary: #005DAD;
+  --inpartner-dark: #004785;
   --inpartner-accent: #d4af37;
 }
 

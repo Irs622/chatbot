@@ -24,11 +24,11 @@ export default function WebsiteSimulator() {
       <div className="bg-slate-900 text-slate-300 text-xs py-2 px-4 sm:px-8 flex justify-between items-center border-b border-slate-800">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
-            <Phone className="w-3 h-3 text-[#0d5f8a]" />
+            <Phone className="w-3 h-3 text-[#005DAD]" />
             <a href="tel:+6289628310192" className="hover:text-white">0896 2831 0192</a>
           </span>
           <span className="hidden sm:flex items-center gap-1.5">
-            <Mail className="w-3 h-3 text-[#0d5f8a]" />
+            <Mail className="w-3 h-3 text-[#005DAD]" />
             <a href="mailto:corporatesecretary@inpartner.id" className="hover:text-white">corporatesecretary@inpartner.id</a>
           </span>
         </div>
@@ -44,24 +44,24 @@ export default function WebsiteSimulator() {
       <nav className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0d5f8a] to-[#083c5a] flex items-center justify-center text-white font-extrabold text-base shadow-md">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#005DAD] to-[#004785] flex items-center justify-center text-white font-extrabold text-base shadow-md">
               IN
             </div>
             <div>
               <span className="font-extrabold text-lg text-slate-900 tracking-tight">INPARTNER</span>
-              <span className="block text-[9px] uppercase tracking-widest text-[#0d5f8a] font-semibold -mt-1">
+              <span className="block text-[9px] uppercase tracking-widest text-[#005DAD] font-semibold -mt-1">
                 Consulting
               </span>
             </div>
           </div>
 
           <div className="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-600">
-            <span className="text-[#0d5f8a] hover:text-[#0d5f8a] cursor-pointer">About Us</span>
-            <span className="hover:text-[#0d5f8a] cursor-pointer">Services</span>
-            <span className="hover:text-[#0d5f8a] cursor-pointer">Sectors</span>
-            <span className="hover:text-[#0d5f8a] cursor-pointer">Projects</span>
-            <span className="hover:text-[#0d5f8a] cursor-pointer">Career</span>
-            <span className="hover:text-[#0d5f8a] cursor-pointer">Insight & Update</span>
+            <span className="text-[#005DAD] hover:text-[#005DAD] cursor-pointer">About Us</span>
+            <span className="hover:text-[#005DAD] cursor-pointer">Services</span>
+            <span className="hover:text-[#005DAD] cursor-pointer">Sectors</span>
+            <span className="hover:text-[#005DAD] cursor-pointer">Projects</span>
+            <span className="hover:text-[#005DAD] cursor-pointer">Career</span>
+            <span className="hover:text-[#005DAD] cursor-pointer">Insight & Update</span>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export default function WebsiteSimulator() {
           </a>
           <a
             href="#contact"
-            className="px-4 py-2 bg-[#0d5f8a] hover:bg-[#083c5a] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
+            className="px-4 py-2 bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold rounded-xl shadow-sm transition-all"
           >
             Get in Touch
           </a>
@@ -104,7 +104,7 @@ export default function WebsiteSimulator() {
           <div className="flex flex-wrap justify-center items-center gap-3 pt-2">
             <a
               href="#pillars"
-              className="px-6 py-3 bg-[#0d5f8a] hover:bg-[#0b4d70] text-white font-semibold text-xs rounded-xl shadow-lg transition-all"
+              className="px-6 py-3 bg-[#005DAD] hover:bg-[#004785] text-white font-semibold text-xs rounded-xl shadow-lg transition-all"
             >
               Jelajahi 4 Pilar Layanan
             </a>
@@ -124,7 +124,7 @@ export default function WebsiteSimulator() {
       {/* 4 Pillars Section (PRD Section 1 & 5.1) */}
       <section id="pillars" className="py-16 px-4 sm:px-8 max-w-6xl mx-auto">
         <div className="text-center space-y-2 mb-12">
-          <span className="text-xs uppercase font-bold text-[#0d5f8a] tracking-wider">
+          <span className="text-xs uppercase font-bold text-[#005DAD] tracking-wider">
             Our Core Competencies
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
@@ -147,7 +147,7 @@ export default function WebsiteSimulator() {
                 Pendampingan kesiapan investasi (investment readiness), penataan valuasi, financial model, dan penghubungan ke jaringan investor institusi (VC, PE, Family Offices).
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0d5f8a] flex items-center gap-1">
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
               <span>Investment Advisory</span>
               <ArrowRight className="w-3 h-3" />
             </div>
@@ -164,7 +164,7 @@ export default function WebsiteSimulator() {
                 Riset pertumbuhan pasar potensial, penetrasi segmen konsumen baru, ekspansi wilayah/kota, model go-to-market, dan perumusan kemitraan strategis bernilai tinggi.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0d5f8a] flex items-center gap-1">
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
               <span>Market Expansion</span>
               <ArrowRight className="w-3 h-3" />
             </div>
@@ -173,7 +173,7 @@ export default function WebsiteSimulator() {
           {/* Pillar 3: Profitability */}
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-sky-50 text-[#0d5f8a] flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-sky-50 text-[#005DAD] flex items-center justify-center mb-4">
                 <BarChart2 className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg text-slate-900 mb-2">Profitability</h3>
@@ -181,7 +181,7 @@ export default function WebsiteSimulator() {
                 Optimalisasi efisiensi alur kerja operasional, audit kebocoran beban biaya (OPEX/COGS), penyelarasan people & tech, dan restrukturisasi margin agar omzet berbuah laba nyata.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0d5f8a] flex items-center gap-1">
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
               <span>Operational Excellence</span>
               <ArrowRight className="w-3 h-3" />
             </div>
@@ -198,7 +198,7 @@ export default function WebsiteSimulator() {
                 The Executive Business Program (Inpartner Academy): pelatihan eksekutif, leadership coaching, mentoring, dan penyediaan kerangka kerja implementasi rencana bisnis terukur.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#0d5f8a] flex items-center gap-1">
+            <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
               <span>Executive Program</span>
               <ArrowRight className="w-3 h-3" />
             </div>
@@ -232,7 +232,7 @@ export default function WebsiteSimulator() {
             ].map((s, idx) => (
               <span
                 key={idx}
-                className="bg-white border border-slate-200 text-slate-700 text-xs px-3.5 py-1.5 rounded-full font-medium shadow-2xs hover:border-[#0d5f8a] hover:text-[#0d5f8a] transition-colors cursor-pointer"
+                className="bg-white border border-slate-200 text-slate-700 text-xs px-3.5 py-1.5 rounded-full font-medium shadow-2xs hover:border-[#005DAD] hover:text-[#005DAD] transition-colors cursor-pointer"
               >
                 {s}
               </span>
@@ -242,7 +242,7 @@ export default function WebsiteSimulator() {
       </section>
 
       {/* Authentic Footer */}
-      <footer id="contact" className="bg-[#0d5f8a] text-white py-12 px-4 sm:px-8">
+      <footer id="contact" className="bg-[#005DAD] text-white py-12 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs leading-relaxed">
           <div className="space-y-3">
             <div className="flex items-center gap-2">

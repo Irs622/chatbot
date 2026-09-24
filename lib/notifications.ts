@@ -140,7 +140,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
           subject: `🚨 Prospek Baru: ${lead.name} (${lead.company || 'Pribadi'}) - ${lead.business_need}`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-              <h2 style="color: #0d5f8a; margin-top: 0;">Prospek Klien Baru Masuk</h2>
+              <h2 style="color: #005DAD; margin-top: 0;">Prospek Klien Baru Masuk</h2>
               <p style="color: #475569; font-size: 14px;">Terdapat calon klien baru yang mengisi formulir konsultasi melalui Inpartner Agent di website:</p>
               
               <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin: 20px 0;">
@@ -154,8 +154,8 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 10px 0; color: #64748b;">WhatsApp / Telp:</td>
-                  <td style="padding: 10px 0; color: #0d5f8a; font-weight: bold;">
-                    <a href="${waLink}" style="color: #0d5f8a; text-decoration: none;">${lead.phone} (Hubungi WhatsApp)</a>
+                  <td style="padding: 10px 0; color: #005DAD; font-weight: bold;">
+                    <a href="${waLink}" style="color: #005DAD; text-decoration: none;">${lead.phone} (Hubungi WhatsApp)</a>
                   </td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
@@ -173,7 +173,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
               </table>
 
               <div style="margin-top: 25px;">
-                <a href="${waLink}" style="display: inline-block; background: #0d5f8a; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px;">
+                <a href="${waLink}" style="display: inline-block; background: #005DAD; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px;">
                   Hubungi Klien via WhatsApp
                 </a>
               </div>

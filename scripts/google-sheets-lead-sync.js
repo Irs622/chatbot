@@ -78,7 +78,7 @@ function doPost(e) {
     var emailBody = 
       "<div style='font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff;'>" +
         "<div style='display: flex; align-items: center; margin-bottom: 20px;'>" +
-          "<div style='background: #0d5f8a; color: #ffffff; font-weight: bold; padding: 8px 12px; border-radius: 8px; font-size: 14px;'>INPARTNER</div>" +
+          "<div style='background: #005DAD; color: #ffffff; font-weight: bold; padding: 8px 12px; border-radius: 8px; font-size: 14px;'>INPARTNER</div>" +
           "<span style='margin-left: 12px; color: #64748b; font-size: 13px; font-weight: 500;'>Website Lead Alert</span>" +
         "</div>" +
         
@@ -96,7 +96,7 @@ function doPost(e) {
           "</tr>" +
           "<tr style='border-bottom: 1px solid #f1f5f9;'>" +
             "<td style='padding: 10px 0; color: #64748b;'>Nomor WhatsApp:</td>" +
-            "<td style='padding: 10px 0; font-weight: bold; color: #0d5f8a;'><a href='" + waUrl + "' style='color: #0d5f8a; text-decoration: underline;'>" + phone + " (Chat WA Langsung)</a></td>" +
+            "<td style='padding: 10px 0; font-weight: bold; color: #005DAD;'><a href='" + waUrl + "' style='color: #005DAD; text-decoration: underline;'>" + phone + " (Chat WA Langsung)</a></td>" +
           "</tr>" +
           "<tr style='border-bottom: 1px solid #f1f5f9;'>" +
             "<td style='padding: 10px 0; color: #64748b;'>Alamat Email:</td>" +
@@ -104,7 +104,7 @@ function doPost(e) {
           "</tr>" +
           "<tr style='border-bottom: 1px solid #f1f5f9;'>" +
             "<td style='padding: 10px 0; color: #64748b;'>Kebutuhan Layanan:</td>" +
-            "<td style='padding: 10px 0; font-weight: bold; color: #0d5f8a;'>" + businessNeed + "</td>" +
+            "<td style='padding: 10px 0; font-weight: bold; color: #005DAD;'>" + businessNeed + "</td>" +
           "</tr>" +
           "<tr>" +
             "<td style='padding: 10px 0; color: #64748b;'>Catatan / Tantangan:</td>" +
@@ -113,7 +113,7 @@ function doPost(e) {
         "</table>" +
         
         "<div style='margin-bottom: 24px; text-align: center;'>" +
-          "<a href='" + waUrl + "' style='display: inline-block; background-color: #0d5f8a; color: #ffffff; font-weight: bold; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 9999px; box-shadow: 0 4px 12px rgba(13, 95, 138, 0.3);'>" +
+          "<a href='" + waUrl + "' style='display: inline-block; background-color: #005DAD; color: #ffffff; font-weight: bold; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 9999px; box-shadow: 0 4px 12px rgba(0, 93, 173, 0.3);'>" +
             "Hubungi Klien via WhatsApp" +
           "</a>" +
         "</div>" +

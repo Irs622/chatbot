@@ -56,17 +56,17 @@ export default function ChatbotIcon({
             <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-cyan-400 via-sky-300 to-white shadow-[0_0_8px_#38bdf8] ring-1 ring-cyan-200/80" />
           </div>
           {/* Antenna metallic stem */}
-          <div className="w-[2.5px] h-[5px] bg-[#0d5f8a]" />
+          <div className="w-[2.5px] h-[5px] bg-[#005DAD]" />
         </div>
 
         {/* 2. HEADSET ARCH BAND over top */}
-        <div className="absolute -top-[6px] w-[36px] h-[20px] rounded-t-full border-t-[3px] border-x-[2.5px] border-transparent border-t-[#0d5f8a] border-x-[#0d5f8a] pointer-events-none" />
+        <div className="absolute -top-[6px] w-[36px] h-[20px] rounded-t-full border-t-[3px] border-x-[2.5px] border-transparent border-t-[#005DAD] border-x-[#005DAD] pointer-events-none" />
 
         {/* 3. HEADSET EARPHONE PADS (Left & Right) */}
         {/* Left Ear Cushion */}
-        <div className="absolute -left-[5px] top-[7px] w-[5.5px] h-[15px] rounded-full bg-gradient-to-b from-cyan-400 via-[#0d5f8a] to-[#083c5a] shadow-sm border border-white/40 z-10" />
+        <div className="absolute -left-[5px] top-[7px] w-[5.5px] h-[15px] rounded-full bg-gradient-to-b from-cyan-400 via-[#005DAD] to-[#004785] shadow-sm border border-white/40 z-10" />
         {/* Right Ear Cushion */}
-        <div className="absolute -right-[5px] top-[7px] w-[5.5px] h-[15px] rounded-full bg-gradient-to-b from-cyan-400 via-[#0d5f8a] to-[#083c5a] shadow-sm border border-white/40 z-10" />
+        <div className="absolute -right-[5px] top-[7px] w-[5.5px] h-[15px] rounded-full bg-gradient-to-b from-cyan-400 via-[#005DAD] to-[#004785] shadow-sm border border-white/40 z-10" />
 
         {/* 4. MAIN HEAD / CHAT BUBBLE SHELL (Pearl White Ceramic Capsule) */}
         <div className="relative w-[34px] h-[28px] bg-gradient-to-b from-white via-slate-50 to-slate-100 rounded-[10px] p-[2.5px] shadow-[0_3px_10px_rgba(0,0,0,0.18)] border border-slate-200/90 flex items-center justify-center">

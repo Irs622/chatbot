@@ -25,8 +25,8 @@
   launcher.setAttribute('aria-label', 'Open Inpartner Agent');
   launcher.style.cssText =
     'position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; ' +
-    'border-radius: 9999px; background: #0d5f8a; color: white; border: none; ' +
-    'box-shadow: 0 10px 25px -5px rgba(13, 95, 138, 0.4), 0 8px 10px -6px rgba(13, 95, 138, 0.2); ' +
+    'border-radius: 9999px; background: #005DAD; color: white; border: none; ' +
+    'box-shadow: 0 10px 25px -5px rgba(0, 93, 173, 0.4), 0 8px 10px -6px rgba(0, 93, 173, 0.2); ' +
     'cursor: pointer; z-index: 999998; display: flex; align-items: center; justify-content: center; ' +
     'transition: transform 0.2s ease, background 0.2s ease; outline: none; padding: 0;';
 
@@ -50,11 +50,11 @@
   launcher.innerHTML = botIconSvg;
 
   launcher.onmouseenter = function () {
-    launcher.style.background = '#083c5a';
+    launcher.style.background = '#004785';
     launcher.style.transform = 'scale(1.05)';
   };
   launcher.onmouseleave = function () {
-    launcher.style.background = '#0d5f8a';
+    launcher.style.background = '#005DAD';
     launcher.style.transform = 'scale(1)';
   };
 

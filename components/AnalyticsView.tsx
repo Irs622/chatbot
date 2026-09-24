@@ -39,7 +39,7 @@ export default function AnalyticsView() {
   if (isLoading || !data) {
     return (
       <div className="flex items-center justify-center p-12 text-slate-500">
-        <Activity className="w-6 h-6 animate-spin text-[#0d5f8a] mr-2" />
+        <Activity className="w-6 h-6 animate-spin text-[#005DAD] mr-2" />
         <span>Memuat data analitik Inpartner...</span>
       </div>
     );
@@ -55,7 +55,7 @@ export default function AnalyticsView() {
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Engagement Rate</span>
-            <div className="p-2 rounded-xl bg-sky-50 text-[#0d5f8a]">
+            <div className="p-2 rounded-xl bg-sky-50 text-[#005DAD]">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function AnalyticsView() {
           </div>
           <div className="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-[#0d5f8a] h-full rounded-full transition-all duration-500"
+              className="bg-[#005DAD] h-full rounded-full transition-all duration-500"
               style={{ width: `${kpis.engagementRate}%` }}
             ></div>
           </div>
@@ -145,14 +145,14 @@ export default function AnalyticsView() {
         {/* Event Breakdown */}
         <div className="lg:col-span-6 bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
           <h3 className="font-bold text-base text-slate-800 flex items-center gap-2 mb-4">
-            <BarChart3 className="w-4 h-4 text-[#0d5f8a]" />
+            <BarChart3 className="w-4 h-4 text-[#005DAD]" />
             Distribusi Event Chatbot (PRD Section 16)
           </h3>
 
           <div className="space-y-3">
             {[
               { label: 'Chatbot Opened', key: 'chatbot_opened', color: 'bg-sky-500' },
-              { label: 'Conversation Started', key: 'conversation_started', color: 'bg-[#0d5f8a]' },
+              { label: 'Conversation Started', key: 'conversation_started', color: 'bg-[#005DAD]' },
               { label: 'Intent / Need Selected', key: 'intent_selected', color: 'bg-indigo-500' },
               { label: 'Question Asked', key: 'question_asked', color: 'bg-cyan-500' },
               { label: 'Service Viewed', key: 'service_viewed', color: 'bg-teal-500' },
@@ -192,7 +192,7 @@ export default function AnalyticsView() {
             </h3>
             <button
               onClick={fetchAnalytics}
-              className="text-xs text-[#0d5f8a] hover:underline font-semibold"
+              className="text-xs text-[#005DAD] hover:underline font-semibold"
             >
               Refresh
             </button>
@@ -206,7 +206,7 @@ export default function AnalyticsView() {
                   className="p-3 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/80 text-xs transition-colors flex items-start justify-between gap-3"
                 >
                   <div className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-[#0d5f8a] mt-1.5 shrink-0"></span>
+                    <span className="w-2 h-2 rounded-full bg-[#005DAD] mt-1.5 shrink-0"></span>
                     <div>
                       <span className="font-semibold text-slate-800 capitalize">
                         {e.event_name.replace(/_/g, ' ')}

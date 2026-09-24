@@ -1,6 +1,6 @@
 # Inpartner AI Business Consultation Assistant (Inpartner Agent)
 
-> Asisten Percakapan AI Resmi untuk Website [Inpartner](https://inpartner.id/) (PT Inpartner Optima Integra) — Berbasis Knowledge Retrieval-Augmented Generation (RAG) & Desain Minimalis Modern Inpartner Blue (`#0d5f8a`).
+> Asisten Percakapan AI Resmi untuk Website [Inpartner](https://inpartner.id/) (PT Inpartner Optima Integra) — Berbasis Knowledge Retrieval-Augmented Generation (RAG) & Desain Minimalis Modern Inpartner Blue (`#005DAD`).
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
@@ -22,7 +22,7 @@
 ---
 
 ## 🎨 Tampilan & Desain
-- **Skema Warna:** Inpartner Blue (`#0d5f8a` primary, `#083c5a` dark hover, soft blue tints).
+- **Skema Warna:** Inpartner Blue (`#005DAD` primary, `#004785` dark hover, soft blue tints).
 - **Layout Minimalis:**
   - *Header:* Brand geometric icon Inpartner + drop-down opsi (*New conversation*, *Schedule consultation*, *Official WhatsApp*, *Visit inpartner.id*).
   - *Welcome Screen:* Headline terarah, Hero Card (`>_ Business Growth`), divider *"and more"*, serta kartu sekunder (*Funding & Profitability*, *Not sure what I need*).

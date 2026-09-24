@@ -33,7 +33,7 @@ export default function AdminPage() {
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Kembali ke Chatbot</span>
             </Link>
-            <div className="w-8 h-8 rounded-lg bg-[#0d5f8a] flex items-center justify-center font-bold text-white text-sm shadow-inner">
+            <div className="w-8 h-8 rounded-lg bg-[#005DAD] flex items-center justify-center font-bold text-white text-sm shadow-inner">
               IN
             </div>
             <div>
@@ -78,7 +78,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('leads')}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               activeTab === 'leads'
-                ? 'bg-[#0d5f8a] text-white shadow-xs'
+                ? 'bg-[#005DAD] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -90,7 +90,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('analytics')}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               activeTab === 'analytics'
-                ? 'bg-[#0d5f8a] text-white shadow-xs'
+                ? 'bg-[#005DAD] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -102,7 +102,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('knowledge')}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               activeTab === 'knowledge'
-                ? 'bg-[#0d5f8a] text-white shadow-xs'
+                ? 'bg-[#005DAD] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -114,7 +114,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('embed')}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               activeTab === 'embed'
-                ? 'bg-[#0d5f8a] text-white shadow-xs'
+                ? 'bg-[#005DAD] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >

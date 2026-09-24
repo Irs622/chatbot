@@ -33,7 +33,7 @@ export default function EmbedGuide() {
       {/* Intro */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
         <div className="flex items-center gap-2">
-          <Globe className="w-5 h-5 text-[#0d5f8a]" />
+          <Globe className="w-5 h-5 text-[#005DAD]" />
           <h2 className="text-xl font-bold text-slate-800">
             Panduan Integrasi Website inpartner.id (Embed Widget)
           </h2>
@@ -83,7 +83,7 @@ export default function EmbedGuide() {
 
         <div className="space-y-4 text-xs sm:text-sm text-slate-700">
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-[#0d5f8a] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-[#005DAD] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
               1
             </div>
             <div>
@@ -93,7 +93,7 @@ export default function EmbedGuide() {
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-[#0d5f8a] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-[#005DAD] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
               2
             </div>
             <div>
@@ -105,7 +105,7 @@ export default function EmbedGuide() {
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-[#0d5f8a] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-[#005DAD] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
               3
             </div>
             <div>
@@ -118,8 +118,8 @@ export default function EmbedGuide() {
 
       {/* Production Readiness Checklist */}
       <div className="bg-sky-50/60 border border-sky-200 rounded-2xl p-6 text-xs text-sky-900 space-y-3">
-        <h4 className="font-bold text-sm text-[#0d5f8a] flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-[#0d5f8a]" />
+        <h4 className="font-bold text-sm text-[#005DAD] flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-[#005DAD]" />
           Checklist Kepatuhan PRD & Non-Functional Requirements:
         </h4>
         <ul className="space-y-1.5 list-disc list-inside text-slate-700">

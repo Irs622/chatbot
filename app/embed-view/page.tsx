@@ -7,7 +7,7 @@ const ChatWidget = dynamic(() => import('@/components/ChatWidget'), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center bg-white">
-      <div className="w-6 h-6 border-2 border-[#0d5f8a] border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-6 h-6 border-2 border-[#005DAD] border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 });

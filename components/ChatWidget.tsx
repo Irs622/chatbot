@@ -283,7 +283,7 @@ export default function ChatWidget({
     if (embeddedMode) {
       return (
         <div className="w-full h-full flex items-center justify-center bg-white">
-          <div className="w-6 h-6 border-2 border-[#0d5f8a] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-6 h-6 border-2 border-[#005DAD] border-t-transparent rounded-full animate-spin"></div>
         </div>
       );
     }
@@ -307,7 +307,7 @@ export default function ChatWidget({
           <button
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? 'Tutup Chatbot' : `Buka ${agentConfig.name}`}
-            className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#0d5f8a] hover:bg-[#083c5a] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200"
+            className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#005DAD] hover:bg-[#004785] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200"
           >
             {isOpen ? (
               <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
@@ -431,7 +431,7 @@ export default function ChatWidget({
               /* State 1: Clean Minimalist Welcome Screen (Matching Screenshot) */
               <div className="my-auto max-w-sm mx-auto w-full py-2 flex flex-col items-center">
                 {/* Agent Mascot / Brand Badge */}
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-slate-100 border border-slate-200/90 flex items-center justify-center shadow-md mb-4 ring-4 ring-[#0d5f8a]/10 group">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-slate-100 border border-slate-200/90 flex items-center justify-center shadow-md mb-4 ring-4 ring-[#005DAD]/10 group">
                   <ChatbotIcon size="lg" className="transition-transform group-hover:scale-105 duration-200" />
                 </div>
 
@@ -449,10 +449,10 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={() => handleSendMessage(agentConfig.featured.query, agentConfig.featured.intent)}
-                  className="mt-7 w-full p-4 rounded-2xl bg-[#0d5f8a]/10 hover:bg-[#0d5f8a]/15 border border-[#0d5f8a]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-xs hover:shadow-md text-left group active:scale-[0.99]"
+                  className="mt-7 w-full p-4 rounded-2xl bg-[#005DAD]/10 hover:bg-[#005DAD]/15 border border-[#005DAD]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-xs hover:shadow-md text-left group active:scale-[0.99]"
                 >
                   {/* Blue Rounded Icon with terminal >_ */}
-                  <div className="w-12 h-12 rounded-xl bg-[#0d5f8a] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="w-12 h-12 rounded-xl bg-[#005DAD] text-white flex items-center justify-center shrink-0 shadow-sm">
                     <div className="w-6 h-5 rounded border border-white/80 flex items-center justify-center font-mono text-[10px] font-bold text-white tracking-tighter">
                       &gt;_
                     </div>
@@ -460,7 +460,7 @@ export default function ChatWidget({
 
                   {/* Text Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-sm text-slate-900 group-hover:text-[#0d5f8a] transition-colors leading-snug">
+                    <div className="font-bold text-sm text-slate-900 group-hover:text-[#005DAD] transition-colors leading-snug">
                       {agentConfig.featured.title}
                     </div>
                     <div className="text-xs text-slate-500 mt-0.5 leading-snug">
@@ -486,12 +486,12 @@ export default function ChatWidget({
                   <button
                     type="button"
                     onClick={() => handleSendMessage(agentConfig.secondary1.query, agentConfig.secondary1.intent)}
-                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#0d5f8a]/40 hover:bg-[#0d5f8a]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
+                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#005DAD]/40 hover:bg-[#005DAD]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#0d5f8a]/10 text-[#0d5f8a] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <TrendingUp className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#0d5f8a] transition-colors leading-snug">
+                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug">
                       {agentConfig.secondary1.title}
                     </span>
                   </button>
@@ -500,12 +500,12 @@ export default function ChatWidget({
                   <button
                     type="button"
                     onClick={() => handleSendMessage(agentConfig.secondary2.query, agentConfig.secondary2.intent)}
-                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#0d5f8a]/40 hover:bg-[#0d5f8a]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
+                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#005DAD]/40 hover:bg-[#005DAD]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#0d5f8a]/10 text-[#0d5f8a] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <HelpCircle className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#0d5f8a] transition-colors leading-snug">
+                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug">
                       {agentConfig.secondary2.title}
                     </span>
                   </button>
@@ -534,7 +534,7 @@ export default function ChatWidget({
                       <div
                         className={`w-full rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
                           msg.sender === 'user'
-                            ? 'bg-[#0d5f8a] text-white rounded-br-xs shadow-xs'
+                            ? 'bg-[#005DAD] text-white rounded-br-xs shadow-xs'
                             : 'bg-slate-50 border border-slate-100 text-slate-800 rounded-bl-xs shadow-2xs'
                         }`}
                       >
@@ -545,8 +545,8 @@ export default function ChatWidget({
 
                       {/* Recommended Service Badge */}
                       {msg.recommendedService && (
-                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#0d5f8a]/10 text-[#0d5f8a] border border-[#0d5f8a]/20 rounded-lg text-xs font-semibold">
-                          <Sparkles className="w-3.5 h-3.5 text-[#0d5f8a]" />
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-xs font-semibold">
+                          <Sparkles className="w-3.5 h-3.5 text-[#005DAD]" />
                           Layanan: {msg.recommendedService}
                         </div>
                       )}
@@ -580,7 +580,7 @@ export default function ChatWidget({
                           <button
                             key={idx}
                             onClick={() => handleSendMessage(q)}
-                            className="text-left text-xs bg-white hover:bg-[#0d5f8a]/5 text-slate-700 hover:text-[#0d5f8a] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#0d5f8a]/40 transition-all shadow-2xs flex items-center gap-1.5"
+                            className="text-left text-xs bg-white hover:bg-[#005DAD]/5 text-slate-700 hover:text-[#005DAD] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#005DAD]/40 transition-all shadow-2xs flex items-center gap-1.5"
                           >
                             <span>{q}</span>
                             <ChevronRight className="w-3 h-3 text-slate-400" />
@@ -591,7 +591,7 @@ export default function ChatWidget({
 
                     {/* Lead Capture CTA Card */}
                     {msg.suggestLeadCapture && !leadSubmitted && (
-                      <div className="mt-2.5 w-[85%] bg-[#0d5f8a]/5 border border-[#0d5f8a]/20 rounded-2xl p-3.5 shadow-2xs">
+                      <div className="mt-2.5 w-[85%] bg-[#005DAD]/5 border border-[#005DAD]/20 rounded-2xl p-3.5 shadow-2xs">
                         <h4 className="text-xs font-bold text-slate-900">
                           Ingin Konsultasi Lebih Lanjut?
                         </h4>
@@ -601,7 +601,7 @@ export default function ChatWidget({
                         <div className="mt-2.5 flex items-center gap-2">
                           <button
                             onClick={() => setShowLeadModal(true)}
-                            className="bg-[#0d5f8a] hover:bg-[#083c5a] text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs transition-all"
+                            className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs transition-all"
                           >
                             Isi Form Konsultasi
                           </button>
@@ -628,9 +628,9 @@ export default function ChatWidget({
                     </div>
                     <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-bl-xs px-4 py-3 shadow-2xs">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce"></div>
-                        <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce [animation-delay:0.2s]"></div>
-                        <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce [animation-delay:0.4s]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.2s]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.4s]"></div>
                         <span className="text-xs text-slate-500 font-medium ml-1.5">
                           Thinking...
                         </span>
@@ -658,14 +658,14 @@ export default function ChatWidget({
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={agentConfig.inputPlaceholder}
-                className="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-slate-800 text-xs sm:text-sm pl-4 pr-12 py-3 rounded-2xl border border-slate-200/80 focus:border-[#0d5f8a] focus:ring-2 focus:ring-[#0d5f8a]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                className="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-slate-800 text-xs sm:text-sm pl-4 pr-12 py-3 rounded-2xl border border-slate-200/80 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
                 disabled={isLoading}
               />
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isLoading}
                 aria-label="Send message"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#0d5f8a] hover:bg-[#083c5a] text-white cursor-pointer active:scale-95 shadow-xs"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#005DAD] hover:bg-[#004785] text-white cursor-pointer active:scale-95 shadow-xs"
               >
                 <ArrowUp className="w-4 h-4 stroke-[2.5]" />
               </button>
@@ -720,7 +720,7 @@ export default function ChatWidget({
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                     placeholder="Contoh: Budi Santoso"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
                   />
                 </div>
                 <div>
@@ -732,7 +732,7 @@ export default function ChatWidget({
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
                     placeholder="PT / CV / Lembaga"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
                   />
                 </div>
               </div>
@@ -748,7 +748,7 @@ export default function ChatWidget({
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                     placeholder="0812xxxxxxxx"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
                   />
                 </div>
                 <div>
@@ -760,7 +760,7 @@ export default function ChatWidget({
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
                     placeholder="nama@perusahaan.com"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
                   />
                 </div>
               </div>
@@ -772,7 +772,7 @@ export default function ChatWidget({
                 <select
                   value={leadForm.businessNeed}
                   onChange={(e) => setLeadForm({ ...leadForm, businessNeed: e.target.value })}
-                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none bg-white"
+                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none bg-white"
                   required
                 >
                   <option value="">-- Pilih Kebutuhan --</option>
@@ -793,7 +793,7 @@ export default function ChatWidget({
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
                   placeholder="Ceritakan gambaran singkat kebutuhan atau tantangan Anda..."
-                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#0d5f8a] focus:outline-none"
+                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
                 />
               </div>
 
@@ -803,7 +803,7 @@ export default function ChatWidget({
                   id="lead-consent"
                   checked={leadForm.consent}
                   onChange={(e) => setLeadForm({ ...leadForm, consent: e.target.checked })}
-                  className="mt-0.5 rounded text-[#0d5f8a] focus:ring-[#0d5f8a]"
+                  className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD]"
                 />
                 <label htmlFor="lead-consent" className="text-[11px] text-slate-600 leading-snug">
                   Saya bersedia dihubungi untuk tindak lanjut dan memahami data saya disimpan secara aman.
@@ -821,7 +821,7 @@ export default function ChatWidget({
                 <button
                   type="submit"
                   disabled={leadSubmitting}
-                  className="px-5 py-2 text-xs font-semibold text-white bg-[#0d5f8a] hover:bg-[#083c5a] rounded-lg shadow-sm transition-all disabled:bg-slate-300"
+                  className="px-5 py-2 text-xs font-semibold text-white bg-[#005DAD] hover:bg-[#004785] rounded-lg shadow-sm transition-all disabled:bg-slate-300"
                 >
                   {leadSubmitting ? 'Mengirim Data...' : 'Kirim Informasi'}
                 </button>
@@ -853,7 +853,7 @@ function formatBotMessage(text: string) {
           href={linkMatch[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#0d5f8a] font-semibold underline hover:text-[#083c5a]"
+          className="text-[#005DAD] font-semibold underline hover:text-[#004785]"
         >
           {linkMatch[1]}
         </a>
