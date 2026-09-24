@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
+import ChatbotIcon from '@/components/ChatbotIcon';
 
 interface ChatMessage {
   id: string;
@@ -312,10 +313,7 @@ export default function ChatWidget({
               <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
             ) : (
               <div className="flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C12.8 5.5 14.5 8 18 9C14.5 10 12.8 12.5 12 16C11.2 12.5 9.5 10 6 9C9.5 8 11.2 5.5 12 2Z" />
-                  <circle cx="12" cy="12" r="2.2" />
-                </svg>
+                <ChatbotIcon className="w-8 h-8 transition-transform group-hover:scale-110 duration-200" />
               </div>
             )}
           </button>
@@ -333,19 +331,21 @@ export default function ChatWidget({
         >
           {/* Minimalist Top Header */}
           <div className="relative px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0 z-20">
-            {/* Left: Brand Geometric Mark + Agent Title */}
+            {/* Left: Brand Icon + Agent Title */}
             <div className="flex items-center gap-3">
-              {/* Modern geometric icon mark */}
-              <div className="w-6 h-6 flex items-center justify-center text-[#0d5f8a]">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M5.5 3.5L11 9L7.5 12.5L2 7L5.5 3.5Z" />
-                  <path d="M18.5 3.5L22 7L16.5 12.5L13 9L18.5 3.5Z" />
-                  <path d="M12 14.5L15.5 20.5L8.5 20.5L12 14.5Z" />
-                </svg>
+              {/* Custom Robot Chatbot Icon badge */}
+              <div className="w-9 h-9 rounded-xl bg-[#0d5f8a] flex items-center justify-center p-1 shadow-xs shrink-0 ring-1 ring-black/5">
+                <ChatbotIcon className="w-7 h-7" />
               </div>
-              <h2 className="font-bold text-base text-slate-900 tracking-tight">
-                {agentConfig.name}
-              </h2>
+              <div>
+                <h2 className="font-bold text-base text-slate-900 tracking-tight leading-tight">
+                  {agentConfig.name}
+                </h2>
+                <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Online • Siap membantu
+                </div>
+              </div>
             </div>
 
             {/* Right: Chevron Down / Dropdown trigger */}
@@ -430,6 +430,11 @@ export default function ChatWidget({
             {messages.length === 0 ? (
               /* State 1: Clean Minimalist Welcome Screen (Matching Screenshot) */
               <div className="my-auto max-w-sm mx-auto w-full py-2 flex flex-col items-center">
+                {/* Agent Mascot / Brand Badge */}
+                <div className="w-14 h-14 rounded-2xl bg-[#0d5f8a] flex items-center justify-center p-2 shadow-md mb-4 ring-4 ring-[#0d5f8a]/15 group">
+                  <ChatbotIcon className="w-10 h-10 transition-transform group-hover:scale-105 duration-200" />
+                </div>
+
                 {/* Heading */}
                 <h1 className="text-xl sm:text-2xl font-bold text-slate-900 text-center tracking-tight">
                   {agentConfig.title}
@@ -512,17 +517,27 @@ export default function ChatWidget({
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex flex-col ${
-                      msg.sender === 'user' ? 'items-end' : 'items-start'
+                    className={`flex gap-2.5 ${
+                      msg.sender === 'user' ? 'justify-end' : 'justify-start items-start'
                     }`}
                   >
+                    {msg.sender === 'bot' && (
+                      <div className="w-7 h-7 rounded-xl bg-[#0d5f8a] flex items-center justify-center p-0.5 shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
+                        <ChatbotIcon className="w-5 h-5" />
+                      </div>
+                    )}
                     <div
-                      className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
-                        msg.sender === 'user'
-                          ? 'bg-[#0d5f8a] text-white rounded-br-xs shadow-xs'
-                          : 'bg-slate-50 border border-slate-100 text-slate-800 rounded-bl-xs shadow-2xs'
-                      }`}
+                      className={`flex flex-col ${
+                        msg.sender === 'user' ? 'items-end' : 'items-start'
+                      } max-w-[85%] sm:max-w-[80%]`}
                     >
+                      <div
+                        className={`w-full rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
+                          msg.sender === 'user'
+                            ? 'bg-[#0d5f8a] text-white rounded-br-xs shadow-xs'
+                            : 'bg-slate-50 border border-slate-100 text-slate-800 rounded-bl-xs shadow-2xs'
+                        }`}
+                      >
                       {/* Message Content with Markdown rendering */}
                       <div className="whitespace-pre-line prose prose-sm max-w-none">
                         {formatBotMessage(msg.text)}
@@ -601,12 +616,16 @@ export default function ChatWidget({
                         </div>
                       </div>
                     )}
+                    </div>
                   </div>
                 ))}
 
                 {/* Typing Indicator */}
                 {isLoading && (
-                  <div className="flex items-start">
+                  <div className="flex gap-2.5 items-start">
+                    <div className="w-7 h-7 rounded-xl bg-[#0d5f8a] flex items-center justify-center p-0.5 shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
+                      <ChatbotIcon className="w-5 h-5" />
+                    </div>
                     <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-bl-xs px-4 py-3 shadow-2xs">
                       <div className="flex items-center gap-1.5">
                         <div className="w-2 h-2 rounded-full bg-[#0d5f8a] animate-bounce"></div>

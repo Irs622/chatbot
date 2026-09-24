@@ -1124,6 +1124,38 @@
       },
       "id": "msg_1790175816801_doul5",
       "created_at": "2026-09-23T15:03:36.801Z"
+    },
+    {
+      "conversation_id": "conv_1790162456216_2asav",
+      "sender": "user",
+      "message": "Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?",
+      "intent": "Growth",
+      "id": "msg_1790247251237_c9cpf",
+      "created_at": "2026-09-24T10:54:11.237Z"
+    },
+    {
+      "conversation_id": "conv_1790162456216_2asav",
+      "sender": "bot",
+      "message": "Layanan **Growth (Business & Market Growth)** Inpartner membantu perusahaan menengah dan besar merancang strategi ekspansi yang terukur dan berdaya tahan tinggi.\n\n### Fokus Pendampingan Inpartner:\n- **Riset & Studi Segmen Potensial:** Memetakan peluang pasar baru, menganalisis dinamika konsumen, dan mengidentifikasi tren industri sebelum disrupsi terjadi.\n- **Strategic Business Planning:** Merumuskan peta jalan bisnis 3–5 tahun yang selaras dengan kapabilitas internal dan teknologi.\n- **Go-to-Market & Geographic Expansion:** Strategi penetrasi wilayah/kota baru atau diversifikasi saluran penjualan (*sales channels*).\n- **Strategic Partnerships:** Menjajaki kemitraan strategis bernilai tinggi untuk mempercepat penetrasi pasar.\n\nKonsultan Inpartner tidak hanya merumuskan strategi di atas kertas, tetapi juga mendampingi manajemen dalam mengeksekusi rencana bisnis tersebut.",
+      "intent": "growth",
+      "metadata": {
+        "recommended_service": "Business Growth & Market Expansion",
+        "sources": [
+          "Layanan Inpartner: Growth (Business & Market Growth)",
+          "1. Pertanyaan Umum Seputar Inpartner",
+          "Ruang Lingkup Layanan Growth"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790247251245_od0t9",
+      "created_at": "2026-09-24T10:54:11.245Z"
     }
   ],
   "leads": [
@@ -2267,6 +2299,77 @@
     {
       "id": "evt_1790178143004_rca36",
       "created_at": "2026-09-23T15:42:23.004Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790247187121_mnykz",
+      "created_at": "2026-09-24T10:53:07.121Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790247216629_mayxx",
+      "created_at": "2026-09-24T10:53:36.629Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790247219912_8gy3j",
+      "created_at": "2026-09-24T10:53:39.912Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790247251238_kr60u",
+      "created_at": "2026-09-24T10:54:11.238Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": "conv_1790162456216_2asav",
+      "metadata": {
+        "query": "Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?",
+        "selectedNeed": "Growth"
+      }
+    },
+    {
+      "id": "evt_1790247251259_qq6qy",
+      "created_at": "2026-09-24T10:54:11.259Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": "conv_1790162456216_2asav",
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790247284571_3q3gx",
+      "created_at": "2026-09-24T10:54:44.571Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790247285816_99bbn",
+      "created_at": "2026-09-24T10:54:45.816Z",
       "event_name": "chatbot_opened",
       "session_id": "sess_1790162391880_0gk7v",
       "conversation_id": null,

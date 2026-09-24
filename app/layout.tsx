@@ -5,7 +5,9 @@ export const metadata: Metadata = {
   title: "Inpartner AI Business Consultation Assistant | inpartner.id",
   description: "AI-powered conversational assistant for business consultation, service discovery, and lead generation for Inpartner Corporate Website.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/chaboot.svg",
+    shortcut: "/chaboot.svg",
+    apple: "/chaboot.svg",
   },
 };
 
