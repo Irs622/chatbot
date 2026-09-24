@@ -380,10 +380,10 @@ export default function ChatWidget({
                       setShowLeadModal(true);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-[#005DAD]/10 hover:text-[#005DAD] flex items-center gap-2 font-medium transition-colors"
                   >
-                    <Building2 className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Schedule consultation</span>
+                    <Building2 className="w-3.5 h-3.5 text-[#005DAD]" />
+                    <span>Jadwalkan Konsultasi</span>
                   </button>
 
                   <a
@@ -591,28 +591,36 @@ export default function ChatWidget({
 
                     {/* Lead Capture CTA Card */}
                     {msg.suggestLeadCapture && !leadSubmitted && (
-                      <div className="mt-2.5 w-[85%] bg-[#005DAD]/5 border border-[#005DAD]/20 rounded-2xl p-3.5 shadow-2xs">
-                        <h4 className="text-xs font-bold text-slate-900">
-                          Ingin Konsultasi Lebih Lanjut?
-                        </h4>
-                        <p className="text-[11px] text-slate-600 mt-0.5">
-                          Tinggalkan kontak bisnis Anda, konsultan kami akan menghubungi Anda.
-                        </p>
-                        <div className="mt-2.5 flex items-center gap-2">
-                          <button
-                            onClick={() => setShowLeadModal(true)}
-                            className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs transition-all"
-                          >
-                            Isi Form Konsultasi
-                          </button>
-                          <a
-                            href={getWhatsAppUrl('Halo tim Inpartner, saya ingin konsultasi lebih lanjut terkait solusi bisnis.')}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1 shadow-2xs transition-all"
-                          >
-                            <Phone className="w-3 h-3" /> WhatsApp
-                          </a>
+                      <div className="mt-3 w-full sm:w-[90%] bg-gradient-to-br from-[#005DAD]/5 via-sky-50/50 to-[#005DAD]/10 border border-[#005DAD]/25 rounded-2xl p-4 shadow-sm">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#005DAD] to-[#004785] text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <Building2 className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                              Ingin Konsultasi Bisnis Lebih Lanjut?
+                            </h4>
+                            <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                              Tinggalkan kontak bisnis Anda, konsultan Inpartner akan menghubungi Anda untuk analisis kebutuhan mendalam.
+                            </p>
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              <button
+                                onClick={() => setShowLeadModal(true)}
+                                className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                              >
+                                <Building2 className="w-3.5 h-3.5" />
+                                <span>Isi Form Konsultasi</span>
+                              </button>
+                              <a
+                                href={getWhatsAppUrl('Halo tim Inpartner, saya ingin konsultasi lebih lanjut terkait solusi bisnis.')}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1 shadow-2xs hover:shadow-xs transition-all"
+                              >
+                                <Phone className="w-3.5 h-3.5" /> WhatsApp
+                              </a>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -683,19 +691,25 @@ export default function ChatWidget({
       {showLeadModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
-            <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-base flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-sky-300" />
-                  Jadwalkan Konsultasi Bisnis
-                </h3>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  Tim kami akan menganalisis kebutuhan Anda dan menghubungi kembali.
-                </p>
+            {/* Modal Header with #005DAD Brand Gradient */}
+            <div className="bg-gradient-to-r from-[#005DAD] to-[#004785] text-white px-6 py-4.5 flex items-center justify-between shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-xs border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
+                  <Building2 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-white tracking-tight flex items-center gap-2">
+                    Jadwalkan Konsultasi Bisnis
+                  </h3>
+                  <p className="text-xs text-sky-100/90 mt-0.5 leading-snug">
+                    Tim konsultan Inpartner akan meninjau kebutuhan dan segera menghubungi Anda.
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setShowLeadModal(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+                className="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/15 transition-colors focus:outline-none"
+                aria-label="Tutup form"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -703,7 +717,7 @@ export default function ChatWidget({
 
             <form onSubmit={handleLeadSubmit} className="p-6 space-y-4">
               {leadError && (
-                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-lg flex items-center gap-2">
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{leadError}</span>
                 </div>
@@ -711,7 +725,7 @@ export default function ChatWidget({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Nama Lengkap <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -720,11 +734,11 @@ export default function ChatWidget({
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                     placeholder="Contoh: Budi Santoso"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
+                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Nama Perusahaan
                   </label>
                   <input
@@ -732,14 +746,14 @@ export default function ChatWidget({
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
                     placeholder="PT / CV / Lembaga"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
+                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Nomor WhatsApp / Telepon <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -748,11 +762,11 @@ export default function ChatWidget({
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                     placeholder="0812xxxxxxxx"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
+                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Alamat Email
                   </label>
                   <input
@@ -760,53 +774,53 @@ export default function ChatWidget({
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
                     placeholder="nama@perusahaan.com"
-                    className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
+                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Kebutuhan Utama <span className="text-rose-500">*</span>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Kebutuhan Utama Layanan <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={leadForm.businessNeed}
                   onChange={(e) => setLeadForm({ ...leadForm, businessNeed: e.target.value })}
-                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none bg-white"
+                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-800"
                   required
                 >
-                  <option value="">-- Pilih Kebutuhan --</option>
-                  <option value="Profitability & Cost Optimization">Profitability & Margin Optimization</option>
-                  <option value="Funding & Investment Advisory">Funding & Investment Advisory</option>
+                  <option value="">-- Pilih Kebutuhan Layanan Inpartner --</option>
                   <option value="Business Growth & Market Expansion">Business Growth & Market Expansion</option>
+                  <option value="Funding & Investment Advisory">Funding & Investment Advisory</option>
+                  <option value="Profitability & Cost Optimization">Profitability & Margin Optimization</option>
                   <option value="Capacity Building">Capacity Building / Executive Program</option>
-                  <option value="Other Consulting Service">Layanan Lainnya</option>
+                  <option value="Other Consulting Service">Layanan Konsultasi Lainnya</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                   Catatan / Kebutuhan Tambahan
                 </label>
                 <textarea
                   rows={3}
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
-                  placeholder="Ceritakan gambaran singkat kebutuhan atau tantangan Anda..."
-                  className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:border-[#005DAD] focus:outline-none"
+                  placeholder="Ceritakan gambaran singkat kebutuhan atau tantangan bisnis Anda..."
+                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
                 />
               </div>
 
-              <div className="flex items-start gap-2 pt-1">
+              <div className="flex items-start gap-2.5 pt-1 bg-[#005DAD]/5 p-3 rounded-xl border border-[#005DAD]/15">
                 <input
                   type="checkbox"
                   id="lead-consent"
                   checked={leadForm.consent}
                   onChange={(e) => setLeadForm({ ...leadForm, consent: e.target.checked })}
-                  className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD]"
+                  className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD] w-4 h-4 cursor-pointer accent-[#005DAD]"
                 />
-                <label htmlFor="lead-consent" className="text-[11px] text-slate-600 leading-snug">
-                  Saya bersedia dihubungi untuk tindak lanjut dan memahami data saya disimpan secara aman.
+                <label htmlFor="lead-consent" className="text-[11px] text-slate-700 leading-snug cursor-pointer select-none">
+                  Saya bersedia dihubungi oleh tim konsultan Inpartner untuk tindak lanjut dan memahami data saya disimpan secara aman sesuai kebijakan privasi.
                 </label>
               </div>
 
@@ -814,16 +828,23 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={() => setShowLeadModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={leadSubmitting}
-                  className="px-5 py-2 text-xs font-semibold text-white bg-[#005DAD] hover:bg-[#004785] rounded-lg shadow-sm transition-all disabled:bg-slate-300"
+                  className="px-6 py-2.5 text-xs font-bold text-white bg-[#005DAD] hover:bg-[#004785] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  {leadSubmitting ? 'Mengirim Data...' : 'Kirim Informasi'}
+                  {leadSubmitting ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Mengirim Data...</span>
+                    </>
+                  ) : (
+                    <span>Kirim Informasi Konsultasi</span>
+                  )}
                 </button>
               </div>
             </form>
