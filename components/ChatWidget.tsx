@@ -313,7 +313,7 @@ export default function ChatWidget({
               <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
             ) : (
               <div className="flex items-center justify-center">
-                <ChatbotIcon className="w-8 h-8 transition-transform group-hover:scale-110 duration-200" />
+                <ChatbotIcon size="md" className="transition-transform group-hover:scale-110 duration-200" />
               </div>
             )}
           </button>
@@ -334,8 +334,8 @@ export default function ChatWidget({
             {/* Left: Brand Icon + Agent Title */}
             <div className="flex items-center gap-3">
               {/* Custom Robot Chatbot Icon badge */}
-              <div className="w-9 h-9 rounded-xl bg-[#0d5f8a] flex items-center justify-center p-1 shadow-xs shrink-0 ring-1 ring-black/5">
-                <ChatbotIcon className="w-7 h-7" />
+              <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/90 flex items-center justify-center shadow-xs shrink-0 ring-1 ring-black/5">
+                <ChatbotIcon size="sm" />
               </div>
               <div>
                 <h2 className="font-bold text-base text-slate-900 tracking-tight leading-tight">
@@ -431,8 +431,8 @@ export default function ChatWidget({
               /* State 1: Clean Minimalist Welcome Screen (Matching Screenshot) */
               <div className="my-auto max-w-sm mx-auto w-full py-2 flex flex-col items-center">
                 {/* Agent Mascot / Brand Badge */}
-                <div className="w-14 h-14 rounded-2xl bg-[#0d5f8a] flex items-center justify-center p-2 shadow-md mb-4 ring-4 ring-[#0d5f8a]/15 group">
-                  <ChatbotIcon className="w-10 h-10 transition-transform group-hover:scale-105 duration-200" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-slate-100 border border-slate-200/90 flex items-center justify-center shadow-md mb-4 ring-4 ring-[#0d5f8a]/10 group">
+                  <ChatbotIcon size="lg" className="transition-transform group-hover:scale-105 duration-200" />
                 </div>
 
                 {/* Heading */}
@@ -522,8 +522,8 @@ export default function ChatWidget({
                     }`}
                   >
                     {msg.sender === 'bot' && (
-                      <div className="w-7 h-7 rounded-xl bg-[#0d5f8a] flex items-center justify-center p-0.5 shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
-                        <ChatbotIcon className="w-5 h-5" />
+                      <div className="w-7 h-7 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
+                        <ChatbotIcon size="xs" />
                       </div>
                     )}
                     <div
@@ -623,8 +623,8 @@ export default function ChatWidget({
                 {/* Typing Indicator */}
                 {isLoading && (
                   <div className="flex gap-2.5 items-start">
-                    <div className="w-7 h-7 rounded-xl bg-[#0d5f8a] flex items-center justify-center p-0.5 shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
-                      <ChatbotIcon className="w-5 h-5" />
+                    <div className="w-7 h-7 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
+                      <ChatbotIcon size="xs" />
                     </div>
                     <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-bl-xs px-4 py-3 shadow-2xs">
                       <div className="flex items-center gap-1.5">

@@ -111,6 +111,20 @@
       "started_at": "2026-09-23T12:52:53.575Z",
       "user_intent": "funding",
       "created_at": "2026-09-23T12:52:53.575Z"
+    },
+    {
+      "id": "conv_1790248627701_51c34",
+      "session_id": "sess_1790159042340_79jep",
+      "started_at": "2026-09-24T11:17:07.701Z",
+      "user_intent": "funding",
+      "created_at": "2026-09-24T11:17:07.701Z"
+    },
+    {
+      "id": "conv_1790249520348_xvou7",
+      "session_id": "sess_1790249313837_uxmn4",
+      "started_at": "2026-09-24T11:32:00.348Z",
+      "user_intent": "funding",
+      "created_at": "2026-09-24T11:32:00.351Z"
     }
   ],
   "messages": [
@@ -1156,6 +1170,133 @@
       },
       "id": "msg_1790247251245_od0t9",
       "created_at": "2026-09-24T10:54:11.245Z"
+    },
+    {
+      "conversation_id": "conv_1790248627701_51c34",
+      "sender": "user",
+      "message": "Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.",
+      "intent": "Funding",
+      "id": "msg_1790248627702_kb6ye",
+      "created_at": "2026-09-24T11:17:07.702Z"
+    },
+    {
+      "conversation_id": "conv_1790248627701_51c34",
+      "sender": "bot",
+      "message": "Layanan **Funding & Investment** Inpartner mendampingi perusahaan dalam merencanakan, menstrukturkan, dan memperoleh akses permodalan dari mitra investor institusional.\n\n### Ruang Lingkup Layanan:\n- **Investment Readiness Assessment:** Memastikan kesiapan tata kelola, legalitas, dan finansial perusahaan sebelum bertemu investor.\n- **Valuasi & Financial Modeling:** Penyusunan proyeksi keuangan yang realistis dan valuasi bisnis yang dapat dipertanggungjawabkan.\n- **Penyusunan Materi Investasi:** Membuat *Pitch Deck* dan *Investment Teaser* terstruktur berstandar internasional.\n- **Koneksi Mitra Modal:** Membuka akses ke ekosistem Venture Capital, Private Equity, Family Offices, maupun pembiayaan alternatif di sektor-sektor unggulan seperti ESG, energi terbarukan, F&B, dan teknologi.\n\n*Catatan: Inpartner bukan direct lender dan mematuhi regulasi integritas profesional konsultan independen.*",
+      "intent": "funding",
+      "metadata": {
+        "recommended_service": "Funding & Investment Advisory",
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Ruang Lingkup Layanan Profitability",
+          "Ruang Lingkup Layanan Funding"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790248627710_u1z2r",
+      "created_at": "2026-09-24T11:17:07.710Z"
+    },
+    {
+      "conversation_id": "conv_1790248627701_51c34",
+      "sender": "user",
+      "message": "Apakah dokumen financial model atau pitch deck sudah dipersiapkan?",
+      "id": "msg_1790248629205_tl5sp",
+      "created_at": "2026-09-24T11:17:09.205Z"
+    },
+    {
+      "conversation_id": "conv_1790248627701_51c34",
+      "sender": "bot",
+      "message": "Layanan **Funding & Investment** Inpartner mendampingi perusahaan dalam merencanakan, menstrukturkan, dan memperoleh akses permodalan dari mitra investor institusional.\n\n### Ruang Lingkup Layanan:\n- **Investment Readiness Assessment:** Memastikan kesiapan tata kelola, legalitas, dan finansial perusahaan sebelum bertemu investor.\n- **Valuasi & Financial Modeling:** Penyusunan proyeksi keuangan yang realistis dan valuasi bisnis yang dapat dipertanggungjawabkan.\n- **Penyusunan Materi Investasi:** Membuat *Pitch Deck* dan *Investment Teaser* terstruktur berstandar internasional.\n- **Koneksi Mitra Modal:** Membuka akses ke ekosistem Venture Capital, Private Equity, Family Offices, maupun pembiayaan alternatif di sektor-sektor unggulan seperti ESG, energi terbarukan, F&B, dan teknologi.\n\n*Catatan: Inpartner bukan direct lender dan mematuhi regulasi integritas profesional konsultan independen.*",
+      "intent": "funding",
+      "metadata": {
+        "recommended_service": "Funding & Investment Advisory",
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Ruang Lingkup Layanan Funding",
+          "Ruang Lingkup Layanan Growth"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790248629216_ft9x3",
+      "created_at": "2026-09-24T11:17:09.216Z"
+    },
+    {
+      "conversation_id": "conv_1790162456216_2asav",
+      "sender": "user",
+      "message": "Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?",
+      "intent": "Growth",
+      "id": "msg_1790249117935_3lxme",
+      "created_at": "2026-09-24T11:25:17.935Z"
+    },
+    {
+      "conversation_id": "conv_1790162456216_2asav",
+      "sender": "bot",
+      "message": "Layanan **Growth (Business & Market Growth)** Inpartner membantu perusahaan menengah dan besar merancang strategi ekspansi yang terukur dan berdaya tahan tinggi.\n\n### Fokus Pendampingan Inpartner:\n- **Riset & Studi Segmen Potensial:** Memetakan peluang pasar baru, menganalisis dinamika konsumen, dan mengidentifikasi tren industri sebelum disrupsi terjadi.\n- **Strategic Business Planning:** Merumuskan peta jalan bisnis 3–5 tahun yang selaras dengan kapabilitas internal dan teknologi.\n- **Go-to-Market & Geographic Expansion:** Strategi penetrasi wilayah/kota baru atau diversifikasi saluran penjualan (*sales channels*).\n- **Strategic Partnerships:** Menjajaki kemitraan strategis bernilai tinggi untuk mempercepat penetrasi pasar.\n\nKonsultan Inpartner tidak hanya merumuskan strategi di atas kertas, tetapi juga mendampingi manajemen dalam mengeksekusi rencana bisnis tersebut.",
+      "intent": "growth",
+      "metadata": {
+        "recommended_service": "Business Growth & Market Expansion",
+        "sources": [
+          "Layanan Inpartner: Growth (Business & Market Growth)",
+          "1. Pertanyaan Umum Seputar Inpartner",
+          "Ruang Lingkup Layanan Growth"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790249117943_arijb",
+      "created_at": "2026-09-24T11:25:17.943Z"
+    },
+    {
+      "conversation_id": "conv_1790249520348_xvou7",
+      "sender": "user",
+      "message": "Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.",
+      "intent": "Funding",
+      "id": "msg_1790249520358_fhnuy",
+      "created_at": "2026-09-24T11:32:00.358Z"
+    },
+    {
+      "conversation_id": "conv_1790249520348_xvou7",
+      "sender": "bot",
+      "message": "Layanan **Funding & Investment** Inpartner mendampingi perusahaan dalam merencanakan, menstrukturkan, dan memperoleh akses permodalan dari mitra investor institusional.\n\n### Ruang Lingkup Layanan:\n- **Investment Readiness Assessment:** Memastikan kesiapan tata kelola, legalitas, dan finansial perusahaan sebelum bertemu investor.\n- **Valuasi & Financial Modeling:** Penyusunan proyeksi keuangan yang realistis dan valuasi bisnis yang dapat dipertanggungjawabkan.\n- **Penyusunan Materi Investasi:** Membuat *Pitch Deck* dan *Investment Teaser* terstruktur berstandar internasional.\n- **Koneksi Mitra Modal:** Membuka akses ke ekosistem Venture Capital, Private Equity, Family Offices, maupun pembiayaan alternatif di sektor-sektor unggulan seperti ESG, energi terbarukan, F&B, dan teknologi.\n\n*Catatan: Inpartner bukan direct lender dan mematuhi regulasi integritas profesional konsultan independen.*",
+      "intent": "funding",
+      "metadata": {
+        "recommended_service": "Funding & Investment Advisory",
+        "sources": [
+          "2. Pertanyaan Mengenai Kebutuhan Bisnis Spesifik",
+          "Ruang Lingkup Layanan Profitability",
+          "Ruang Lingkup Layanan Funding"
+        ],
+        "suggest_lead_capture": true,
+        "quick_actions": [
+          "💡 Solusi Profitability",
+          "💰 Bantuan Funding & Investor",
+          "📈 Rencana Growth Bisnis",
+          "👥 Pelatihan Capacity Building",
+          "📞 Hubungi Tim Inpartner"
+        ]
+      },
+      "id": "msg_1790249520366_sztnz",
+      "created_at": "2026-09-24T11:32:00.366Z"
     }
   ],
   "leads": [
@@ -2372,6 +2513,219 @@
       "created_at": "2026-09-24T10:54:45.816Z",
       "event_name": "chatbot_opened",
       "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790247518670_2lv9d",
+      "created_at": "2026-09-24T10:58:38.670Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790247774537_5bdif",
+      "created_at": "2026-09-24T11:02:54.537Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790247859376_rkozq",
+      "created_at": "2026-09-24T11:04:19.376Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790248046745_k4z1j",
+      "created_at": "2026-09-24T11:07:26.745Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790248053651_x6x4x",
+      "created_at": "2026-09-24T11:07:33.651Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790248178669_7om4e",
+      "created_at": "2026-09-24T11:09:38.669Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790248627702_a90k0",
+      "created_at": "2026-09-24T11:17:07.702Z",
+      "event_name": "conversation_started",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": "conv_1790248627701_51c34",
+      "metadata": {
+        "initial_intent": "Funding"
+      }
+    },
+    {
+      "id": "evt_1790248627703_pwc5p",
+      "created_at": "2026-09-24T11:17:07.703Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": "conv_1790248627701_51c34",
+      "metadata": {
+        "query": "Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.",
+        "selectedNeed": "Funding"
+      }
+    },
+    {
+      "id": "evt_1790248627747_0tdrq",
+      "created_at": "2026-09-24T11:17:07.747Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": "conv_1790248627701_51c34",
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790248629208_9fkna",
+      "created_at": "2026-09-24T11:17:09.208Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790159042340_79jep",
+      "conversation_id": "conv_1790248627701_51c34",
+      "metadata": {
+        "query": "Apakah dokumen financial model atau pitch deck sudah dipersiapkan?"
+      }
+    },
+    {
+      "id": "evt_1790248869793_7oq1r",
+      "created_at": "2026-09-24T11:21:09.793Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790249117938_0xi5l",
+      "created_at": "2026-09-24T11:25:17.938Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": "conv_1790162456216_2asav",
+      "metadata": {
+        "query": "Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?",
+        "selectedNeed": "Growth"
+      }
+    },
+    {
+      "id": "evt_1790249117966_0ze16",
+      "created_at": "2026-09-24T11:25:17.966Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": "conv_1790162456216_2asav",
+      "metadata": {
+        "page": "/"
+      }
+    },
+    {
+      "id": "evt_1790249313893_al29t",
+      "created_at": "2026-09-24T11:28:33.893Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790249313837_uxmn4",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790249520355_didyx",
+      "created_at": "2026-09-24T11:32:00.355Z",
+      "event_name": "conversation_started",
+      "session_id": "sess_1790249313837_uxmn4",
+      "conversation_id": "conv_1790249520348_xvou7",
+      "metadata": {
+        "initial_intent": "Funding"
+      }
+    },
+    {
+      "id": "evt_1790249520359_mosc2",
+      "created_at": "2026-09-24T11:32:00.359Z",
+      "event_name": "question_asked",
+      "session_id": "sess_1790249313837_uxmn4",
+      "conversation_id": "conv_1790249520348_xvou7",
+      "metadata": {
+        "query": "Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.",
+        "selectedNeed": "Funding"
+      }
+    },
+    {
+      "id": "evt_1790249520415_0py07",
+      "created_at": "2026-09-24T11:32:00.415Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790249313837_uxmn4",
+      "conversation_id": "conv_1790249520348_xvou7",
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790249658157_h88m5",
+      "created_at": "2026-09-24T11:34:18.157Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790250075758_xwj47",
+      "created_at": "2026-09-24T11:41:15.758Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790250143904_rv8wv",
+      "created_at": "2026-09-24T11:42:23.904Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790162391880_0gk7v",
+      "conversation_id": null,
+      "metadata": {
+        "page": "/embed-view"
+      }
+    },
+    {
+      "id": "evt_1790250175968_28wx5",
+      "created_at": "2026-09-24T11:42:55.968Z",
+      "event_name": "chatbot_opened",
+      "session_id": "sess_1790250175933_1y2sg",
       "conversation_id": null,
       "metadata": {
         "page": "/embed-view"
