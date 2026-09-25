@@ -67,66 +67,93 @@ interface DatabaseSchema {
   analytics_events: AnalyticsEvent[];
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+const DATA_DIR = isServerless ? '/tmp' : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
+
+// In-memory fallback in case of filesystem issues
+let memoryDb: DatabaseSchema | null = null;
 
 // Ensure database file and initial seed exist
 function initDb(): DatabaseSchema {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  if (!fs.existsSync(DB_FILE)) {
-    const initialData: DatabaseSchema = {
-      conversations: [],
-      messages: [],
-      leads: [
-        {
-          id: 'lead-sample-1',
-          name: 'Budi Santoso',
-          company: 'PT Sentosa Logistik Indonesia',
-          email: 'budi.santoso@sentosalogistik.co.id',
-          phone: '081234567890',
-          business_need: 'Profitability & Operational Process Optimization',
-          notes: 'Omzet naik 30% tahun ini tapi profit margin turun akibat OPEX logistik tinggi.',
-          created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-          status: 'new'
-        },
-        {
-          id: 'lead-sample-2',
-          name: 'Siti Rahmawati',
-          company: 'PT Bio Farma Prima',
-          email: 'siti.r@biopharmaprima.com',
-          phone: '081987654321',
-          business_need: 'Funding & Investment Readiness',
-          notes: 'Mencari investor strategis untuk perluasan fasilitas laboratorium bioteknologi.',
-          created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
-          status: 'contacted'
-        }
-      ],
-      analytics_events: []
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
-    return initialData;
-  }
+  if (memoryDb) return memoryDb;
 
   try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+
+    if (!fs.existsSync(DB_FILE)) {
+      // Check if project has a bundled seed file
+      const seedFile = path.join(process.cwd(), 'data', 'db.json');
+      if (fs.existsSync(seedFile)) {
+        try {
+          const seedContent = fs.readFileSync(seedFile, 'utf-8');
+          fs.writeFileSync(DB_FILE, seedContent, 'utf-8');
+          memoryDb = JSON.parse(seedContent) as DatabaseSchema;
+          return memoryDb;
+        } catch {
+          // continue to default seed
+        }
+      }
+
+      const initialData: DatabaseSchema = {
+        conversations: [],
+        messages: [],
+        leads: [
+          {
+            id: 'lead-sample-1',
+            name: 'Budi Santoso',
+            company: 'PT Sentosa Logistik Indonesia',
+            email: 'budi.santoso@sentosalogistik.co.id',
+            phone: '081234567890',
+            business_need: 'Profitability & Operational Process Optimization',
+            notes: 'Omzet naik 30% tahun ini tapi profit margin turun akibat OPEX logistik tinggi.',
+            created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
+            status: 'new'
+          },
+          {
+            id: 'lead-sample-2',
+            name: 'Siti Rahmawati',
+            company: 'PT Bio Farma Prima',
+            email: 'siti.r@biopharmaprima.com',
+            phone: '081987654321',
+            business_need: 'Funding & Investment Readiness',
+            notes: 'Mencari investor strategis untuk perluasan fasilitas laboratorium bioteknologi.',
+            created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
+            status: 'contacted'
+          }
+        ],
+        analytics_events: []
+      };
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
+      } catch (err) {
+        console.warn('Could not write initial db file, using in-memory fallback', err);
+      }
+      memoryDb = initialData;
+      return memoryDb;
+    }
+
     const content = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(content) as DatabaseSchema;
+    memoryDb = JSON.parse(content) as DatabaseSchema;
+    return memoryDb;
   } catch (err) {
-    console.error('Error reading db.json, returning empty structure', err);
-    return { conversations: [], messages: [], leads: [], analytics_events: [] };
+    console.error('Error reading db.json, returning default structure', err);
+    memoryDb = { conversations: [], messages: [], leads: [], analytics_events: [] };
+    return memoryDb;
   }
 }
 
 function saveDb(data: DatabaseSchema): void {
+  memoryDb = data;
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
-    console.error('Error saving db.json', err);
+    console.warn('Filesystem write warning in saveDb (using in-memory cache):', err);
   }
 }
 
