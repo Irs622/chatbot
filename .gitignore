@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# internal presentation decks (not to be pushed)
+PRESENTASI_EKSEKUTIF_PROYEK_INPARTNER_AI.md
+*PRESENTASI*.md
+*presentation*.md
