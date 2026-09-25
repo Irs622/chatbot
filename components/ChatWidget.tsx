@@ -6,7 +6,8 @@ import {
   ChevronRight,
   ArrowUp,
   TrendingUp,
-  HelpCircle,
+  Landmark,
+  Compass,
   X,
   RefreshCw,
   Phone,
@@ -55,25 +56,26 @@ export default function ChatWidget({
   // Inpartner Agent Configuration
   const agentConfig = {
     name: 'Inpartner Agent',
-    title: 'What are you setting up?',
-    subtitle: "I'm Inpartner Agent. I'll match you with the right business solution in under 2 minutes.",
+    title: 'Solusi Bisnis Apa yang Anda Butuhkan?',
+    subtitle: 'Inpartner AI siap membantu menganalisis tantangan perusahaan dan merekomendasikan solusi konsultan terbaik.',
     featured: {
-      title: "Business Growth — I'll scale my business",
-      desc: 'Market expansion, sales roadmap with full advisory',
+      title: 'Business Growth & Market Expansion',
+      desc: 'Riset penetrasi pasar, sales roadmap, & strategi ekspansi bisnis',
       query: 'Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?',
       intent: 'Growth'
     },
+    dividerText: 'PILIHAN LAYANAN LAINNYA',
     secondary1: {
       title: 'Funding & Profitability',
       query: 'Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.',
       intent: 'Funding'
     },
     secondary2: {
-      title: 'Not sure what I need',
+      title: 'Diagnosis Kebutuhan Bisnis',
       query: 'Saya belum yakin solusi apa yang paling dibutuhkan perusahaan saya saat ini. Mohon panduan diagnosis kebutuhan bisnis dari Inpartner.',
       intent: 'other'
     },
-    inputPlaceholder: 'Message Inpartner Agent...'
+    inputPlaceholder: 'Tanyakan solusi bisnis atau tantangan perusahaan Anda...'
   };
 
   // Lead Form State
@@ -301,7 +303,7 @@ export default function ChatWidget({
               className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Message {agentConfig.name}
+              Konsultasi {agentConfig.name}
             </button>
           )}
           <button
@@ -451,11 +453,9 @@ export default function ChatWidget({
                   onClick={() => handleSendMessage(agentConfig.featured.query, agentConfig.featured.intent)}
                   className="mt-7 w-full p-4 rounded-2xl bg-[#005DAD]/10 hover:bg-[#005DAD]/15 border border-[#005DAD]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-xs hover:shadow-md text-left group active:scale-[0.99]"
                 >
-                  {/* Blue Rounded Icon with terminal >_ */}
-                  <div className="w-11 h-11 rounded-xl bg-[#005DAD] text-white flex items-center justify-center shrink-0 shadow-sm">
-                    <div className="w-6 h-5 rounded border border-white/80 flex items-center justify-center font-mono text-[10px] font-extrabold text-white tracking-tight">
-                      &gt;_
-                    </div>
+                  {/* Executive Inpartner Blue Icon */}
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#005DAD] to-[#004785] text-white flex items-center justify-center shrink-0 shadow-sm ring-2 ring-[#005DAD]/20">
+                    <TrendingUp className="w-5 h-5 text-white stroke-[2.3]" />
                   </div>
 
                   {/* Text Details */}
@@ -472,11 +472,11 @@ export default function ChatWidget({
                   <ChevronRight className="w-4 h-4 text-slate-700 shrink-0 group-hover:translate-x-0.5 transition-transform" />
                 </button>
 
-                {/* "and more" Divider */}
+                {/* Divider */}
                 <div className="my-6 relative flex items-center justify-center w-full">
                   <div className="w-full border-t border-slate-200/80"></div>
-                  <span className="absolute bg-white px-3 text-[10px] uppercase font-bold text-slate-400 tracking-widest select-none">
-                    and more
+                  <span className="absolute bg-white px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider select-none">
+                    {agentConfig.dividerText}
                   </span>
                 </div>
 
@@ -489,21 +489,21 @@ export default function ChatWidget({
                     className="p-4 rounded-2xl border border-slate-200 hover:border-[#005DAD]/40 hover:bg-[#005DAD]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
                   >
                     <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
-                      <TrendingUp className="w-4 h-4" />
+                      <Landmark className="w-4 h-4 stroke-[2]" />
                     </div>
                     <span className="text-[12px] font-semibold text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
                       {agentConfig.secondary1.title}
                     </span>
                   </button>
 
-                  {/* Card 2: Help / Not sure what I need */}
+                  {/* Card 2: Diagnosis Kebutuhan Bisnis */}
                   <button
                     type="button"
                     onClick={() => handleSendMessage(agentConfig.secondary2.query, agentConfig.secondary2.intent)}
                     className="p-4 rounded-2xl border border-slate-200 hover:border-[#005DAD]/40 hover:bg-[#005DAD]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
                   >
                     <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
-                      <HelpCircle className="w-4 h-4" />
+                      <Compass className="w-4 h-4 stroke-[2]" />
                     </div>
                     <span className="text-[12px] font-semibold text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
                       {agentConfig.secondary2.title}

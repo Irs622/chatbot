@@ -25,7 +25,7 @@
 - **Skema Warna:** Inpartner Blue (`#005DAD` primary, `#004785` dark hover, soft blue tints).
 - **Layout Minimalis:**
   - *Header:* Brand geometric icon Inpartner + drop-down opsi (*New conversation*, *Schedule consultation*, *Official WhatsApp*, *Visit inpartner.id*).
-  - *Welcome Screen:* Headline terarah, Hero Card (`>_ Business Growth`), divider *"and more"*, serta kartu sekunder (*Funding & Profitability*, *Not sure what I need*).
+  - *Welcome Screen:* Headline terarah (*Solusi Bisnis Apa yang Anda Butuhkan?*), Hero Card (*Business Growth & Market Expansion*), divider *"PILIHAN LAYANAN LAINNYA"*, serta kartu sekunder (*Funding & Profitability*, *Diagnosis Kebutuhan Bisnis*).
   - *Active Chat Thread:* Bubble pesan biru Inpartner, badge layanan rekomendasi terverifikasi, chip pertanyaan lanjutan 1-klik, dan kartu CTA konsultasi.
   - *Input Bar:* Input melengkung dengan tombol kirim panah atas (↑) dan disclaimer kepatuhan AI.
 
@@ -139,8 +139,8 @@ chatbot/
 │   └── rag.ts                       # Mesin parser markdown, chunking, & semantic scoring
 ├── public/
 │   ├── widget.js                    # Script universal untuk embed di website mana pun
-│   ├── inpartner_blue_chat.png      # Screenshot hasil verifikasi percakapan
-│   └── inpartner_blue_welcome.png   # Screenshot hasil verifikasi welcome screen
+│   ├── demo-website.html            # Halaman simulasi website utama Inpartner
+│   └── inpartner-icon.svg           # Logo resmi asisten Inpartner
 ├── .env.local.example               # Contoh variabel lingkungan
 ├── INTEGRATION_GUIDE.md             # Panduan teknis serah terima ke Web Developer
 ├── KNOWLEDGE_BASE_GUIDE.md          # Panduan update materi/data untuk tim internal

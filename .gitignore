@@ -39,3 +39,7 @@ next-env.d.ts
 PRESENTASI_EKSEKUTIF_PROYEK_INPARTNER_AI.md
 *PRESENTASI*.md
 *presentation*.md
+
+# temporary screenshots / testing artifacts
+public/*.png
+*.png
