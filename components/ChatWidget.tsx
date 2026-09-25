@@ -338,10 +338,10 @@ export default function ChatWidget({
                 <ChatbotIcon size="sm" />
               </div>
               <div>
-                <h2 className="font-bold text-base text-slate-900 tracking-tight leading-tight">
+                <h2 className="font-extrabold text-[15px] text-slate-900 tracking-[-0.02em] leading-snug">
                   {agentConfig.name}
                 </h2>
-                <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-medium">
+                <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold tracking-normal">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   Online • Siap membantu
                 </div>
@@ -436,12 +436,12 @@ export default function ChatWidget({
                 </div>
 
                 {/* Heading */}
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 text-center tracking-tight">
+                <h1 className="text-2xl sm:text-[26px] font-extrabold text-slate-900 text-center tracking-[-0.03em] leading-tight">
                   {agentConfig.title}
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-xs sm:text-sm text-slate-600 text-center mt-2 leading-relaxed max-w-[320px]">
+                <p className="text-[13px] sm:text-[13.5px] text-slate-500 text-center mt-2.5 leading-relaxed max-w-[310px] font-normal">
                   {agentConfig.subtitle}
                 </p>
 
@@ -452,18 +452,18 @@ export default function ChatWidget({
                   className="mt-7 w-full p-4 rounded-2xl bg-[#005DAD]/10 hover:bg-[#005DAD]/15 border border-[#005DAD]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-xs hover:shadow-md text-left group active:scale-[0.99]"
                 >
                   {/* Blue Rounded Icon with terminal >_ */}
-                  <div className="w-12 h-12 rounded-xl bg-[#005DAD] text-white flex items-center justify-center shrink-0 shadow-sm">
-                    <div className="w-6 h-5 rounded border border-white/80 flex items-center justify-center font-mono text-[10px] font-bold text-white tracking-tighter">
+                  <div className="w-11 h-11 rounded-xl bg-[#005DAD] text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <div className="w-6 h-5 rounded border border-white/80 flex items-center justify-center font-mono text-[10px] font-extrabold text-white tracking-tight">
                       &gt;_
                     </div>
                   </div>
 
                   {/* Text Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-sm text-slate-900 group-hover:text-[#005DAD] transition-colors leading-snug">
+                    <div className="font-bold text-[13.5px] text-slate-900 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
                       {agentConfig.featured.title}
                     </div>
-                    <div className="text-xs text-slate-500 mt-0.5 leading-snug">
+                    <div className="text-[12px] text-slate-500 mt-0.5 leading-snug font-normal">
                       {agentConfig.featured.desc}
                     </div>
                   </div>
@@ -475,7 +475,7 @@ export default function ChatWidget({
                 {/* "and more" Divider */}
                 <div className="my-6 relative flex items-center justify-center w-full">
                   <div className="w-full border-t border-slate-200/80"></div>
-                  <span className="absolute bg-white px-3 text-xs text-slate-500 font-medium tracking-normal">
+                  <span className="absolute bg-white px-3 text-[10px] uppercase font-bold text-slate-400 tracking-widest select-none">
                     and more
                   </span>
                 </div>
@@ -491,7 +491,7 @@ export default function ChatWidget({
                     <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <TrendingUp className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug">
+                    <span className="text-[12px] font-semibold text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
                       {agentConfig.secondary1.title}
                     </span>
                   </button>
@@ -505,7 +505,7 @@ export default function ChatWidget({
                     <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <HelpCircle className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-medium text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug">
+                    <span className="text-[12px] font-semibold text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
                       {agentConfig.secondary2.title}
                     </span>
                   </button>
@@ -532,31 +532,31 @@ export default function ChatWidget({
                       } max-w-[85%] sm:max-w-[80%]`}
                     >
                       <div
-                        className={`w-full rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
+                        className={`w-full rounded-2xl px-4 py-3 text-[13px] leading-[1.65] ${
                           msg.sender === 'user'
-                            ? 'bg-[#005DAD] text-white rounded-br-xs shadow-xs'
-                            : 'bg-slate-50 border border-slate-100 text-slate-800 rounded-bl-xs shadow-2xs'
+                            ? 'bg-[#005DAD] text-white rounded-br-xs shadow-xs font-medium'
+                            : 'bg-slate-50/90 border border-slate-200/70 text-slate-800 rounded-bl-xs shadow-2xs font-normal'
                         }`}
                       >
                       {/* Message Content with Markdown rendering */}
-                      <div className="whitespace-pre-line prose prose-sm max-w-none">
+                      <div className="whitespace-pre-line prose prose-sm max-w-none text-[13px] leading-[1.65]">
                         {formatBotMessage(msg.text)}
                       </div>
 
                       {/* Recommended Service Badge */}
                       {msg.recommendedService && (
-                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-xs font-semibold">
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-[11px] font-bold tracking-tight">
                           <Sparkles className="w-3.5 h-3.5 text-[#005DAD]" />
-                          Layanan: {msg.recommendedService}
+                          <span>Layanan: {msg.recommendedService}</span>
                         </div>
                       )}
 
                       {/* Official Sources */}
                       {msg.sources && msg.sources.length > 0 && (
                         <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
-                          <span className="font-semibold text-slate-600">Sumber:</span>
+                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">Sumber:</span>
                           {msg.sources.map((s, idx) => (
-                            <span key={idx} className="bg-white px-2 py-0.5 rounded border border-slate-200">
+                            <span key={idx} className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono text-[10px] text-slate-600 font-medium">
                               {s}
                             </span>
                           ))}
@@ -565,8 +565,8 @@ export default function ChatWidget({
 
                       {/* Timestamp */}
                       <div
-                        className={`mt-1.5 text-[10px] ${
-                          msg.sender === 'user' ? 'text-sky-100 text-right' : 'text-slate-400'
+                        className={`mt-1.5 text-[10px] font-mono ${
+                          msg.sender === 'user' ? 'text-sky-100/90 text-right' : 'text-slate-400'
                         }`}
                       >
                         {msg.timestamp}
@@ -580,10 +580,10 @@ export default function ChatWidget({
                           <button
                             key={idx}
                             onClick={() => handleSendMessage(q)}
-                            className="text-left text-xs bg-white hover:bg-[#005DAD]/5 text-slate-700 hover:text-[#005DAD] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#005DAD]/40 transition-all shadow-2xs flex items-center gap-1.5"
+                            className="text-left text-[11.5px] font-medium bg-white hover:bg-[#005DAD]/5 text-slate-700 hover:text-[#005DAD] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#005DAD]/40 transition-all shadow-2xs flex items-center gap-1.5 group"
                           >
                             <span>{q}</span>
-                            <ChevronRight className="w-3 h-3 text-slate-400" />
+                            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-[#005DAD] shrink-0" />
                           </button>
                         ))}
                       </div>
@@ -597,16 +597,16 @@ export default function ChatWidget({
                             <Building2 className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-bold text-slate-900 leading-snug">
+                            <h4 className="text-[13px] font-bold text-slate-900 tracking-tight leading-snug">
                               Ingin Konsultasi Bisnis Lebih Lanjut?
                             </h4>
-                            <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                            <p className="text-[11.5px] text-slate-600 mt-1 leading-relaxed font-normal">
                               Tinggalkan kontak bisnis Anda, konsultan Inpartner akan menghubungi Anda untuk analisis kebutuhan mendalam.
                             </p>
                             <div className="mt-3 flex flex-wrap items-center gap-2">
                               <button
                                 onClick={() => setShowLeadModal(true)}
-                                className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                                className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold tracking-tight px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
                               >
                                 <Building2 className="w-3.5 h-3.5" />
                                 <span>Isi Form Konsultasi</span>
@@ -666,7 +666,7 @@ export default function ChatWidget({
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={agentConfig.inputPlaceholder}
-                className="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-slate-800 text-xs sm:text-sm pl-4 pr-12 py-3 rounded-2xl border border-slate-200/80 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-slate-900 text-[13px] font-medium pl-4 pr-12 py-3 rounded-2xl border border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal"
                 disabled={isLoading}
               />
               <button
@@ -680,7 +680,7 @@ export default function ChatWidget({
             </form>
 
             {/* Disclaimer Matching Screenshot */}
-            <div className="text-center text-[11px] text-slate-400 mt-2 font-normal tracking-tight">
+            <div className="text-center text-[10.5px] text-slate-400 mt-2 font-medium tracking-normal select-none">
               AI can make mistakes. Double-check replies.
             </div>
           </div>
@@ -698,10 +698,10 @@ export default function ChatWidget({
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-white tracking-tight flex items-center gap-2">
+                  <h3 className="font-extrabold text-base sm:text-lg text-white tracking-tight flex items-center gap-2">
                     Jadwalkan Konsultasi Bisnis
                   </h3>
-                  <p className="text-xs text-sky-100/90 mt-0.5 leading-snug">
+                  <p className="text-xs text-sky-100/90 mt-0.5 leading-snug font-normal">
                     Tim konsultan Inpartner akan meninjau kebutuhan dan segera menghubungi Anda.
                   </p>
                 </div>
@@ -725,7 +725,7 @@ export default function ChatWidget({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Nama Lengkap <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -734,11 +734,11 @@ export default function ChatWidget({
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                     placeholder="Contoh: Budi Santoso"
-                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                    className="w-full text-[13px] font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Nama Perusahaan
                   </label>
                   <input
@@ -746,14 +746,14 @@ export default function ChatWidget({
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
                     placeholder="PT / CV / Lembaga"
-                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                    className="w-full text-[13px] font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Nomor WhatsApp / Telepon <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -762,11 +762,11 @@ export default function ChatWidget({
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                     placeholder="0812xxxxxxxx"
-                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                    className="w-full text-[13px] font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Alamat Email
                   </label>
                   <input
@@ -774,19 +774,19 @@ export default function ChatWidget({
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
                     placeholder="nama@perusahaan.com"
-                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                    className="w-full text-[13px] font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Kebutuhan Utama Layanan <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={leadForm.businessNeed}
                   onChange={(e) => setLeadForm({ ...leadForm, businessNeed: e.target.value })}
-                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-800"
+                  className="w-full text-[13px] font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900"
                   required
                 >
                   <option value="">-- Pilih Kebutuhan Layanan Inpartner --</option>
@@ -799,7 +799,7 @@ export default function ChatWidget({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Catatan / Kebutuhan Tambahan
                 </label>
                 <textarea
@@ -807,7 +807,7 @@ export default function ChatWidget({
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
                   placeholder="Ceritakan gambaran singkat kebutuhan atau tantangan bisnis Anda..."
-                  className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400"
+                  className="w-full text-[13px] font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                 />
               </div>
 
@@ -819,7 +819,7 @@ export default function ChatWidget({
                   onChange={(e) => setLeadForm({ ...leadForm, consent: e.target.checked })}
                   className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD] w-4 h-4 cursor-pointer accent-[#005DAD]"
                 />
-                <label htmlFor="lead-consent" className="text-[11px] text-slate-700 leading-snug cursor-pointer select-none">
+                <label htmlFor="lead-consent" className="text-[11.5px] font-medium text-slate-700 leading-snug cursor-pointer select-none">
                   Saya bersedia dihubungi oleh tim konsultan Inpartner untuk tindak lanjut dan memahami data saya disimpan secara aman sesuai kebijakan privasi.
                 </label>
               </div>
@@ -835,7 +835,7 @@ export default function ChatWidget({
                 <button
                   type="submit"
                   disabled={leadSubmitting}
-                  className="px-6 py-2.5 text-xs font-bold text-white bg-[#005DAD] hover:bg-[#004785] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white bg-[#005DAD] hover:bg-[#004785] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {leadSubmitting ? (
                     <>
@@ -861,7 +861,7 @@ function formatBotMessage(text: string) {
   return parts.map((part, index) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
-        <strong key={index} className="font-semibold text-slate-900">
+        <strong key={index} className="font-bold text-slate-900">
           {part.slice(2, -2)}
         </strong>
       );
@@ -874,7 +874,7 @@ function formatBotMessage(text: string) {
           href={linkMatch[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#005DAD] font-semibold underline hover:text-[#004785]"
+          className="text-[#005DAD] font-semibold underline underline-offset-2 hover:text-[#004785] transition-colors"
         >
           {linkMatch[1]}
         </a>
