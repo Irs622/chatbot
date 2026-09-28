@@ -117,7 +117,11 @@ export default function AdminDashboard() {
 
     const escapeCsv = (val?: string | null) => {
       if (val === undefined || val === null) return '""';
-      const str = String(val).replace(/"/g, '""');
+      let str = String(val).replace(/"/g, '""');
+      // Neutralize CSV Formula Injection (CWE-1236) for Excel / Google Sheets
+      if (/^[=+@\-\t\r]/.test(str)) {
+        str = `'${str}`;
+      }
       return `"${str}"`;
     };
 

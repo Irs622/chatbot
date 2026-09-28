@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     if (!isAdminAuthenticated(req)) {
       return NextResponse.json(
-        { error: 'Unauthorized: Akses khusus manajemen dan tim internal Inpartner.' },
+        { error: 'Unauthorized: Inpartner administrative privileges required.' },
         { status: 401 }
       );
     }

@@ -24,8 +24,15 @@ export async function POST(req: NextRequest) {
       stream = true
     } = body;
 
-    if (!message || typeof message !== 'string') {
+    if (!message || typeof message !== 'string' || !message.trim()) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
+
+    if (message.length > 2000) {
+      return NextResponse.json(
+        { error: 'Message exceeds maximum allowed length of 2,000 characters.' },
+        { status: 400 }
+      );
     }
 
     const session = sessionId || `sess_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;

@@ -137,7 +137,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
         body: JSON.stringify({
           from: 'Inpartner Agent <notifications@inpartner.id>',
           to: [notificationEmail],
-          subject: `🚨 New Consultation Lead: ${lead.name} (${lead.company || 'Direct'}) - ${lead.business_need}`,
+          subject: `🚨 New Consultation Lead: ${escapeHtml(lead.name)} (${escapeHtml(lead.company || 'Direct')}) - ${escapeHtml(lead.business_need)}`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
               <h2 style="color: #005DAD; margin-top: 0;">New Client Consultation Inquiry</h2>
@@ -146,29 +146,29 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
               <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin: 20px 0;">
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 10px 0; color: #64748b; width: 140px;">Full Name:</td>
-                  <td style="padding: 10px 0; font-weight: bold; color: #0f172a;">${lead.name}</td>
+                  <td style="padding: 10px 0; font-weight: bold; color: #0f172a;">${escapeHtml(lead.name)}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 10px 0; color: #64748b;">Company:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.company || '-'}</td>
+                  <td style="padding: 10px 0; color: #0f172a;">${escapeHtml(lead.company || '-')}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 10px 0; color: #64748b;">WhatsApp / Phone:</td>
                   <td style="padding: 10px 0; color: #005DAD; font-weight: bold;">
-                    <a href="${waLink}" style="color: #005DAD; text-decoration: none;">${lead.phone} (Contact on WhatsApp)</a>
+                    <a href="${waLink}" style="color: #005DAD; text-decoration: none;">${escapeHtml(lead.phone)} (Contact on WhatsApp)</a>
                   </td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 10px 0; color: #64748b;">Email Address:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.email || '-'}</td>
+                  <td style="padding: 10px 0; color: #0f172a;">${escapeHtml(lead.email || '-')}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 10px 0; color: #64748b;">Primary Need:</td>
-                  <td style="padding: 10px 0; font-weight: bold; color: #0f172a;">${lead.business_need}</td>
+                  <td style="padding: 10px 0; font-weight: bold; color: #0f172a;">${escapeHtml(lead.business_need)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; color: #64748b;">Additional Notes:</td>
-                  <td style="padding: 10px 0; color: #334155;">${lead.notes || '-'}</td>
+                  <td style="padding: 10px 0; color: #334155;">${escapeHtml(lead.notes || '-')}</td>
                 </tr>
               </table>
 
@@ -201,4 +201,13 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
 
 function escapeTelegramMarkdown(text: string): string {
   return text.replace(/([_*\[\]()~`>#+=|{}.!-])/g, '\\$1');
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }

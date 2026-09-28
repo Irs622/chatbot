@@ -9,7 +9,7 @@ export async function PATCH(
   try {
     if (!isAdminAuthenticated(req)) {
       return NextResponse.json(
-        { error: 'Unauthorized: Akses khusus manajemen dan tim internal Inpartner.' },
+        { error: 'Unauthorized: Inpartner administrative privileges required.' },
         { status: 401 }
       );
     }

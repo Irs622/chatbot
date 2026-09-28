@@ -33,17 +33,31 @@ export async function POST(req: NextRequest) {
       notes
     } = body;
 
-    // Minimum validation: Name & Business Need
-    if (!name || typeof name !== 'string' || name.trim().length < 2) {
+    // Field length safety limits
+    if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
       return NextResponse.json(
-        { error: 'Full name is required (minimum 2 characters).' },
+        { error: 'Full name must be between 2 and 100 characters.' },
         { status: 400 }
       );
     }
 
-    if (!business_need || typeof business_need !== 'string' || !business_need.trim()) {
+    if (company && typeof company === 'string' && company.trim().length > 120) {
       return NextResponse.json(
-        { error: 'Advisory need selection is required.' },
+        { error: 'Company name cannot exceed 120 characters.' },
+        { status: 400 }
+      );
+    }
+
+    if (!business_need || typeof business_need !== 'string' || !business_need.trim() || business_need.trim().length > 200) {
+      return NextResponse.json(
+        { error: 'Advisory need selection is required (maximum 200 characters).' },
+        { status: 400 }
+      );
+    }
+
+    if (notes && typeof notes === 'string' && notes.trim().length > 1000) {
+      return NextResponse.json(
+        { error: 'Notes cannot exceed 1,000 characters.' },
         { status: 400 }
       );
     }
