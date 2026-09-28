@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAnalyticsSummary, logAnalyticsEvent } from '@/lib/db';
+import { isAdminAuthenticated } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    if (!isAdminAuthenticated(req)) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Akses khusus manajemen dan tim internal Inpartner.' },
+        { status: 401 }
+      );
+    }
+
     const summary = getAnalyticsSummary();
     return NextResponse.json({ success: true, ...summary });
   } catch (error: any) {

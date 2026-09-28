@@ -134,7 +134,7 @@ export default function KnowledgeView() {
         {searchResults && (
           <div className="mt-3 text-xs text-[#005DAD] font-semibold flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            Ditemukan {searchResults.length} dokumen relevan untuk kata kunci "{searchQuery}"
+            Ditemukan {searchResults.length} dokumen relevan untuk kata kunci &quot;{searchQuery}&quot;
           </div>
         )}
       </div>

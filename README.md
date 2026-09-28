@@ -182,10 +182,14 @@ cp .env.local.example .env.local
 
 Variabel yang didukung:
 ```env
-# 1. Model AI Generatif Cloud (Opsional - default: Offline RAG cepat < 200ms)
+# 1. Keamanan & Autentikasi Admin CRM (Wajib):
+# Password untuk membuka dashboard internal di /admin
+ADMIN_PASSWORD=inpartner2026
+
+# 2. Model AI Generatif Cloud (Opsional - default: Offline RAG cepat < 200ms)
 GEMINI_API_KEY=AIzaSy...
 
-# 2. Notifikasi Otomatis Leads Masuk ke Tim Sales:
+# 3. Notifikasi Otomatis Leads Masuk ke Tim Sales:
 # Webhook (Google Sheets via Apps Script, Make, Zapier, Slack, atau Discord)
 LEAD_WEBHOOK_URL=https://...
 

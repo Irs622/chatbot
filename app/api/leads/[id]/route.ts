@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateLeadStatus, LeadStatus } from '@/lib/db';
+import { isAdminAuthenticated } from '@/lib/auth';
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    if (!isAdminAuthenticated(req)) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Akses khusus manajemen dan tim internal Inpartner.' },
+        { status: 401 }
+      );
+    }
+
     const { id } = params;
     const body = await req.json();
     const { status, notes } = body;

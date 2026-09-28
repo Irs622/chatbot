@@ -111,6 +111,12 @@ Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim
   2. **Notifikasi Instan ke Telegram Tim Sales:** Mengirimkan pesan ringkas ke grup Telegram tim BD lengkap dengan tombol link yang bila diklik langsung membuka obrolan WhatsApp dengan calon klien.
   3. **Notifikasi Email Resmi:** Mengirimkan rincian kebutuhan calon klien ke email resmi Inpartner (`corporatesecretary@inpartner.id`).
 
+### H. Gerbang Keamanan Dashboard CRM (*Admin Access Gate*) — 🔒 Fitur Baru
+- Halaman internal `/admin` diproteksi penuh dengan kata sandi/PIN akses (*Admin Password Guard*).
+- Menggunakan enkripsi kriptografis HMAC-SHA256 dengan *secure HTTP-only session cookie* (berlaku 7 hari atau hingga *logout*).
+- Menjaga endpoint data sensitif (`/api/leads`, `/api/conversations`, `/api/analytics`) dari pencurian data oleh pihak luar, sementara formulir publik pengunjung website tetap dapat mengirimkan prospek secara aman.
+- Tersedia tombol *Logout* instan untuk membersihkan sesi keamanan di perangkat.
+
 ---
 
 ## 7. Alur Perjalanan Pengunjung (User Journey)

@@ -88,7 +88,7 @@ export default function EmbedGuide() {
             </div>
             <div>
               <strong className="text-slate-900 block font-semibold">Salin Kode Embed Script:</strong>
-              Klik tombol "Salin Kode" pada kotak di atas.
+              Klik tombol &quot;Salin Kode&quot; pada kotak di atas.
             </div>
           </div>
 

@@ -255,7 +255,7 @@ export default function WebsiteSimulator() {
               The Most Trusted Consulting Partner To help create positive and endure changes in Local and Global Coverage.
             </p>
             <p className="text-sky-200 font-semibold italic">
-              "Go Beyond than Just Consultancy"
+              &quot;Go Beyond than Just Consultancy&quot;
             </p>
           </div>
 

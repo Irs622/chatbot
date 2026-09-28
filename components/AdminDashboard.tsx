@@ -404,7 +404,7 @@ export default function AdminDashboard() {
                   <div className="border-t border-slate-200/80 pt-2">
                     <span className="text-slate-500 block mb-1">Catatan Klien:</span>
                     <p className="text-slate-700 italic bg-white p-2.5 rounded-lg border border-slate-200">
-                      "{selectedLead.notes}"
+                      &quot;{selectedLead.notes}&quot;
                     </p>
                   </div>
                 )}
