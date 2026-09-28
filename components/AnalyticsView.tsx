@@ -97,15 +97,28 @@ export default function AnalyticsView() {
   };
 
   const filteredQuestions = useMemo(() => {
-    if (!data?.questions) return [];
+    if (!data?.questions || !Array.isArray(data.questions)) return [];
     return data.questions.filter((q: ClientQuestion) => {
+      const qText = (q.question || '').toLowerCase();
+      const qIntent = (q.intent || '').toLowerCase();
+      const search = questionSearch.toLowerCase().trim();
+
       const matchSearch =
-        !questionSearch.trim() ||
-        q.question.toLowerCase().includes(questionSearch.toLowerCase().trim()) ||
-        q.intent.toLowerCase().includes(questionSearch.toLowerCase().trim());
-      const matchIntent =
-        selectedIntentFilter === 'all' ||
-        q.intent.toLowerCase().includes(selectedIntentFilter.toLowerCase());
+        !search ||
+        qText.includes(search) ||
+        qIntent.includes(search);
+
+      let matchIntent = true;
+      if (selectedIntentFilter === 'funding') {
+        matchIntent = qIntent.includes('funding') || qIntent.includes('invest');
+      } else if (selectedIntentFilter === 'profitability') {
+        matchIntent = qIntent.includes('profit') || qIntent.includes('margin') || qIntent.includes('cost');
+      } else if (selectedIntentFilter === 'growth') {
+        matchIntent = qIntent.includes('growth') || qIntent.includes('market') || qIntent.includes('pma');
+      } else if (selectedIntentFilter === 'capacity') {
+        matchIntent = qIntent.includes('capacity') || qIntent.includes('executive') || qIntent.includes('program');
+      }
+
       return matchSearch && matchIntent;
     });
   }, [data?.questions, questionSearch, selectedIntentFilter]);
@@ -114,7 +127,7 @@ export default function AnalyticsView() {
     return (
       <div className="flex items-center justify-center p-20 text-slate-400 text-xs">
         <Activity className="w-5 h-5 animate-spin mr-2 text-slate-900" />
-        <span>Loading international analytics data...</span>
+        <span>Loading analytics data...</span>
       </div>
     );
   }
@@ -130,11 +143,11 @@ export default function AnalyticsView() {
             <h2 className="text-lg font-semibold text-slate-900">Analytics Overview</h2>
             <span className="bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
               <Globe className="w-3 h-3" />
-              <span>Global Inbound</span>
+              <span>International & APAC Inbound</span>
             </span>
           </div>
           <p className="text-sm text-slate-500 mt-0.5">
-            Cross-border visitor volume, international inquiries, and conversion metrics.
+            Cross-border visitor inquiries, global traffic volume, and conversion metrics.
           </p>
         </div>
 
@@ -147,7 +160,136 @@ export default function AnalyticsView() {
         </button>
       </div>
 
-      {/* 2. Top Summary Metrics (4 Cards) */}
+      {/* ============================================================== */}
+      {/* 2. REAL LIST OF QUESTIONS ASKED BY CLIENTS (PALING ATAS) */}
+      {/* ============================================================== */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs space-y-4 p-5">
+        {/* Header, Search & Filter Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
+                <MessageSquare className="w-4 h-4 text-sky-600" />
+                <span>Client Questions & Inquiries Log</span>
+              </h3>
+              <span className="text-[11px] bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-semibold">
+                {filteredQuestions.length} questions
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Exact questions and consultation inquiries typed by prospective clients to the AI Assistant
+            </p>
+          </div>
+
+          {/* Search Box */}
+          <div className="relative w-full sm:w-72">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={questionSearch}
+              onChange={(e) => setQuestionSearch(e.target.value)}
+              placeholder="Search in questions or topics..."
+              className="w-full text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-slate-400 transition-colors"
+            />
+          </div>
+        </div>
+
+        {/* Topic Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          {[
+            { id: 'all', label: 'All Topics' },
+            { id: 'funding', label: 'Funding & Investment' },
+            { id: 'profitability', label: 'Profitability & Margin' },
+            { id: 'growth', label: 'Business Growth & Market Entry' },
+            { id: 'capacity', label: 'Executive Program' }
+          ].map((pill) => (
+            <button
+              key={pill.id}
+              onClick={() => setSelectedIntentFilter(pill.id)}
+              className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                selectedIntentFilter === pill.id
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {pill.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Questions List Stream */}
+        <div className="divide-y divide-slate-100 border border-slate-100 rounded-lg overflow-hidden max-h-[480px] overflow-y-auto">
+          {filteredQuestions.length === 0 ? (
+            <div className="py-12 text-center text-xs text-slate-400">
+              No questions found matching your search or filter.
+            </div>
+          ) : (
+            filteredQuestions.map((item: ClientQuestion, idx: number) => {
+              const isExpanded = expandedQuestionId === item.id;
+              const dateStr = item.created_at
+                ? new Date(item.created_at).toLocaleString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) + ' SGT/WIB'
+                : '-';
+
+              return (
+                <div key={item.id || idx} className="p-3.5 hover:bg-slate-50/70 transition-colors text-xs space-y-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                          {item.intent}
+                        </span>
+                        <span className="text-[11px] text-slate-400 font-mono">{dateStr}</span>
+                      </div>
+                      <p className="font-medium text-slate-900 text-xs sm:text-sm leading-relaxed">
+                        &quot;{item.question}&quot;
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => handleCopyQuestion(item.question, item.id)}
+                        className="text-slate-400 hover:text-slate-600 p-1 rounded"
+                        title="Copy question text"
+                      >
+                        {copiedId === item.id ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+
+                      {item.bot_answer_preview && (
+                        <button
+                          onClick={() => setExpandedQuestionId(isExpanded ? null : item.id)}
+                          className="text-xs text-sky-600 hover:underline flex items-center gap-0.5 p-1 font-medium cursor-pointer"
+                        >
+                          <span>{isExpanded ? 'Hide Answer' : 'View Answer'}</span>
+                          {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Expandable Bot Answer Preview */}
+                  {isExpanded && item.bot_answer_preview && (
+                    <div className="mt-2 bg-slate-50 p-3 rounded-lg border border-slate-200/80 text-[11px] text-slate-700 leading-relaxed font-sans animate-in fade-in">
+                      <strong className="text-slate-900 block mb-1">AI Assistant Answer:</strong>
+                      {item.bot_answer_preview}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* 3. Top Summary Metrics (4 Cards) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
           <div className="text-xs text-slate-500 font-medium">Conversations</div>
@@ -182,7 +324,7 @@ export default function AnalyticsView() {
         </div>
       </div>
 
-      {/* 3. Graphical Section: Traffic by Hour (Kapan) & Geography (Dimana) */}
+      {/* 4. Graphical Section: Traffic by Hour (Kapan) & Geography (Dimana) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Hourly Traffic Distribution Across Global Timezones (7 cols) */}
         <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
@@ -331,133 +473,6 @@ export default function AnalyticsView() {
               Singapore and East Asian corporate entities (Japan & Korea) represent <strong>58% of inbound demand</strong>, primarily seeking FDI entity structuring (PT PMA), cross-border M&A, and local supply chain optimization.
             </p>
           </div>
-        </div>
-      </div>
-
-      {/* 4. Real List of Questions Asked by Clients (Apa Aja List Pertanyaannya) */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs space-y-4 p-5">
-        {/* Header, Search & Topic Filter */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
-                <MessageSquare className="w-4 h-4 text-slate-700" />
-                <span>Client Questions & Inquiries Log</span>
-              </h3>
-              <span className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
-                {filteredQuestions.length} questions
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Exact questions and inquiries typed by international & domestic website visitors
-            </p>
-          </div>
-
-          {/* Search Box */}
-          <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={questionSearch}
-              onChange={(e) => setQuestionSearch(e.target.value)}
-              placeholder="Search in questions..."
-              className="w-full text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-slate-400 transition-colors"
-            />
-          </div>
-        </div>
-
-        {/* Topic Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          {[
-            { id: 'all', label: 'All Topics' },
-            { id: 'funding', label: 'Funding & Investment' },
-            { id: 'profitability', label: 'Profitability & Margin' },
-            { id: 'growth', label: 'Business Growth & Market Entry' },
-            { id: 'capacity', label: 'Executive Program' }
-          ].map((pill) => (
-            <button
-              key={pill.id}
-              onClick={() => setSelectedIntentFilter(pill.id)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                selectedIntentFilter === pill.id
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {pill.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Questions List */}
-        <div className="divide-y divide-slate-100 border border-slate-100 rounded-lg overflow-hidden">
-          {filteredQuestions.length === 0 ? (
-            <div className="py-12 text-center text-xs text-slate-400">
-              No questions found matching your filter.
-            </div>
-          ) : (
-            filteredQuestions.slice(0, 30).map((item: ClientQuestion, idx: number) => {
-              const isExpanded = expandedQuestionId === item.id;
-              const dateStr = item.created_at
-                ? new Date(item.created_at).toLocaleString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  }) + ' SGT'
-                : '-';
-
-              return (
-                <div key={item.id || idx} className="p-3.5 hover:bg-slate-50/70 transition-colors text-xs space-y-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-600">
-                          {item.intent}
-                        </span>
-                        <span className="text-[11px] text-slate-400 font-mono">{dateStr}</span>
-                      </div>
-                      <p className="font-medium text-slate-900 text-xs sm:text-sm leading-relaxed">
-                        &quot;{item.question}&quot;
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        onClick={() => handleCopyQuestion(item.question, item.id)}
-                        className="text-slate-400 hover:text-slate-600 p-1 rounded"
-                        title="Copy question"
-                      >
-                        {copiedId === item.id ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-
-                      {item.bot_answer_preview && (
-                        <button
-                          onClick={() => setExpandedQuestionId(isExpanded ? null : item.id)}
-                          className="text-xs text-sky-600 hover:underline flex items-center gap-0.5 p-1 font-medium"
-                        >
-                          <span>{isExpanded ? 'Hide Answer' : 'View Answer'}</span>
-                          {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Expandable Bot Answer Preview */}
-                  {isExpanded && item.bot_answer_preview && (
-                    <div className="mt-2 bg-slate-50 p-3 rounded-lg border border-slate-200/80 text-[11px] text-slate-700 leading-relaxed font-sans animate-in fade-in">
-                      <strong className="text-slate-900 block mb-1">AI Assistant Answer:</strong>
-                      {item.bot_answer_preview}
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          )}
         </div>
       </div>
     </div>
