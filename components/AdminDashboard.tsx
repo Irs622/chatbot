@@ -273,7 +273,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
-          <div className="text-xs text-sky-600 font-medium">In Discussion</div>
+          <div className="text-xs text-[#0779D1] font-medium">In Discussion</div>
           <div className="text-2xl font-bold text-slate-900">{stats.contacted}</div>
           <div className="text-[11px] text-slate-400">Active pipeline</div>
         </div>
@@ -358,7 +358,7 @@ export default function AdminDashboard() {
                         key={lead.id}
                         onClick={() => handleSelectLead(lead)}
                         className={`cursor-pointer transition-colors ${
-                          isSelected ? 'bg-sky-50/70 border-l-3 border-l-sky-600' : 'hover:bg-slate-50'
+                          isSelected ? 'bg-[#0779D1]/10 border-l-3 border-l-[#0779D1]' : 'hover:bg-slate-50'
                         }`}
                       >
                         <td className="py-3 px-3.5">
@@ -382,7 +382,7 @@ export default function AdminDashboard() {
                             </span>
                           )}
                           {lead.status === 'in_progress' && (
-                            <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-sky-50 text-sky-700 border border-sky-200">
+                            <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#0779D1]/10 text-[#0779D1] border border-[#0779D1]/20">
                               Discussion
                             </span>
                           )}
@@ -490,7 +490,7 @@ export default function AdminDashboard() {
                   {selectedLead.email && (
                     <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
                       <span className="text-slate-500">Email:</span>
-                      <a href={`mailto:${selectedLead.email}`} className="text-sky-600 hover:underline">
+                      <a href={`mailto:${selectedLead.email}`} className="text-[#0779D1] hover:underline">
                         {selectedLead.email}
                       </a>
                     </div>
@@ -519,10 +519,10 @@ export default function AdminDashboard() {
                 <div className="pt-2 border-t border-slate-100">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                      <MessageSquare className="w-3.5 h-3.5 text-[#005DAD]" />
+                      <MessageSquare className="w-3.5 h-3.5 text-[#0779D1]" />
                       <span>Chat Transcript</span>
                       {transcriptMessages.length > 0 && (
-                        <span className="bg-[#005DAD]/10 text-[#005DAD] font-mono text-[10px] px-1.5 py-0.2 rounded font-bold">
+                        <span className="bg-[#0779D1]/10 text-[#0779D1] font-mono text-[10px] px-1.5 py-0.2 rounded font-bold">
                           {transcriptMessages.length}
                         </span>
                       )}
@@ -553,7 +553,7 @@ export default function AdminDashboard() {
                           <div
                             className={`px-2.5 py-1.5 rounded-lg max-w-[92%] ${
                               m.sender === 'user'
-                                ? 'bg-[#005DAD] text-white rounded-br-none'
+                                ? 'bg-[#0779D1] text-white rounded-br-none'
                                 : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-2xs'
                             }`}
                           >
@@ -582,7 +582,7 @@ export default function AdminDashboard() {
                   <button
                     onClick={handleSaveNote}
                     disabled={savingNote}
-                    className="w-full py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                    className="w-full py-1.5 bg-[#0779D1] hover:bg-[#0668b3] text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
                   >
                     {savingNote ? 'Saving Note...' : 'Save Notes'}
                   </button>

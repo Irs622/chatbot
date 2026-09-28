@@ -124,7 +124,7 @@ export default function AdminPage() {
                   placeholder="Enter PIN..."
                   required
                   autoFocus
-                  className="w-full text-sm px-3.5 py-2.5 pr-10 rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900 font-mono"
+                  className="w-full text-sm px-3.5 py-2.5 pr-10 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/20 font-mono"
                 />
                 <button
                   type="button"
@@ -140,7 +140,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={isSubmitting || !password.trim()}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold tracking-wide transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+              className="w-full py-2.5 px-4 rounded-xl bg-[#0779D1] hover:bg-[#0668b3] text-white text-xs font-semibold tracking-wide transition-all disabled:opacity-50 cursor-pointer shadow-xs"
             >
               {isSubmitting ? 'Verifying...' : 'Sign In'}
             </button>
@@ -166,7 +166,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
               <span className="font-bold text-base tracking-tight text-slate-900">INPARTNER</span>
-              <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-semibold bg-[#0779D1]/10 text-[#0779D1] px-2 py-0.5 rounded-full">
                 Portal
               </span>
             </div>
@@ -177,7 +177,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab('leads')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'leads'
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-[#0779D1] text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -189,7 +189,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab('knowledge')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'knowledge'
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-[#0779D1] text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -201,7 +201,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab('analytics')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'analytics'
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-[#0779D1] text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -213,7 +213,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab('embed')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'embed'
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-[#0779D1] text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -272,7 +272,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1 whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-[#0779D1] text-white shadow-xs'
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >

@@ -22,7 +22,7 @@ export default function EmbedGuide() {
       <div>
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">Website Widget</h2>
-          <span className="bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+          <span className="bg-[#0779D1]/10 text-[#0779D1] border border-[#0779D1]/20 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
             <Code2 className="w-3 h-3" />
             <span>Embeddable Script</span>
           </span>
@@ -41,7 +41,7 @@ export default function EmbedGuide() {
           </span>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0779D1] hover:bg-[#0668b3] text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
           >
             {copied ? (
               <>

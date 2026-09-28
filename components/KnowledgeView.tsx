@@ -46,7 +46,7 @@ export default function KnowledgeView() {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-slate-900 tracking-tight">AI Knowledge Base</h2>
-            <span className="bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <span className="bg-[#0779D1]/10 text-[#0779D1] border border-[#0779D1]/20 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
               <BookOpen className="w-3 h-3" />
               <span>Verified Corporate RAG</span>
             </span>
@@ -89,7 +89,7 @@ export default function KnowledgeView() {
                   key={chunk.id}
                   onClick={() => setSelectedChunk(chunk)}
                   className={`p-3.5 cursor-pointer text-xs transition-colors ${
-                    isSelected ? 'bg-sky-50/70 border-l-3 border-l-sky-600' : 'hover:bg-slate-50'
+                    isSelected ? 'bg-[#0779D1]/10 border-l-3 border-l-[#0779D1]' : 'hover:bg-slate-50'
                   }`}
                 >
                   <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">
@@ -117,7 +117,7 @@ export default function KnowledgeView() {
               {/* Fixed Card Header */}
               <div className="flex items-start justify-between border-b border-slate-100 pb-3 shrink-0">
                 <div>
-                  <span className="text-[10px] font-semibold text-sky-600 uppercase tracking-wide">
+                  <span className="text-[10px] font-semibold text-[#0779D1] uppercase tracking-wide">
                     {selectedChunk.category}
                   </span>
                   <h3 className="text-base font-bold text-slate-900 mt-0.5">

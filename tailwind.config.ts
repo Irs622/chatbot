@@ -26,8 +26,8 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         inpartner: {
-          primary: "#005DAD",
-          dark: "#004785",
+          primary: "var(--inpartner-primary, #0779D1)",
+          dark: "var(--inpartner-dark, #0668b3)",
           accent: "#d4af37",
         },
       },
