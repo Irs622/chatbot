@@ -1052,7 +1052,7 @@ export default function ChatWidget({
 
       {/* Lead Capture Modal */}
       {showLeadModal && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in overflow-hidden">
           {/* Backdrop click to close */}
           <div
             className="absolute inset-0 -z-10"
@@ -1064,7 +1064,7 @@ export default function ChatWidget({
             {/* Modal Header with #005DAD Brand Gradient - Shrink-0 ensures it NEVER gets clipped */}
             <div className="shrink-0 bg-gradient-to-r from-[#005DAD] to-[#004785] text-white px-5 py-3.5 sm:px-6 sm:py-4 flex items-center justify-between shadow-md">
               <div className="flex items-center gap-3 min-w-0 pr-2">
-                <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-xs border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
+                <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
                   <Building2 className="w-4.5 h-4.5 text-white" />
                 </div>
                 <div className="min-w-0">
