@@ -13,7 +13,9 @@ import {
   MessageSquare,
   Clock,
   X,
-  ChevronRight
+  ChevronRight,
+  ChevronLeft,
+  RefreshCw
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 
@@ -167,40 +169,75 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* 1. Simple Summary Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
-          <div className="text-xs text-slate-500 font-medium">Total Inquiries</div>
-          <div className="text-2xl font-bold text-slate-900 mt-1">{stats.total}</div>
+      {/* ============================================================== */}
+      {/* 1. TOP HEADER: Section Title & Global Actions */}
+      {/* ============================================================== */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight">Client Inquiries</h2>
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live Inbound Pipeline</span>
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Incoming corporate advisory leads, consultation requests, and client follow-ups.
+          </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <button
+          onClick={fetchLeads}
+          disabled={isLoading}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors cursor-pointer self-start sm:self-auto shadow-2xs disabled:opacity-50"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 text-slate-400 ${isLoading ? 'animate-spin' : ''}`} />
+          <span>Refresh</span>
+        </button>
+      </div>
+
+      {/* ============================================================== */}
+      {/* 2. TOP METRICS ROW (Fixed Height: 105px) */}
+      {/* ============================================================== */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
+          <div className="text-xs text-slate-500 font-medium">Total Inquiries</div>
+          <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
+          <div className="text-[11px] text-slate-400">All website leads</div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
           <div className="text-xs text-rose-600 font-medium flex items-center justify-between">
             <span>Needs Reply</span>
             {stats.new > 0 && <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />}
           </div>
-          <div className="text-2xl font-bold text-rose-600 mt-1">{stats.new}</div>
+          <div className="text-2xl font-bold text-rose-600">{stats.new}</div>
+          <div className="text-[11px] text-slate-400">Requires follow-up</div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
           <div className="text-xs text-sky-600 font-medium">In Discussion</div>
-          <div className="text-2xl font-bold text-slate-900 mt-1">{stats.contacted}</div>
+          <div className="text-2xl font-bold text-slate-900">{stats.contacted}</div>
+          <div className="text-[11px] text-slate-400">Active pipeline</div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
           <div className="text-xs text-emerald-600 font-medium">Qualified / Won</div>
-          <div className="text-2xl font-bold text-slate-900 mt-1">{stats.converted}</div>
+          <div className="text-2xl font-bold text-slate-900">{stats.converted}</div>
+          <div className="text-[11px] text-slate-400">Proposal stage</div>
         </div>
       </div>
 
-      {/* 2. Main Content: Table + Side Detail Drawer */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Table Area (7 cols on large, full on small) */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
-          {/* Table Header Tools */}
-          <div className="p-3.5 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+      {/* ============================================================== */}
+      {/* 3. MAIN CONTENT BLOCKS: Table & Detail Dossier (Matching Height: 580px) */}
+      {/* ============================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        {/* Left Block: Inquiries Table Card (7 cols, Fixed Height: 580px) */}
+        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-xs h-[580px] flex flex-col justify-between overflow-hidden">
+          {/* Fixed Card Header */}
+          <div className="p-3.5 border-b border-slate-200 bg-white shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Search */}
-            <div className="relative w-full sm:w-64">
+            <div className="relative w-full sm:w-60">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -227,8 +264,8 @@ export default function AdminDashboard() {
 
               <button
                 onClick={handleExportCSV}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium rounded-lg border border-slate-200 transition-colors cursor-pointer"
-                title="Download CSV"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium rounded-lg border border-slate-200 transition-colors cursor-pointer shadow-2xs"
+                title="Download CSV to open in Excel"
               >
                 <Download className="w-3.5 h-3.5 text-slate-500" />
                 <span className="hidden sm:inline">Export</span>
@@ -236,13 +273,13 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto">
+          {/* Scrollable Table Body */}
+          <div className="flex-1 overflow-y-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+              <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 sticky top-0 z-10">
                 <tr>
-                  <th className="py-2.5 px-3">Client</th>
-                  <th className="py-2.5 px-3">Topic</th>
+                  <th className="py-2.5 px-3.5">Client & Company</th>
+                  <th className="py-2.5 px-3">Advisory Need</th>
                   <th className="py-2.5 px-3">Status</th>
                   <th className="py-2.5 px-3 text-right">Action</th>
                 </tr>
@@ -250,8 +287,8 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-slate-100">
                 {filteredLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-12 text-center text-slate-400">
-                      No inquiries found.
+                    <td colSpan={4} className="py-16 text-center text-slate-400">
+                      No client inquiries found.
                     </td>
                   </tr>
                 ) : (
@@ -264,16 +301,16 @@ export default function AdminDashboard() {
                         key={lead.id}
                         onClick={() => handleSelectLead(lead)}
                         className={`cursor-pointer transition-colors ${
-                          isSelected ? 'bg-sky-50/70' : 'hover:bg-slate-50'
+                          isSelected ? 'bg-sky-50/70 border-l-3 border-l-sky-600' : 'hover:bg-slate-50'
                         }`}
                       >
-                        <td className="py-3 px-3">
-                          <div className="font-medium text-slate-900">{lead.name}</div>
+                        <td className="py-3 px-3.5">
+                          <div className="font-semibold text-slate-900">{lead.name}</div>
                           <div className="text-[11px] text-slate-500">{lead.company || formatPhone(lead.phone)}</div>
                         </td>
 
                         <td className="py-3 px-3 text-slate-600">
-                          <span className="line-clamp-1 max-w-[180px]">{lead.business_need}</span>
+                          <span className="line-clamp-1 max-w-[170px]">{lead.business_need}</span>
                         </td>
 
                         <td className="py-3 px-3 whitespace-nowrap">
@@ -309,7 +346,8 @@ export default function AdminDashboard() {
                             href={waLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-medium transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-medium transition-colors shadow-2xs"
+                            title="Chat on WhatsApp"
                           >
                             <Phone className="w-3 h-3" />
                             <span>WA</span>
@@ -322,16 +360,29 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
+
+          {/* Fixed Footer */}
+          <div className="px-3.5 py-2.5 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
+            <span>Showing {filteredLeads.length} of {leads.length} records</span>
+            <div className="flex items-center gap-1">
+              <button disabled className="w-6 h-6 rounded bg-white border border-slate-200 flex items-center justify-center text-slate-400 disabled:opacity-50">
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button disabled className="w-6 h-6 rounded bg-white border border-slate-200 flex items-center justify-center text-slate-400 disabled:opacity-50">
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Selected Lead Details Panel (5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+        {/* Right Block: Selected Lead Detail Dossier (5 cols, Fixed Height: 580px) */}
+        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-xs h-[580px] flex flex-col justify-between overflow-hidden">
           {selectedLead ? (
             <>
-              {/* Header */}
-              <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+              {/* Fixed Header */}
+              <div className="flex items-start justify-between border-b border-slate-100 pb-3 shrink-0">
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-base">{selectedLead.name}</h3>
+                  <h3 className="font-bold text-slate-900 text-base">{selectedLead.name}</h3>
                   <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
                     <Building className="w-3.5 h-3.5 text-slate-400" />
                     <span>{selectedLead.company || 'Business Client'}</span>
@@ -351,82 +402,92 @@ export default function AdminDashboard() {
                 </select>
               </div>
 
-              {/* Contact Info */}
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Phone / WA</span>
-                  <div className="flex items-center gap-1.5 font-mono text-slate-800">
-                    <span>{formatPhone(selectedLead.phone)}</span>
-                    <button
-                      onClick={() => handleCopy(selectedLead.phone, 'phone')}
-                      className="text-slate-400 hover:text-slate-600 p-0.5"
-                    >
-                      {copiedId === 'phone' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                    </button>
+              {/* Scrollable Dossier Content Body */}
+              <div className="flex-1 overflow-y-auto space-y-3 py-2 pr-1 text-xs">
+                {/* Contact Phone & Email */}
+                <div className="space-y-1.5 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">WhatsApp / Phone:</span>
+                    <div className="flex items-center gap-1.5 font-mono text-slate-800 font-medium">
+                      <span>{formatPhone(selectedLead.phone)}</span>
+                      <button
+                        onClick={() => handleCopy(selectedLead.phone, 'phone')}
+                        className="text-slate-400 hover:text-slate-600 p-0.5"
+                        title="Copy phone"
+                      >
+                        {copiedId === 'phone' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                      </button>
+                    </div>
                   </div>
+
+                  {selectedLead.email && (
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
+                      <span className="text-slate-500">Email:</span>
+                      <a href={`mailto:${selectedLead.email}`} className="text-sky-600 hover:underline">
+                        {selectedLead.email}
+                      </a>
+                    </div>
+                  )}
                 </div>
 
-                {selectedLead.email && (
-                  <div className="flex items-center justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500">Email</span>
-                    <a href={`mailto:${selectedLead.email}`} className="text-sky-600 hover:underline">
-                      {selectedLead.email}
-                    </a>
-                  </div>
-                )}
-
-                <div className="py-1">
-                  <span className="text-slate-500 block mb-1">Advisory Topic:</span>
-                  <p className="font-medium text-slate-800 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                {/* Advisory Topic Box */}
+                <div>
+                  <span className="text-slate-500 block mb-1 font-medium">Advisory Scope Requested:</span>
+                  <p className="font-semibold text-slate-800 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
                     {selectedLead.business_need}
                   </p>
                 </div>
 
+                {/* Client's Original Challenge Box */}
                 {selectedLead.notes && (
-                  <div className="py-1">
-                    <span className="text-slate-500 block mb-1">Client&apos;s Message:</span>
-                    <p className="text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 italic">
+                  <div>
+                    <span className="text-slate-500 block mb-1 font-medium">Submitted Details:</span>
+                    <p className="text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 italic leading-relaxed">
                       &quot;{selectedLead.notes}&quot;
                     </p>
                   </div>
                 )}
+
+                {/* Internal Consultant Notes */}
+                <div className="space-y-2 pt-1 border-t border-slate-100">
+                  <span className="text-xs font-semibold text-slate-700 block">Consultant Internal Notes</span>
+                  <textarea
+                    rows={2}
+                    value={internalNote}
+                    onChange={(e) => setInternalNote(e.target.value)}
+                    placeholder="Record notes from follow-up calls or meetings..."
+                    className="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-slate-400 text-slate-800 resize-none"
+                  />
+                  <button
+                    onClick={handleSaveNote}
+                    disabled={savingNote}
+                    className="w-full py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                  >
+                    {savingNote ? 'Saving Note...' : 'Save Notes'}
+                  </button>
+                </div>
               </div>
 
-              {/* Direct Actions */}
-              <div className="pt-2">
+              {/* Fixed Footer: 1-Click WhatsApp Button */}
+              <div className="pt-3 border-t border-slate-100 shrink-0">
                 <a
                   href={getWhatsAppUrl(selectedLead.phone, selectedLead.name, selectedLead.business_need)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
                 >
                   <Phone className="w-3.5 h-3.5" />
-                  <span>Chat Client on WhatsApp</span>
+                  <span>Chat Client on WhatsApp ({formatPhone(selectedLead.phone)})</span>
                 </a>
-              </div>
-
-              {/* Internal Notes */}
-              <div className="pt-3 border-t border-slate-100 space-y-2">
-                <span className="text-xs font-medium text-slate-700">Internal Consultant Notes</span>
-                <textarea
-                  rows={2}
-                  value={internalNote}
-                  onChange={(e) => setInternalNote(e.target.value)}
-                  placeholder="Add notes from your discussion..."
-                  className="w-full text-xs p-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-slate-400 text-slate-800"
-                />
-                <button
-                  onClick={handleSaveNote}
-                  disabled={savingNote}
-                  className="w-full py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
-                >
-                  {savingNote ? 'Saving...' : 'Save Notes'}
-                </button>
               </div>
             </>
           ) : (
-            <div className="py-16 text-center text-xs text-slate-400">
-              Select an inquiry from the list to view details.
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
+              <Building className="w-8 h-8 text-slate-300 mb-2 stroke-[1.5]" />
+              <p className="font-semibold text-slate-700 text-xs">No Inquiry Selected</p>
+              <p className="text-[11px] text-slate-400 mt-1 max-w-[220px]">
+                Click on any client inquiry row from the table to view contact details, advisory scope, and notes.
+              </p>
             </div>
           )}
         </div>

@@ -15,12 +15,20 @@ export default function EmbedGuide() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-4 space-y-6">
-      {/* Title */}
+    <div className="max-w-2xl mx-auto py-2 space-y-6">
+      {/* ============================================================== */}
+      {/* 1. TOP HEADER: Title & Badges */}
+      {/* ============================================================== */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Website Widget</h2>
-        <p className="text-sm text-slate-500 mt-1">
-          Install the Inpartner AI Consultation Assistant on any website with a single script tag.
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">Website Widget</h2>
+          <span className="bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <Code2 className="w-3 h-3" />
+            <span>Embeddable Script</span>
+          </span>
+        </div>
+        <p className="text-xs text-slate-500 mt-0.5">
+          Install the Inpartner AI Consultation Assistant on any website or CMS with a single script tag.
         </p>
       </div>
 
