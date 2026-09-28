@@ -15,7 +15,10 @@ import {
   EyeOff,
   LogOut,
   AlertCircle,
-  KeyRound
+  KeyRound,
+  Sparkles,
+  CheckCircle2,
+  Clock
 } from 'lucide-react';
 import AdminDashboard from '@/components/AdminDashboard';
 import AnalyticsView from '@/components/AnalyticsView';
@@ -31,6 +34,26 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<'leads' | 'analytics' | 'knowledge' | 'embed'>('leads');
+  const [currentTime, setCurrentTime] = useState<string>('');
+
+  // Live Jakarta clock
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(
+        now.toLocaleTimeString('en-US', {
+          timeZone: 'Asia/Jakarta',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }) + ' WIB'
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Check existing session on mount
   useEffect(() => {
@@ -86,241 +109,250 @@ export default function AdminPage() {
     }
   };
 
-  // State 1: Loading verification
+  // State 1: Verifying authentication session
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#005DAD] flex items-center justify-center shadow-lg animate-pulse">
-            <Lock className="w-6 h-6 text-white" />
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-lg">
+            <Lock className="w-5 h-5 text-[#005DAD] animate-pulse" />
           </div>
-          <p className="text-slate-400 text-xs font-medium tracking-wide">
-            Verifying administrative security session...
-          </p>
+          <span className="text-slate-400 text-xs font-mono tracking-wider">
+            VERIFYING ENCRYPTED SESSION...
+          </span>
         </div>
       </div>
     );
   }
 
-  // State 2: Login Gate if not authenticated
+  // State 2: Executive Security Login Gate
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col items-center justify-center p-4 sm:p-6 font-sans">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          {/* Card Header with Inpartner Blue Brand Accent */}
-          <div className="bg-gradient-to-r from-[#005DAD] to-[#004785] p-6 text-white text-center relative overflow-hidden">
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center shadow-inner mb-3">
-              <KeyRound className="w-7 h-7 text-white stroke-[2.2]" />
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 font-sans relative overflow-hidden bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px]">
+        {/* Subtle Ambient Vignette */}
+        <div className="absolute inset-0 bg-radial from-transparent via-slate-950/80 to-slate-950 pointer-events-none" />
+
+        <div className="relative w-full max-w-[420px] bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800 p-7 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+          {/* Official Security Header */}
+          <div className="flex items-center justify-between border-b border-slate-800/80 pb-5 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#005DAD] flex items-center justify-center font-extrabold text-white text-sm shadow-md ring-1 ring-white/20">
+                IN
+              </div>
+              <div>
+                <h1 className="font-bold text-sm tracking-tight text-white leading-tight">
+                  INPARTNER OPTIMA INTEGRA
+                </h1>
+                <p className="text-[11px] text-slate-400 font-mono tracking-tight mt-0.5">
+                  Corporate Advisory Deal Desk
+                </p>
+              </div>
             </div>
-            <h1 className="text-xl font-extrabold tracking-tight text-white">
-              Inpartner Admin & CRM
-            </h1>
-            <p className="text-xs text-sky-100/90 mt-1 font-normal">
-              Corporate Client Inquiries & Intelligence Portal
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              SECURE
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h2 className="text-base font-semibold text-slate-100 tracking-tight">
+              Administrative Access
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Enter your corporate security PIN to inspect incoming advisory inquiries, engagement analytics, and CRM records.
             </p>
           </div>
 
-          {/* Form Body */}
-          <div className="p-6 sm:p-8">
-            <div className="flex items-center gap-2 mb-5 p-3 rounded-2xl bg-sky-50/80 border border-sky-200/60 text-slate-700 text-xs">
-              <ShieldCheck className="w-4 h-4 text-[#005DAD] shrink-0" />
-              <span>This portal is restricted to authorized Inpartner management and advisory consultants.</span>
+          {loginError && (
+            <div className="mb-5 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs rounded-xl flex items-center gap-2 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{loginError}</span>
             </div>
+          )}
 
-            {loginError && (
-              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2 animate-in fade-in">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{loginError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label htmlFor="admin-access-password" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Internal Access PIN / Password
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label
+                  htmlFor="admin-access-password"
+                  className="block text-[11px] font-mono uppercase tracking-wider text-slate-400"
+                >
+                  Access PIN / Password
                 </label>
-                <div className="relative">
-                  <input
-                    id="admin-access-password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter admin password..."
-                    required
-                    autoFocus
-                    className="w-full text-sm px-4 py-3 pr-11 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#005DAD] focus:ring-3 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900 placeholder:text-slate-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
+                <span className="text-[10px] text-slate-500 font-mono">Default: inpartner2026</span>
               </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting || !password.trim()}
-                className="w-full py-3 px-4 rounded-xl bg-[#005DAD] hover:bg-[#004785] active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Verifying Access...</span>
-                  </>
-                ) : (
-                  <>
-                    <Lock className="w-4 h-4" />
-                    <span>Unlock CRM Dashboard</span>
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-              <Link
-                href="/"
-                className="flex items-center gap-1.5 text-slate-600 hover:text-[#005DAD] font-medium transition-colors"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Return to Chatbot</span>
-              </Link>
-
-              <span className="text-[11px] text-slate-400">
-                PT Inpartner Optima Integra
-              </span>
+              <div className="relative">
+                <input
+                  id="admin-access-password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter administrator PIN..."
+                  required
+                  autoFocus
+                  className="w-full text-sm px-3.5 py-2.5 pr-10 rounded-xl border border-slate-700 bg-slate-950/80 text-white placeholder:text-slate-500 focus:outline-none focus:border-[#005DAD] focus:ring-1 focus:ring-[#005DAD] transition-all font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+                  aria-label={showPassword ? 'Hide PIN' : 'Show PIN'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || !password.trim()}
+              className="w-full py-2.5 px-4 rounded-xl bg-[#005DAD] hover:bg-[#004785] active:scale-[0.99] text-white text-xs font-semibold tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-sm shadow-[#005DAD]/30"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Authenticate Session</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500">
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 text-slate-400 hover:text-slate-200 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Portal</span>
+            </Link>
+
+            <span className="font-mono text-[10px] text-slate-500">
+              HMAC-SHA256 • 7d TTL
+            </span>
           </div>
         </div>
       </div>
     );
   }
 
-  // State 3: Authenticated Admin Portal
+  // State 3: Authenticated Sovereign Executive CRM Portal
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
       {/* Top Application Header */}
-      <header className="bg-slate-900 text-white px-4 sm:px-8 py-3.5 border-b border-slate-800 shadow-md">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+          {/* Left Brand Identity */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-800 transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Return to Chatbot</span>
-            </Link>
-            <div className="w-8 h-8 rounded-lg bg-[#005DAD] flex items-center justify-center font-bold text-white text-sm shadow-inner">
+            <div className="w-8 h-8 rounded-lg bg-[#005DAD] flex items-center justify-center font-bold text-white text-xs shadow-inner">
               IN
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-extrabold text-sm tracking-tight text-white">
-                  INPARTNER Admin & CRM
-                </h1>
-                <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Verified Session
+                <span className="font-bold text-sm text-white tracking-tight leading-none">
+                  INPARTNER
+                </span>
+                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                  Advisory CRM
                 </span>
               </div>
+              <p className="text-[11px] text-slate-400 leading-tight mt-0.5 hidden sm:block">
+                PT Inpartner Optima Integra • Deal Desk & Intelligence
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 text-xs">
-            <a
-              href={INPARTNER_CONFIG.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 font-medium"
+          {/* Center / Navigation Segmented Control */}
+          <nav className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
+            <button
+              onClick={() => setActiveTab('leads')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+                activeTab === 'leads'
+                  ? 'bg-[#005DAD] text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
             >
-              <span>inpartner.id</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+              <Users className="w-3.5 h-3.5" />
+              <span>Leads</span>
+            </button>
 
-            <a
-              href={getWhatsAppUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors font-medium shadow-xs"
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+                activeTab === 'analytics'
+                  ? 'bg-[#005DAD] text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
             >
-              <Phone className="w-3.5 h-3.5" />
-              <span>WA {INPARTNER_CONFIG.whatsappDisplay}</span>
-            </a>
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Analytics</span>
+            </button>
 
-            {/* Logout Button */}
+            <button
+              onClick={() => setActiveTab('knowledge')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+                activeTab === 'knowledge'
+                  ? 'bg-[#005DAD] text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Knowledge RAG</span>
+              <span className="sm:hidden">RAG</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('embed')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+                activeTab === 'embed'
+                  ? 'bg-[#005DAD] text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <Code2 className="w-3.5 h-3.5" />
+              <span>Embed</span>
+            </button>
+          </nav>
+
+          {/* Right Action Tools */}
+          <div className="flex items-center gap-2 text-xs">
+            {currentTime && (
+              <span className="hidden lg:flex items-center gap-1.5 text-slate-400 font-mono text-[11px] px-2 py-1 rounded bg-slate-800/60 border border-slate-700/60">
+                <Clock className="w-3 h-3 text-slate-400" />
+                {currentTime}
+              </span>
+            )}
+
+            <Link
+              href="/"
+              target="_blank"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700/80 font-medium"
+              title="Open public consultation chatbot in new tab"
+            >
+              <span>Chatbot View</span>
+              <ExternalLink className="w-3 h-3" />
+            </Link>
+
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 hover:text-white border border-rose-500/30 transition-all font-medium active:scale-95 cursor-pointer"
-              title="Sign out of admin session"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/30 transition-all font-medium cursor-pointer"
+              title="Sign out of administrative session"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span>Sign Out</span>
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Navigation Tabs Bar */}
-      <div className="bg-white border-b border-slate-200 shadow-2xs sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-2">
-          <button
-            onClick={() => setActiveTab('leads')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              activeTab === 'leads'
-                ? 'bg-[#005DAD] text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>Leads CRM & Inquiries</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              activeTab === 'analytics'
-                ? 'bg-[#005DAD] text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <BarChart3 className="w-4 h-4" />
-            <span>Analytics & KPIs</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('knowledge')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              activeTab === 'knowledge'
-                ? 'bg-[#005DAD] text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Knowledge Base & RAG</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('embed')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              activeTab === 'embed'
-                ? 'bg-[#005DAD] text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Code2 className="w-4 h-4" />
-            <span>Embed & Integration</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Tab Content */}
-      <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full">
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
         {activeTab === 'leads' && <AdminDashboard />}
         {activeTab === 'analytics' && <AnalyticsView />}
         {activeTab === 'knowledge' && <KnowledgeView />}

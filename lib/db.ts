@@ -273,7 +273,7 @@ export function updateLeadStatus(leadId: string, status: LeadStatus, notes?: str
   const lead = db.leads.find((l) => l.id === leadId);
   if (!lead) return null;
   lead.status = status;
-  if (notes) lead.notes = notes;
+  if (notes !== undefined) lead.notes = notes;
   saveDb(db);
   return lead;
 }
