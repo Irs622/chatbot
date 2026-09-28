@@ -20,7 +20,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
     errors: []
   };
 
-  const formattedTime = new Date().toLocaleString('id-ID', {
+  const formattedTime = new Date().toLocaleString('en-US', {
     timeZone: 'Asia/Jakarta',
     dateStyle: 'medium',
     timeStyle: 'short'

@@ -4,7 +4,7 @@ import { clearAdminCookie } from '@/lib/auth';
 export async function POST() {
   const response = NextResponse.json({
     success: true,
-    message: 'Sesi admin berhasil diakhiri.'
+    message: 'Admin session terminated successfully.'
   });
 
   clearAdminCookie(response);
