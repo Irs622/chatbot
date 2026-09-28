@@ -29,11 +29,38 @@ ATURAN PERCAKAPAN & INTEGRITAS (SANGAT PENTING):
 5. Gunakan bahasa profesional, solutif, ramah, dan terstruktur (menggunakan poin-poin jelas dan rekomendasi langkah nyata).
 6. Berikan rekomendasi layanan Inpartner yang relevan dan dorong visitor untuk menjadwalkan konsultasi atau meninggalkan kontak.`;
 
-export async function generateConsultationResponse(
+export type AIStreamEvent =
+  | {
+      type: 'start';
+      intent: IntentType;
+      confidence: number;
+      recommendedService?: string;
+      sources: string[];
+      isFallback: boolean;
+    }
+  | {
+      type: 'chunk';
+      text: string;
+    }
+  | {
+      type: 'done';
+      fullAnswer: string;
+      intent: IntentType;
+      confidence: number;
+      recommendedService?: string;
+      sources: string[];
+      suggestLeadCapture: boolean;
+      quickActions: string[];
+      followUpQuestions: string[];
+      isFallback: boolean;
+    };
+
+export async function* generateConsultationResponseStream(
   userMessage: string,
   chatHistory: { sender: 'user' | 'bot'; text: string }[] = [],
-  selectedNeed?: string
-): Promise<AIResponse> {
+  selectedNeed?: string,
+  simulateTyping = true
+): AsyncGenerator<AIStreamEvent, void, unknown> {
   const query = (selectedNeed ? `${selectedNeed}: ` : '') + userMessage;
   const { intent, confidence } = detectIntent(query);
 
@@ -105,7 +132,22 @@ export async function generateConsultationResponse(
     '📞 Hubungi Tim Inpartner'
   ];
 
-  // Try real Gemini API if key is set in environment
+  const sources = retrievedChunks.slice(0, 3).map((c) => c.title);
+
+  // Yield initial metadata event
+  yield {
+    type: 'start',
+    intent,
+    confidence: isQueryUnclear ? 0.1 : confidence,
+    recommendedService,
+    sources,
+    isFallback: isQueryUnclear
+  };
+
+  let fullText = '';
+  let streamSucceeded = false;
+
+  // 1. Try real Gemini API streaming if key is set in environment
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (geminiApiKey && !isQueryUnclear) {
     try {
@@ -131,63 +173,112 @@ FORMAT JAWABAN:
 4. Tawarkan opsi untuk menjadwalkan konsultasi lebih mendalam dengan tim Inpartner.
 Gunakan format markdown dengan bullet point rapi.`;
 
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
-
-      return {
-        answer: text,
-        intent,
-        confidence,
-        recommendedService,
-        sources: retrievedChunks.slice(0, 3).map((c) => c.title),
-        suggestLeadCapture,
-        quickActions,
-        followUpQuestions,
-        isFallback: false
-      };
+      const result = await model.generateContentStream(prompt);
+      for await (const chunk of result.stream) {
+        const piece = chunk.text();
+        if (piece) {
+          fullText += piece;
+          yield { type: 'chunk', text: piece };
+        }
+      }
+      streamSucceeded = true;
     } catch (err) {
-      console.warn('Gemini API call failed, using intelligent offline RAG engine:', err);
+      console.warn('Gemini streaming call failed, falling back to offline RAG engine:', err);
     }
   }
 
-  // Fallback Handling (FR-10) for completely unknown questions
-  if (isQueryUnclear) {
-    return {
-      answer: `Maaf, saya belum memiliki informasi resmi yang memadai mengenai pertanyaan tersebut dalam knowledge base Inpartner.
+  // 2. If Gemini API was not used or failed, use grounded offline RAG or fallback
+  if (!streamSucceeded) {
+    const targetAnswer = isQueryUnclear
+      ? `Maaf, saya belum memiliki informasi resmi yang memadai mengenai pertanyaan tersebut dalam knowledge base Inpartner.
 
 Untuk mendiskusikan kebutuhan bisnis spesifik Anda secara komprehensif, tim konsultan Inpartner siap membantu melalui konsultasi langsung.
 
 Anda dapat:
 1. Memilih salah satu dari 4 pilar utama layanan kami: **Funding**, **Growth**, **Profitability**, atau **Capacity Building**.
 2. Meninggalkan informasi kontak Anda melalui formulir di bawah.
-3. Langsung menghubungi tim kami melalui WhatsApp di **[0896 2831 0192](https://wa.me/6289628310192)** atau email **corporatesecretary@inpartner.id**.`,
-      intent: 'unknown',
-      confidence: 0.1,
-      sources: ['FAQ & Kontak Inpartner'],
-      suggestLeadCapture: true,
-      quickActions,
-      followUpQuestions: [
-        'Bisakah Anda menceritakan lebih detail kebutuhan bisnis Anda?',
-        'Apakah Anda ingin tim kami menghubungi Anda melalui WhatsApp?'
-      ],
-      isFallback: true
-    };
+3. Langsung menghubungi tim kami melalui WhatsApp di **[0896 2831 0192](https://wa.me/6289628310192)** atau email **corporatesecretary@inpartner.id**.`
+      : buildGroundedAnswer(userMessage, intent, retrievedChunks);
+
+    if (simulateTyping) {
+      // Natural typewriter token streaming (~18ms per batch of 2-3 words)
+      const tokens = targetAnswer.split(/(\s+)/);
+      let buffer = '';
+      for (let i = 0; i < tokens.length; i++) {
+        buffer += tokens[i];
+        if (i % 3 === 0 || tokens[i].includes('\n') || i === tokens.length - 1) {
+          if (buffer) {
+            fullText += buffer;
+            yield { type: 'chunk', text: buffer };
+            buffer = '';
+            await new Promise((r) => setTimeout(r, 18));
+          }
+        }
+      }
+      if (buffer) {
+        fullText += buffer;
+        yield { type: 'chunk', text: buffer };
+      }
+    } else {
+      fullText = targetAnswer;
+      yield { type: 'chunk', text: targetAnswer };
+    }
   }
 
-  // Intelligent Grounded RAG Synthesis Engine (Offline & Fast < 200ms)
-  const synthesis = buildGroundedAnswer(userMessage, intent, retrievedChunks);
-
-  return {
-    answer: synthesis,
+  // Yield completion event with all contextual metadata
+  yield {
+    type: 'done',
+    fullAnswer: fullText,
     intent,
-    confidence,
+    confidence: isQueryUnclear ? 0.1 : confidence,
     recommendedService,
-    sources: retrievedChunks.slice(0, 3).map((c) => c.title),
-    suggestLeadCapture,
+    sources: isQueryUnclear ? ['FAQ & Kontak Inpartner'] : sources,
+    suggestLeadCapture: isQueryUnclear ? true : suggestLeadCapture,
     quickActions,
-    followUpQuestions,
+    followUpQuestions: isQueryUnclear
+      ? [
+          'Bisakah Anda menceritakan lebih detail kebutuhan bisnis Anda?',
+          'Apakah Anda ingin tim kami menghubungi Anda melalui WhatsApp?'
+        ]
+      : followUpQuestions,
+    isFallback: isQueryUnclear
+  };
+}
+
+export async function generateConsultationResponse(
+  userMessage: string,
+  chatHistory: { sender: 'user' | 'bot'; text: string }[] = [],
+  selectedNeed?: string
+): Promise<AIResponse> {
+  const stream = generateConsultationResponseStream(userMessage, chatHistory, selectedNeed, false);
+  let finalResponse: AIResponse = {
+    answer: '',
+    intent: 'unknown',
+    confidence: 0,
+    sources: [],
+    suggestLeadCapture: false,
+    quickActions: [],
+    followUpQuestions: [],
     isFallback: false
   };
+
+  for await (const event of stream) {
+    if (event.type === 'done') {
+      finalResponse = {
+        answer: event.fullAnswer,
+        intent: event.intent,
+        confidence: event.confidence,
+        recommendedService: event.recommendedService,
+        sources: event.sources,
+        suggestLeadCapture: event.suggestLeadCapture,
+        quickActions: event.quickActions,
+        followUpQuestions: event.followUpQuestions,
+        isFallback: event.isFallback
+      };
+    }
+  }
+
+  return finalResponse;
 }
 
 function buildGroundedAnswer(

@@ -16,7 +16,8 @@ import {
   AlertCircle,
   Sparkles,
   MessageSquare,
-  ExternalLink
+  ExternalLink,
+  Square
 } from 'lucide-react';
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 import ChatbotIcon from '@/components/ChatbotIcon';
@@ -33,6 +34,7 @@ interface ChatMessage {
   followUpQuestions?: string[];
   quickActions?: string[];
   isFallback?: boolean;
+  isStreaming?: boolean;
 }
 
 interface ChatWidgetProps {
@@ -108,10 +110,12 @@ export default function ChatWidget({
 
   // Messages state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [mounted, setMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Initialize session and restore persisted conversation
   useEffect(() => {
@@ -129,7 +133,7 @@ export default function ChatWidget({
       if (savedMessagesStr) {
         const savedMessages = JSON.parse(savedMessagesStr);
         if (Array.isArray(savedMessages) && savedMessages.length > 0) {
-          setMessages(savedMessages);
+          setMessages(savedMessages.map((m: ChatMessage) => ({ ...m, isStreaming: false })));
         }
       }
 
@@ -248,9 +252,21 @@ export default function ChatWidget({
     }
   }, [messages, isLoading]);
 
+  const handleStopGeneration = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsStreaming(false);
+    setIsLoading(false);
+    setMessages((prev) =>
+      prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m))
+    );
+  };
+
   const handleSendMessage = async (textToSend?: string, needCategory?: string) => {
     const text = (textToSend || inputMessage).trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading || isStreaming) return;
 
     const currentNeed = needCategory || selectedNeed || undefined;
 
@@ -265,52 +281,173 @@ export default function ChatWidget({
     setInputMessage('');
     setIsLoading(true);
 
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    const botMsgId = `bot_${Date.now()}`;
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream'
+        },
         body: JSON.stringify({
           sessionId,
           message: text,
           selectedNeed: currentNeed,
-          chatHistory: messages.map((m) => ({ sender: m.sender, text: m.text }))
-        })
+          chatHistory: messages.map((m) => ({ sender: m.sender, text: m.text })),
+          stream: true
+        }),
+        signal: abortController.signal
       });
 
-      const data = await res.json();
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      if (data.recommendedService && !leadForm.businessNeed) {
-        setLeadForm((prev) => ({ ...prev, businessNeed: data.recommendedService }));
+      const contentType = res.headers.get('content-type') || '';
+
+      if (contentType.includes('text/event-stream') && res.body) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let botMessageCreated = false;
+        let accumulatedText = '';
+        let botMetadata: Partial<ChatMessage> = {};
+
+        setIsStreaming(true);
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || !trimmed.startsWith('data: ')) continue;
+            const jsonStr = trimmed.slice(6).trim();
+            if (!jsonStr) continue;
+
+            try {
+              const event = JSON.parse(jsonStr);
+
+              if (event.type === 'start') {
+                if (event.conversationId) {
+                  setConversationId(event.conversationId);
+                }
+                if (event.recommendedService && !leadForm.businessNeed) {
+                  setLeadForm((prev) => ({ ...prev, businessNeed: event.recommendedService }));
+                }
+                botMetadata = {
+                  recommendedService: event.recommendedService,
+                  sources: event.sources,
+                  isFallback: event.isFallback
+                };
+              } else if (event.type === 'chunk') {
+                accumulatedText += event.text;
+
+                if (!botMessageCreated) {
+                  botMessageCreated = true;
+                  setIsLoading(false); // Stop "thinking" dots, typewriter has begun!
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      id: botMsgId,
+                      sender: 'bot',
+                      text: accumulatedText,
+                      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                      isStreaming: true,
+                      ...botMetadata
+                    }
+                  ]);
+                } else {
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === botMsgId
+                        ? { ...m, text: accumulatedText, isStreaming: true }
+                        : m
+                    )
+                  );
+                }
+              } else if (event.type === 'done') {
+                const finalAnswer = event.fullAnswer || accumulatedText;
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === botMsgId
+                      ? {
+                          ...m,
+                          text: finalAnswer,
+                          isStreaming: false,
+                          recommendedService: event.recommendedService,
+                          sources: event.sources,
+                          suggestLeadCapture: event.suggestLeadCapture,
+                          followUpQuestions: event.followUpQuestions,
+                          quickActions: event.quickActions,
+                          isFallback: event.isFallback
+                        }
+                      : m
+                  )
+                );
+              }
+            } catch (err) {
+              console.warn('Failed to parse SSE chunk:', err);
+            }
+          }
+        }
+
+        // Final safety check after stream ends: ensure isStreaming is marked false
+        setMessages((prev) =>
+          prev.map((m) => (m.id === botMsgId ? { ...m, isStreaming: false } : m))
+        );
+      } else {
+        // Fallback for non-streaming JSON responses
+        const data = await res.json();
+        if (data.conversationId) {
+          setConversationId(data.conversationId);
+        }
+
+        if (data.recommendedService && !leadForm.businessNeed) {
+          setLeadForm((prev) => ({ ...prev, businessNeed: data.recommendedService }));
+        }
+
+        const botMsg: ChatMessage = {
+          id: botMsgId,
+          sender: 'bot',
+          text: data.answer,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          recommendedService: data.recommendedService,
+          sources: data.sources,
+          suggestLeadCapture: data.suggestLeadCapture,
+          followUpQuestions: data.followUpQuestions,
+          quickActions: data.quickActions,
+          isFallback: data.isFallback,
+          isStreaming: false
+        };
+
+        setMessages((prev) => [...prev, botMsg]);
       }
-
-      const botMsg: ChatMessage = {
-        id: `bot_${Date.now()}`,
-        sender: 'bot',
-        text: data.answer,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        recommendedService: data.recommendedService,
-        sources: data.sources,
-        suggestLeadCapture: data.suggestLeadCapture,
-        followUpQuestions: data.followUpQuestions,
-        quickActions: data.quickActions,
-        isFallback: data.isFallback
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (err) {
-      const errorMsg: ChatMessage = {
-        id: `err_${Date.now()}`,
-        sender: 'bot',
-        text: 'Mohon maaf, terjadi kendala koneksi ke server. Silakan coba kembali atau hubungi via WhatsApp di [0896 2831 0192](https://wa.me/6289628310192).',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isFallback: true
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        console.log('AI generation stopped by user');
+      } else {
+        const errorMsg: ChatMessage = {
+          id: `err_${Date.now()}`,
+          sender: 'bot',
+          text: 'Mohon maaf, terjadi kendala koneksi ke server. Silakan coba kembali atau hubungi via WhatsApp di [0896 2831 0192](https://wa.me/6289628310192).',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isFallback: true,
+          isStreaming: false
+        };
+        setMessages((prev) => [...prev, errorMsg]);
+      }
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
+      abortControllerRef.current = null;
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   };
@@ -741,13 +878,16 @@ export default function ChatWidget({
                             : 'bg-slate-50/90 border border-slate-200/70 text-slate-800 rounded-bl-xs shadow-2xs font-normal'
                         }`}
                       >
-                      {/* Message Content with Markdown rendering */}
+                      {/* Message Content with Markdown rendering & Typewriter Caret */}
                       <div className="whitespace-pre-line prose prose-sm max-w-none text-[13px] leading-[1.65]">
                         {formatBotMessage(msg.text)}
+                        {msg.isStreaming && (
+                          <span className="inline-block w-1.5 h-3.5 ml-1 bg-[#005DAD] animate-pulse align-middle rounded-xs" />
+                        )}
                       </div>
 
                       {/* Recommended Service Badge */}
-                      {msg.recommendedService && (
+                      {msg.recommendedService && !msg.isStreaming && (
                         <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-[11px] font-bold tracking-tight">
                           <Sparkles className="w-3.5 h-3.5 text-[#005DAD]" />
                           <span>Layanan: {msg.recommendedService}</span>
@@ -755,7 +895,7 @@ export default function ChatWidget({
                       )}
 
                       {/* Official Sources */}
-                      {msg.sources && msg.sources.length > 0 && (
+                      {msg.sources && msg.sources.length > 0 && !msg.isStreaming && (
                         <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
                           <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">Sumber:</span>
                           {msg.sources.map((s, idx) => (
@@ -766,18 +906,26 @@ export default function ChatWidget({
                         </div>
                       )}
 
-                      {/* Timestamp */}
+                      {/* Timestamp & Realtime indicator */}
                       <div
-                        className={`mt-1.5 text-[10px] font-mono ${
+                        className={`mt-1.5 flex items-center justify-between gap-2 text-[10px] font-mono ${
                           msg.sender === 'user' ? 'text-sky-100/90 text-right' : 'text-slate-400'
                         }`}
                       >
-                        {msg.timestamp}
+                        {msg.sender === 'bot' && msg.isStreaming ? (
+                          <span className="inline-flex items-center gap-1 text-[#005DAD] font-medium not-italic animate-pulse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#005DAD]" />
+                            Mengetik respons...
+                          </span>
+                        ) : (
+                          <span></span>
+                        )}
+                        <span>{msg.timestamp}</span>
                       </div>
                     </div>
 
                     {/* Follow-up Questions Suggestions */}
-                    {msg.followUpQuestions && msg.followUpQuestions.length > 0 && (
+                    {msg.followUpQuestions && msg.followUpQuestions.length > 0 && !msg.isStreaming && (
                       <div className="mt-2 flex flex-wrap gap-1.5 max-w-[85%]">
                         {msg.followUpQuestions.map((q, idx) => (
                           <button
@@ -793,7 +941,7 @@ export default function ChatWidget({
                     )}
 
                     {/* Lead Capture CTA Card */}
-                    {msg.suggestLeadCapture && !leadSubmitted && (
+                    {msg.suggestLeadCapture && !leadSubmitted && !msg.isStreaming && (
                       <div className="mt-3 w-full sm:w-[90%] bg-gradient-to-br from-[#005DAD]/5 via-sky-50/50 to-[#005DAD]/10 border border-[#005DAD]/25 rounded-2xl p-4 shadow-sm">
                         <div className="flex items-start gap-3">
                           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#005DAD] to-[#004785] text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -831,8 +979,8 @@ export default function ChatWidget({
                   </div>
                 ))}
 
-                {/* Typing Indicator */}
-                {isLoading && (
+                {/* Typing Indicator (Only before first token/chunk arrives) */}
+                {isLoading && !messages.some((m) => m.isStreaming) && (
                   <div className="flex gap-2.5 items-start">
                     <div className="w-7 h-7 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs mt-1 ring-1 ring-black/5">
                       <ChatbotIcon size="xs" />
@@ -843,7 +991,7 @@ export default function ChatWidget({
                         <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.2s]"></div>
                         <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.4s]"></div>
                         <span className="text-xs text-slate-500 font-medium ml-1.5">
-                          Thinking...
+                          Inpartner AI sedang berpikir...
                         </span>
                       </div>
                     </div>
@@ -870,16 +1018,28 @@ export default function ChatWidget({
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={agentConfig.inputPlaceholder}
                 className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-slate-900 text-[13px] font-medium pl-4 pr-12 py-3 rounded-2xl border border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal"
-                disabled={isLoading}
+                disabled={isLoading || isStreaming}
               />
-              <button
-                type="submit"
-                disabled={!inputMessage.trim() || isLoading}
-                aria-label="Send message"
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#005DAD] hover:bg-[#004785] text-white cursor-pointer active:scale-95 shadow-xs"
-              >
-                <ArrowUp className="w-4 h-4 stroke-[2.5]" />
-              </button>
+              {isLoading || isStreaming ? (
+                <button
+                  type="button"
+                  onClick={handleStopGeneration}
+                  aria-label="Stop generation"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer active:scale-95 shadow-xs border border-rose-200"
+                  title="Hentikan respons"
+                >
+                  <Square className="w-3.5 h-3.5 fill-rose-600 stroke-rose-600" />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={!inputMessage.trim()}
+                  aria-label="Send message"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#005DAD] hover:bg-[#004785] text-white cursor-pointer active:scale-95 shadow-xs"
+                >
+                  <ArrowUp className="w-4 h-4 stroke-[2.5]" />
+                </button>
+              )}
             </form>
 
             {/* Disclaimer Matching Screenshot */}

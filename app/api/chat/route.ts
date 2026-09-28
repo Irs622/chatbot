@@ -5,7 +5,13 @@ import {
   updateConversationIntent,
   logAnalyticsEvent
 } from '@/lib/db';
-import { generateConsultationResponse } from '@/lib/ai';
+import {
+  generateConsultationResponse,
+  generateConsultationResponseStream,
+  AIStreamEvent
+} from '@/lib/ai';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +20,8 @@ export async function POST(req: NextRequest) {
       sessionId,
       message,
       selectedNeed,
-      chatHistory
+      chatHistory,
+      stream = true
     } = body;
 
     if (!message || typeof message !== 'string') {
@@ -24,7 +31,7 @@ export async function POST(req: NextRequest) {
     const session = sessionId || `sess_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     const conversation = getOrCreateConversation(session, selectedNeed);
 
-    // Save user message to database
+    // Save user message to database immediately
     addMessage({
       conversation_id: conversation.id,
       sender: 'user',
@@ -40,44 +47,124 @@ export async function POST(req: NextRequest) {
       metadata: { query: message, selectedNeed }
     });
 
-    // Generate AI response with RAG
-    const aiResponse = await generateConsultationResponse(
-      message,
-      chatHistory || [],
-      selectedNeed
-    );
+    // 1. Non-streaming legacy mode (if stream: false requested)
+    if (stream === false) {
+      const aiResponse = await generateConsultationResponse(
+        message,
+        chatHistory || [],
+        selectedNeed
+      );
 
-    // Update conversation intent
-    updateConversationIntent(conversation.id, aiResponse.intent);
+      updateConversationIntent(conversation.id, aiResponse.intent);
 
-    // Save bot message to database
-    addMessage({
-      conversation_id: conversation.id,
-      sender: 'bot',
-      message: aiResponse.answer,
-      intent: aiResponse.intent,
-      metadata: {
-        recommended_service: aiResponse.recommendedService,
-        sources: aiResponse.sources,
-        suggest_lead_capture: aiResponse.suggestLeadCapture,
-        quick_actions: aiResponse.quickActions
-      }
-    });
-
-    // If human handoff was needed or fallback
-    if (aiResponse.isFallback) {
-      logAnalyticsEvent({
-        event_name: 'human_handoff',
-        session_id: session,
+      addMessage({
         conversation_id: conversation.id,
-        metadata: { reason: 'fallback_unknown_query' }
+        sender: 'bot',
+        message: aiResponse.answer,
+        intent: aiResponse.intent,
+        metadata: {
+          recommended_service: aiResponse.recommendedService,
+          sources: aiResponse.sources,
+          suggest_lead_capture: aiResponse.suggestLeadCapture,
+          quick_actions: aiResponse.quickActions
+        }
+      });
+
+      if (aiResponse.isFallback) {
+        logAnalyticsEvent({
+          event_name: 'human_handoff',
+          session_id: session,
+          conversation_id: conversation.id,
+          metadata: { reason: 'fallback_unknown_query' }
+        });
+      }
+
+      return NextResponse.json({
+        sessionId: session,
+        conversationId: conversation.id,
+        ...aiResponse
       });
     }
 
-    return NextResponse.json({
-      sessionId: session,
-      conversationId: conversation.id,
-      ...aiResponse
+    // 2. Real-time Streaming Mode (SSE)
+    const encoder = new TextEncoder();
+    const generator = generateConsultationResponseStream(
+      message,
+      chatHistory || [],
+      selectedNeed,
+      true
+    );
+
+    const readable = new ReadableStream({
+      async start(controller) {
+        let finalResponse: Extract<AIStreamEvent, { type: 'done' }> | null = null;
+
+        try {
+          for await (const event of generator) {
+            if (event.type === 'start') {
+              const startData = {
+                ...event,
+                sessionId: session,
+                conversationId: conversation.id
+              };
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(startData)}\n\n`));
+            } else if (event.type === 'chunk') {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+            } else if (event.type === 'done') {
+              finalResponse = event;
+              const doneData = {
+                ...event,
+                sessionId: session,
+                conversationId: conversation.id
+              };
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(doneData)}\n\n`));
+            }
+          }
+
+          if (finalResponse) {
+            // Save bot message to database upon stream completion
+            addMessage({
+              conversation_id: conversation.id,
+              sender: 'bot',
+              message: finalResponse.fullAnswer,
+              intent: finalResponse.intent,
+              metadata: {
+                recommended_service: finalResponse.recommendedService,
+                sources: finalResponse.sources,
+                suggest_lead_capture: finalResponse.suggestLeadCapture,
+                quick_actions: finalResponse.quickActions
+              }
+            });
+
+            updateConversationIntent(conversation.id, finalResponse.intent);
+
+            if (finalResponse.isFallback) {
+              logAnalyticsEvent({
+                event_name: 'human_handoff',
+                session_id: session,
+                conversation_id: conversation.id,
+                metadata: { reason: 'fallback_unknown_query' }
+              });
+            }
+          }
+        } catch (err: any) {
+          console.error('Error during chat stream:', err);
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ type: 'error', error: err.message || 'Stream error' })}\n\n`)
+          );
+        } finally {
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(readable, {
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no'
+      }
     });
   } catch (error: any) {
     console.error('Error in /api/chat:', error);
