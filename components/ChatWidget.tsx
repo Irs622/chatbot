@@ -245,12 +245,12 @@ export default function ChatWidget({
     }
   }, [isOpen, sessionId, conversationId]);
 
-  // Scroll to bottom on new message
+  // Scroll to bottom on new message (Instant during streaming to prevent animation jitter, smooth on complete)
   useEffect(() => {
     if (messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current?.scrollIntoView({ behavior: isStreaming ? 'auto' : 'smooth' });
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isStreaming]);
 
   const handleStopGeneration = () => {
     if (abortControllerRef.current) {
@@ -663,7 +663,7 @@ export default function ChatWidget({
           className={`${
             embeddedMode
               ? 'w-full h-full'
-              : 'fixed bottom-24 right-4 sm:right-6 z-50 w-[95vw] sm:w-[410px] h-[720px] max-h-[88vh] rounded-3xl shadow-2xl border border-slate-200/80'
+              : 'fixed bottom-24 right-4 sm:right-6 z-50 w-[95vw] sm:w-[410px] h-[720px] max-h-[88vh] max-sm:h-[calc(100dvh-104px)] max-sm:max-h-[calc(100dvh-104px)] rounded-3xl shadow-2xl border border-slate-200/80'
           } flex flex-col bg-white overflow-hidden transition-all duration-300 font-sans`}
         >
           {/* Minimalist Top Header */}
