@@ -1,58 +1,58 @@
-# Panduan Integrasi Inpartner Agent ke Website Utama (inpartner.id)
+# Inpartner AI Assistant Integration Guide (inpartner.id)
 
-Panduan teknis ini ditujukan untuk **Web Developer, Webmaster, atau Tim IT** yang mengelola website utama [inpartner.id](https://inpartner.id/).
+This technical guide is prepared for **Web Developers, Webmasters, and IT Teams** managing the primary corporate website at [inpartner.id](https://inpartner.id/).
 
 ---
 
-## 🎯 Pilihan Cara Pemasangan
+## 🎯 Deployment Options
 
-Terdapat dua metode integrasi yang didukung secara resmi:
+Three official integration methods are supported:
 
-| Metode | Tingkat Kemudahan | Rekomendasi Penggunaan |
+| Method | Ease of Implementation | Recommended Use Case |
 | :--- | :---: | :--- |
-| **Metode 1: Widget Script (`widget.js`)** | ⭐ Sangat Mudah (1 Baris) | Untuk menampilkan floating chat button di pojok kanan bawah di seluruh halaman website. |
-| **Metode 2: Embedded iFrame** | ⭐ Mudah (HTML Tag) | Untuk menampilkan chatbot langsung di dalam body halaman tertentu (misal: `inpartner.id/konsultasi-ai`). |
-| **Metode 3: Komponen React / Next.js** | ⭐⭐ Menengah | Jika website utama inpartner.id dibangun dengan Next.js / React. |
+| **Method 1: Script Widget (`widget.js`)** | ⭐ Extremely Easy (1 Line) | Injects a floating corporate chat launcher at the bottom-right corner across all web pages. |
+| **Method 2: Embedded iFrame** | ⭐ Easy (Standard HTML) | Embeds the assistant directly inside a dedicated page container (e.g. `inpartner.id/ai-consultation`). |
+| **Method 3: Direct React / Next.js Component** | ⭐⭐ Intermediate | If the main website is architected with Next.js or React. |
 
 ---
 
-## 🚀 Metode 1: Menggunakan Script Widget (Sangat Direkomendasikan)
+## 🚀 Method 1: Using the Script Widget (Highly Recommended)
 
-Script ini bekerja layaknya widget chat modern (Intercom, Zendesk, Tawk.to). Cukup sisipkan script ini sebelum tag penutup `</body>`:
+This script behaves like enterprise concierge widgets (Intercom, Zendesk). Simply insert this snippet right before the closing `</body>` tag:
 
 ```html
 <!-- Inpartner AI Business Consultation Assistant Widget -->
 <script src="https://chat.inpartner.id/widget.js" defer></script>
 ```
-*(Ganti `https://chat.inpartner.id` dengan URL production tempat chatbot ini di-deploy).*
+*(Replace `https://chat.inpartner.id` with your live production deployment URL).*
 
-### 🛠️ Panduan Pasang Berdasarkan Platform Website:
+### 🛠️ Platform-Specific Setup:
 
 #### 1. WordPress
-- **Opsi A (Via Plugin - Paling Aman):**
-  1. Pasang plugin seperti **WPCode** atau **Insert Headers and Footers**.
-  2. Tambahkan snippet baru di bagian **Footer**.
-  3. Masukkan script di atas, lalu klik **Save & Activate**.
-- **Opsi B (Via Tema):**
-  Buka file `footer.php` tema aktif Anda, tempelkan kode script tepat di atas `</body>`.
-- **Opsi C (Via Elementor):**
-  Buka **Elementor > Custom Code > Add New**, pilih lokasi **End of <body>**, masukkan script dan Publish ke Entire Site.
+- **Option A (Via Plugin - Recommended):**
+  1. Install a code manager such as **WPCode** or **Insert Headers and Footers**.
+  2. Create a new snippet assigned to the **Footer** section.
+  3. Paste the script snippet above, then click **Save & Activate**.
+- **Option B (Via Theme):**
+  Open `footer.php` of your active theme, paste the script directly above `</body>`.
+- **Option C (Via Elementor):**
+  Navigate to **Elementor > Custom Code > Add New**, select **End of <body>**, insert the script, and publish to Entire Site.
 
 #### 2. Webflow
-1. Buka **Project Settings** di Webflow.
-2. Masuk ke tab **Custom Code**.
-3. Di bagian **Footer Code**, tempelkan kode `<script ...></script>` di atas.
-4. Klik **Save Changes** dan **Publish**.
+1. Open **Project Settings** in Webflow.
+2. Select the **Custom Code** tab.
+3. Under **Footer Code**, paste the `<script ...></script>` tag.
+4. Click **Save Changes** and **Publish**.
 
-#### 3. Website HTML / PHP / Laravel
-- Buka file layout utama (misal: `index.html`, `footer.php`, atau `resources/views/layouts/app.blade.php`).
-- Tempelkan kode script tepat sebelum tag `</body>`.
+#### 3. Standard HTML / PHP / Laravel
+- Open your primary root layout file (e.g., `index.html`, `footer.php`, or `resources/views/layouts/app.blade.php`).
+- Paste the script snippet directly before `</body>`.
 
 ---
 
-## 🖼️ Metode 2: Menggunakan iFrame Langsung
+## 🖼️ Method 2: Dedicated iFrame Embed
 
-Jika Anda ingin chatbot tampil tersemat di tengah halaman tertentu (misalnya halaman dedicated *"Konsultasi Bisnis"*):
+If you wish to embed the assistant within the body of a dedicated consultation page:
 
 ```html
 <div style="width: 100%; max-width: 440px; height: 750px; margin: 0 auto; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12);">
@@ -62,30 +62,29 @@ Jika Anda ingin chatbot tampil tersemat di tengah halaman tertentu (misalnya hal
     height="100%"
     frameborder="0"
     allow="clipboard-write"
-    title="Inpartner Agent"
+    title="Inpartner AI Assistant"
   ></iframe>
 </div>
 ```
 
 ---
 
-## ⚛️ Metode 3: Integrasi Direct Komponen (Jika Website Utama Menggunakan Next.js / React)
+## ⚛️ Method 3: Direct Component Integration (Next.js / React)
 
-Jika website utama Anda juga menggunakan Next.js App Router:
-1. Salin folder komponen [`components/ChatWidget.tsx`](./components/ChatWidget.tsx) ke dalam projek website utama.
-2. Salin folder [`lib/`](./lib/) dan [`knowledge/`](./knowledge/).
-3. Salin route backend API ke dalam folder `app/api/`:
+If your primary website is built with Next.js App Router:
+1. Copy [`components/ChatWidget.tsx`](./components/ChatWidget.tsx) into your component directory.
+2. Copy [`lib/`](./lib/) and [`knowledge/`](./knowledge/).
+3. Replicate backend API routes in your `app/api/` folder:
    - `app/api/chat/route.ts`
    - `app/api/leads/route.ts`
    - `app/api/analytics/route.ts`
-4. Panggil komponen di halaman yang diinginkan:
+4. Render the component on your target page:
    ```tsx
    import ChatWidget from '@/components/ChatWidget';
 
    export default function Page() {
      return (
        <main>
-         {/* Halaman Anda */}
          <ChatWidget initialOpen={false} embeddedMode={false} />
        </main>
      );
@@ -94,34 +93,34 @@ Jika website utama Anda juga menggunakan Next.js App Router:
 
 ---
 
-## 🌐 Konfigurasi Subdomain & Keamanan (Domain Setup)
+## 🌐 Custom Subdomain & Security Configuration
 
-1. **Rekomendasi Penamaan Subdomain:**
-   - Gunakan subdomain `chat.inpartner.id` atau `bot.inpartner.id`.
-2. **Pengaturan DNS:**
-   - Buat record **CNAME**:
+1. **Subdomain Recommendation:**
+   - Configure a dedicated subdomain: `chat.inpartner.id` or `bot.inpartner.id`.
+2. **DNS Configuration:**
+   - Create a **CNAME** DNS record:
      - *Name:* `chat`
-     - *Target:* `cname.vercel-dns.com` (jika menggunakan Vercel) atau IP server Anda.
-3. **CORS & Iframe Header (Security):**
-   - Halaman `/embed-view` sudah diatur agar mengizinkan penyematan iframe dari domain utama `inpartner.id`.
-   - Tidak diperlukan konfigurasi CORS rumit karena pemanggilan API dilakukan secara internal oleh iframe `/embed-view`.
+     - *Target:* `cname.vercel-dns.com` (for Vercel) or your host IP.
+3. **CORS & iFrame Security Headers:**
+   - The `/embed-view` endpoint is configured with permissive `Content-Security-Policy: frame-ancestors *` to allow seamless embedding on `inpartner.id`.
+   - The `/admin` CRM dashboard is secured with `X-Frame-Options: DENY` to prevent clickjacking attacks.
 
 ---
 
-## 📊 Cara Menyimpan ke Google Sheets & Notifikasi Email Otomatis (100% Gratis)
+## 📊 Automated Google Sheets Logging & Email Notifications
 
-Melalui satu webhook Google Apps Script, setiap ada prospek masuk data akan **otomatis tercatat di Google Sheets** dan **email notifikasi langsung terkirim ke tim sales**:
+Using a single Google Apps Script webhook, inbound consultation inquiries are **automatically recorded in Google Sheets** and **dispatched instantly to the corporate advisory sales team**:
 
-1. Buat **Google Spreadsheet** baru, beri header kolom:
-   `Waktu | Nama | Perusahaan | WhatsApp | Email | Kebutuhan | Catatan`
-2. Buka menu **Extensions > Apps Script**, tempelkan kode lengkap ini:
+1. Create a new **Google Spreadsheet** with columns:
+   `Timestamp | Full Name | Company | WhatsApp | Email | Advisory Need | Notes`
+2. Open **Extensions > Apps Script** and paste this script:
    ```javascript
    function doPost(e) {
      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
      var data = JSON.parse(e.postData.contents);
      var lead = data.lead || {};
      
-     // 1. Simpan baris baru ke Google Sheets
+     // 1. Append record to Google Sheets
      sheet.appendRow([
        new Date(),
        lead.name,
@@ -132,23 +131,23 @@ Melalui satu webhook Google Apps Script, setiap ada prospek masuk data akan **ot
        lead.notes || '-'
      ]);
 
-     // 2. Kirim Notifikasi Email Otomatis ke Tim Inpartner
-     var targetEmail = "corporatesecretary@inpartner.id"; // Ubah bila ingin dikirim ke email lain
+     // 2. Dispatch real-time executive email alert
+     var targetEmail = "corporatesecretary@inpartner.id";
      var waLink = lead.whatsapp_link || ("https://wa.me/" + lead.phone.replace(/[^0-9]/g, ''));
      
      MailApp.sendEmail({
        to: targetEmail,
-       subject: "🚨 Prospek Baru (Inpartner Agent): " + lead.name + " - " + lead.business_need,
+       subject: "🚨 New Business Lead (Inpartner Assistant): " + lead.name + " - " + lead.business_need,
        htmlBody: 
-         "<div style='font-family:sans-serif; padding:15px; border:1px solid #e2e8f0; border-radius:10px; max-width:550px;'>" +
-           "<h3 style='color:#005DAD; margin-top:0;'>Prospek Klien Baru dari Website</h3>" +
-           "<p><strong>Nama:</strong> " + lead.name + "</p>" +
-           "<p><strong>Perusahaan:</strong> " + (lead.company || "-") + "</p>" +
-           "<p><strong>WhatsApp:</strong> <a href='" + waLink + "'>" + lead.phone + " (Klik Chat WhatsApp)</a></p>" +
+         "<div style='font-family:sans-serif; padding:18px; border:1px solid #e2e8f0; border-radius:12px; max-width:550px;'>" +
+           "<h3 style='color:#005DAD; margin-top:0;'>New Corporate Advisory Consultation Request</h3>" +
+           "<p><strong>Name:</strong> " + lead.name + "</p>" +
+           "<p><strong>Company:</strong> " + (lead.company || "-") + "</p>" +
+           "<p><strong>WhatsApp:</strong> <a href='" + waLink + "'>" + lead.phone + "</a></p>" +
            "<p><strong>Email:</strong> " + (lead.email || "-") + "</p>" +
-           "<p><strong>Kebutuhan Layanan:</strong> " + lead.business_need + "</p>" +
-           "<p><strong>Catatan:</strong> " + (lead.notes || "-") + "</p>" +
-           "<br><a href='" + waLink + "' style='background:#005DAD; color:#fff; padding:10px 16px; border-radius:6px; text-decoration:none; font-weight:bold;'>Hubungi Klien via WhatsApp</a>" +
+           "<p><strong>Advisory Need:</strong> " + lead.business_need + "</p>" +
+           "<p><strong>Project Scope / Notes:</strong> " + (lead.notes || "-") + "</p>" +
+           "<br><a href='" + waLink + "' style='background:#005DAD; color:#fff; padding:10px 18px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;'>Engage Client via WhatsApp</a>" +
          "</div>"
      });
 
@@ -156,24 +155,23 @@ Melalui satu webhook Google Apps Script, setiap ada prospek masuk data akan **ot
        .setMimeType(ContentService.MimeType.JSON);
    }
    ```
-3. Klik **Deploy > New deployment > Web app**, pilih *Who has access: Anyone*.
-4. Salin URL Web App yang didapat, lalu masukkan ke file `.env.local` atau Environment Variables di Vercel:
+3. Click **Deploy > New deployment > Web app**, select *Who has access: Anyone*.
+4. Copy the deployment Web App URL and add it to your environment variables on Vercel:
    ```env
    LEAD_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
    ```
-5. Selesai! Data otomatis masuk ke Google Sheets dan email alert langsung terkirim ke tim sales setiap ada formulir yang dikirim.
+5. Done! Leads now stream live to your spreadsheet and sales inboxes simultaneously.
 
 ---
 
-## 🧪 Pengujian Setelah Integrasi
+## 🧪 Post-Integration Verification Checklist
 
-Setelah kode dipasang di website:
-1. Buka website utama `inpartner.id` di peramban (gunakan *Incognito* / *Private Window*).
-2. Periksa apakah tombol lingkaran biru `#005DAD` muncul di pojok kanan bawah.
-3. Klik tombol tersebut dan pastikan:
-   - Jendela sambutan terbuka mulus.
-   - Opsi *"Business Growth"*, *"Funding & Profitability"*, dan *"Not sure what I need"* dapat diklik.
-   - Pesan balasan AI keluar secara solutif dan terarah.
-   - Coba buka dari layar smartphone untuk memverifikasi responsivitas mobile (tampilan akan menyesuaikan layar penuh secara nyaman).
-
-Jika ada kendala teknis atau pertanyaan integrasi, silakan hubungi tim pengembang AI Inpartner.
+After adding the snippet to `inpartner.id`:
+1. Open `inpartner.id` in a browser Incognito window.
+2. Confirm that the `#005DAD` circular launcher appears at the bottom-right corner.
+3. Click the launcher to verify:
+   - Greeting window animates smoothly at 60 FPS.
+   - Quick action prompt chips initiate the appropriate advisory diagnostic flow.
+   - The streaming typewriter responds in real time.
+   - The consultation lead modal submits successfully.
+   - Responsive layout adapts cleanly on mobile screens (`dvh` viewport adaptation).

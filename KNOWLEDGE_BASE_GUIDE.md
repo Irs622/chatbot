@@ -1,76 +1,76 @@
-# Panduan Pengelolaan Knowledge Base Inpartner Agent
+# Inpartner Knowledge Base Management Guide
 
-Panduan ini ditujukan bagi **Tim Internal Inpartner (Business Development, Konsultan, Marketing, & Admin)** untuk mengupdate data, layanan, kontak, dan studi kasus agar AI Chatbot selalu akurat, terkini, dan tidak memberikan informasi yang salah (*hallucination*).
+This guide is designed for the **Inpartner Internal Team (Business Development, Consultants, Marketing, & Management)** to maintain and update corporate data, services, contact details, and case studies so the AI Assistant remains accurate, timely, and free of hallucinations.
 
 ---
 
-## 📂 Di Mana Data Disimpan?
+## 📂 Where Is Data Stored?
 
-Seluruh pengetahuan chatbot disimpan dalam folder [`knowledge/`](./knowledge/) dalam bentuk file teks sederhana berformat **Markdown (`.md`)**.
+All chatbot domain knowledge is maintained within the [`knowledge/`](./knowledge/) directory in lightweight **Markdown (`.md`)** files.
 
 ```text
 knowledge/
 ├── company/
-│   └── company-profile.md       # Profil resmi, visi, misi, nilai, komitmen ESG
+│   └── company-profile.md       # Official profile, vision, mission, values, ESG commitments
 ├── services/
-│   ├── growth.md                # Detail layanan Business Growth & Ekspansi Pasar
-│   ├── funding.md               # Detail layanan Funding & Kesiapan Investasi
-│   ├── profitability.md         # Detail layanan Profitability & Audit Biaya
-│   └── capacity-building.md     # Detail The Executive Business Program
+│   ├── growth.md                # Business Growth & Market Expansion advisory
+│   ├── funding.md               # Funding Readiness & Investment Advisory
+│   ├── profitability.md         # Profitability & Margin/Cost Structure Optimization
+│   └── capacity-building.md     # The Executive Business Program
 ├── sectors/
-│   └── sectors.md               # 13 sektor industri fokus pendampingan
+│   └── sectors.md               # 13 priority industrial advisory sectors
 ├── projects/
-│   └── projects.md              # Rekam jejak, portofolio, dan studi kasus
+│   └── projects.md              # Track record, portfolio, and corporate case studies
 ├── faq/
-│   └── faq.md                   # Tanya jawab umum seputar cara kerja sama
+│   └── faq.md                   # Frequently asked questions regarding engagement models
 └── contact/
-    └── contact.md               # Alamat kantor, nomor WhatsApp, email, jam kerja
+    └── contact.md               # Office locations, WhatsApp lines, email, operational hours
 ```
 
 ---
 
-## ✍️ Cara Menambah atau Mengubah Data
+## ✍️ How to Add or Update Content
 
-### 1. Mengubah Kontak / Alamat Kantor
-Buka file [`knowledge/contact/contact.md`](./knowledge/contact/contact.md).
-- Jika ada nomor WhatsApp PIC baru atau alamat kantor baru, cukup perbarui nomor di berkas ini.
-- AI akan langsung merujuk pada nomor baru tersebut saat pengunjung menanyakan kontak atau tombol WhatsApp.
+### 1. Updating Contact Details / Office Locations
+Open [`knowledge/contact/contact.md`](./knowledge/contact/contact.md).
+- If a new WhatsApp PIC number or branch address is established, simply update the markdown file.
+- The AI Assistant references these contact channels dynamically during visitor inquiries and WhatsApp click-throughs.
 
-### 2. Menambah Studi Kasus / Portofolio Baru
-Buka file [`knowledge/projects/projects.md`](./projects/projects.md).
-Tambahkan poin baru dengan struktur:
+### 2. Adding a New Case Study / Portfolio Entry
+Open [`knowledge/projects/projects.md`](./knowledge/projects/projects.md).
+Append a new section following this structure:
 ```markdown
-### 5. [Judul Studi Kasus / Sektor Klien]
-- **Konteks:** [Masalah yang dihadapi klien, misal: biaya operasional membengkak 30%]
-- **Peran Inpartner:** [Langkah pendampingan yang dilakukan tim konsultan]
-- **Hasil:** [Hasil konkret yang tercapai, misal: efisiensi biaya tercapai 18% dalam 6 bulan]
+### 5. [Case Study Title / Client Industry Sector]
+- **Context:** [Client operational challenge, e.g., OPEX increased by 30% YoY]
+- **Inpartner Role:** [Strategic advisory interventions deployed by our consulting team]
+- **Measurable Impact:** [Concrete results achieved, e.g., 18% cost efficiency realized within 6 months]
 ```
 
-### 3. Menambah Pertanyaan Baru yang Sering Muncul (FAQ)
-Buka file [`knowledge/faq/faq.md`](./knowledge/faq/faq.md).
-Tambahkan di bagian paling bawah:
+### 3. Adding Frequently Asked Questions (FAQ)
+Open [`knowledge/faq/faq.md`](./knowledge/faq/faq.md).
+Append at the bottom:
 ```markdown
-## Pertanyaan: [Tulis pertanyaan di sini]
-**Jawaban:** [Tulis jawaban resmi yang disetujui manajemen di sini]
+## Question: [Enter query here]
+**Official Answer:** [Enter board-approved response here]
 ```
 
 ---
 
-## 💡 Prinsip Menulis Materi untuk AI (Agar Tidak "Ngawur")
+## 💡 Content Writing Principles for Grounded AI
 
-1. **Gunakan Judul Sub-bab yang Jelas (`##` atau `###`):**
-   Sistem RAG memecah dokumen berdasarkan heading (`##`). Semakin jelas judulnya (misal: `## Skema Biaya Konsultasi`), semakin mudah AI menemukan jawaban yang tepat.
-2. **Tuliskan Batasan Tegas (*What We Don't Do*):**
-   Jika Inpartner tidak menyediakan layanan tertentu (contoh: *Inpartner bukan bank dan tidak memberikan pinjaman langsung*), tuliskan secara gamblang di dokumen agar AI tegas menolaknya.
-3. **Hindari Menuliskan Angka Harga Pasti Jika Bersifat Kustom:**
-   Jika biaya konsultasi bergantung pada skala problem klien, tuliskan:
-   *"Biaya investasi ditentukan setelah sesi diagnostik awal dan disesuaikan dengan ruang lingkup pendampingan."*
-4. **Gunakan Bahasa Indonesia Baku & Profesional:**
-   AI akan meniru nada dan gaya bahasa dari dokumen sumber.
+1. **Use Distinct Section Headings (`##` or `###`):**
+   The semantic chunking engine segments documents based on markdown headings (`##`). Clear descriptive headings (e.g., `## Advisory Engagement Fee Structure`) maximize retrieval precision.
+2. **State Explicit Boundaries (*What We Don't Do*):**
+   If Inpartner does not provide a specific service (e.g., *Inpartner is an independent advisory firm and does not provide direct balance-sheet loans or peer-to-peer lending*), document it explicitly so the AI firmly declines out-of-scope inquiries.
+3. **Avoid Fixed Pricing for Bespoke Advisory:**
+   Since strategic consulting fees depend on engagement scope, state:
+   *"Advisory fees are customized following an initial diagnostic discovery session and tailored to engagement scope."*
+4. **Maintain an Authoritative Executive Tone:**
+   The AI mirrors the tone, terminology, and professionalism of its source documentation.
 
 ---
 
-## 🔄 Kapan Perubahan Mulai Berlaku?
+## 🔄 Deployment & Synchronization
 
-- Di lingkungan **Local Development**: Perubahan pada file markdown langsung aktif pada percakapan berikutnya (tanpa perlu restart server).
-- Di lingkungan **Production**: Cukup lakukan `git commit` dan `push` file markdown yang diubah, sistem hosting (seperti Vercel) akan otomatis memperbarui versi online dalam 1–2 menit.
+- **Local Development**: Modifications to markdown files take effect on the very next query without restarting the server.
+- **Production (Vercel)**: Simply `git commit` and `push` the updated files to `main`. Vercel automatically deploys the updated knowledge base within 1–2 minutes.

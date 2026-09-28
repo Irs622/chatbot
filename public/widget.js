@@ -82,19 +82,19 @@
         '<span style="width:7px; height:7px; border-radius:50%; background:#10b981; display:inline-block; box-shadow:0 0 0 2px rgba(16,185,129,0.25);"></span>' +
         '<span style="font-weight:700; font-size:11.5px; color:#005DAD; letter-spacing:-0.01em;">Inpartner AI Assistant</span>' +
       '</div>' +
-      '<button id="inpartner-teaser-close" aria-label="Tutup sapaan" style="background:none; border:none; color:#94a3b8; font-size:13px; line-height:1; cursor:pointer; padding:3px 5px; border-radius:6px;">✕</button>' +
+      '<button id="inpartner-teaser-close" aria-label="Dismiss greeting" style="background:none; border:none; color:#94a3b8; font-size:13px; line-height:1; cursor:pointer; padding:3px 5px; border-radius:6px;">✕</button>' +
     '</div>' +
     '<div style="font-weight:700; font-size:13px; color:#0f172a; line-height:1.35; margin-bottom:4px;">' +
-      'Butuh Konsultasi Strategi Bisnis atau Optimasi Laba?' +
+      'Need Strategic Advisory or Profit Optimization?' +
     '</div>' +
     '<div style="font-size:11.5px; color:#64748b; line-height:1.4; margin-bottom:10px;">' +
-      'Dapatkan analisis ringkas & solusi 4 pilar Inpartner dalam 2 menit.' +
+      'Get executive diagnostic & 4-pillar advisory insights in 2 minutes.' +
     '</div>' +
     '<div style="display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid #f1f5f9;">' +
       '<span style="font-size:11.5px; font-weight:700; color:#005DAD; display:flex; align-items:center; gap:4px;">' +
-        'Mulai Diskusi &rarr;' +
+        'Start Consultation &rarr;' +
       '</span>' +
-      '<span style="font-size:10.5px; color:#94a3b8; font-weight:500;">Online 24/7 • Gratis</span>' +
+      '<span style="font-size:10.5px; color:#94a3b8; font-weight:500;">Online 24/7 • Complimentary</span>' +
     '</div>';
 
   // Create iframe container
