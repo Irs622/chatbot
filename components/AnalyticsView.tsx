@@ -17,7 +17,10 @@ import {
   Copy,
   Check,
   Sparkles,
-  BarChart2
+  BarChart2,
+  Globe,
+  Building2,
+  Compass
 } from 'lucide-react';
 
 interface HourlyData {
@@ -35,9 +38,22 @@ interface TimeSlot {
 }
 
 interface LocationData {
+  country: string;
+  code: string;
+  flag: string;
   region: string;
+  hub: string;
+  scope: string;
   inquiries: number;
   pct: number;
+}
+
+interface TimezoneData {
+  zone: string;
+  label: string;
+  offset: string;
+  hours: string;
+  share: string;
 }
 
 interface ClientQuestion {
@@ -98,21 +114,27 @@ export default function AnalyticsView() {
     return (
       <div className="flex items-center justify-center p-20 text-slate-400 text-xs">
         <Activity className="w-5 h-5 animate-spin mr-2 text-slate-900" />
-        <span>Loading analytics data...</span>
+        <span>Loading international analytics data...</span>
       </div>
     );
   }
 
-  const { totals, kpis, hourlyDistribution, timeSlots, locationDistribution, questions } = data;
+  const { totals, kpis, hourlyDistribution, timeSlots, locationDistribution, timezones, questions } = data;
 
   return (
     <div className="space-y-6">
       {/* 1. Header with Refresh */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">Analytics Overview</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-900">Analytics Overview</h2>
+            <span className="bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+              <Globe className="w-3 h-3" />
+              <span>Global Inbound</span>
+            </span>
+          </div>
           <p className="text-sm text-slate-500 mt-0.5">
-            Chatbot visitor volume, engagement, and conversion metrics.
+            Cross-border visitor volume, international inquiries, and conversion metrics.
           </p>
         </div>
 
@@ -134,7 +156,7 @@ export default function AnalyticsView() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-          <div className="text-xs text-emerald-600 font-medium">Client Inquiries</div>
+          <div className="text-xs text-emerald-600 font-medium">Advisory Inquiries</div>
           <div className="text-2xl font-bold text-emerald-600 mt-1">{totals.leads}</div>
           <div className="text-[11px] text-slate-400 mt-1">{kpis.leadCaptureRate}% capture rate</div>
         </div>
@@ -142,38 +164,40 @@ export default function AnalyticsView() {
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
           <div className="text-xs text-sky-600 font-medium flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
-            <span>Peak Hours</span>
+            <span>Peak Consultation Hours</span>
           </div>
           <div className="text-xl font-bold text-slate-900 mt-1">14:00 - 18:00</div>
-          <div className="text-[11px] text-slate-400 mt-1">WIB (Business Afternoon)</div>
+          <div className="text-[11px] text-slate-400 mt-1">SGT / WIB (APAC & EMEA Overlap)</div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
           <div className="text-xs text-amber-600 font-medium flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" />
-            <span>Top Region</span>
+            <Globe className="w-3.5 h-3.5" />
+            <span>Top International Hub</span>
           </div>
-          <div className="text-xl font-bold text-slate-900 mt-1">Jabodetabek</div>
-          <div className="text-[11px] text-slate-400 mt-1">52% of total inquiries</div>
+          <div className="text-xl font-bold text-slate-900 mt-1 flex items-center gap-1.5">
+            <span>🇸🇬 Singapore</span>
+          </div>
+          <div className="text-[11px] text-slate-400 mt-1">32% of cross-border inquiries</div>
         </div>
       </div>
 
       {/* 3. Graphical Section: Traffic by Hour (Kapan) & Geography (Dimana) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Hourly Traffic Distribution (7 cols) */}
+        {/* Hourly Traffic Distribution Across Global Timezones (7 cols) */}
         <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-100 pb-3">
             <div>
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
                 <BarChart2 className="w-4 h-4 text-sky-600" />
-                <span>Hourly Visitor Access Distribution (WIB)</span>
+                <span>24-Hour Global Inbound Traffic (SGT / WIB)</span>
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                When visitors ask questions and seek corporate advisory
+                When international corporate clients and investors consult the chatbot
               </p>
             </div>
             <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded self-start sm:self-auto">
-              Peak: 14:00 - 18:00 WIB
+              Peak: 14:00 - 18:00 SGT
             </span>
           </div>
 
@@ -189,7 +213,7 @@ export default function AnalyticsView() {
                   >
                     {/* Tooltip */}
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-slate-900 text-white text-[10px] font-mono px-2 py-0.5 rounded shadow pointer-events-none whitespace-nowrap z-20">
-                      {item.label}: {item.count} messages
+                      {item.label} SGT: {item.count} messages
                     </div>
 
                     {/* Bar */}
@@ -206,7 +230,7 @@ export default function AnalyticsView() {
                       />
                     </div>
 
-                    {/* Hour Label (show every 3 hours for readability) */}
+                    {/* Hour Label */}
                     <span className="text-[9px] text-slate-400 font-mono">
                       {item.hour % 3 === 0 ? item.hour : ''}
                     </span>
@@ -215,80 +239,97 @@ export default function AnalyticsView() {
               })}
             </div>
             <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
-              <span>00:00 (Midnight)</span>
-              <span>12:00 (Noon)</span>
-              <span>23:00 (Night)</span>
+              <span>00:00 (Midnight SGT)</span>
+              <span>12:00 (Noon SGT)</span>
+              <span>23:00 (Night SGT)</span>
             </div>
           </div>
 
-          {/* Time Slot Aggregation Pills */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100">
-            {timeSlots?.map((slot: TimeSlot, i: number) => (
-              <div
-                key={i}
-                className={`p-2.5 rounded-lg border text-xs ${
-                  slot.isPeak
-                    ? 'bg-sky-50/70 border-sky-200 text-sky-900'
-                    : 'bg-slate-50 border-slate-200 text-slate-700'
-                }`}
-              >
-                <div className="text-[10px] font-medium opacity-80">{slot.label.split('(')[0]}</div>
-                <div className="text-sm font-bold mt-0.5">{slot.count} inquiries</div>
-                <div className="text-[10px] opacity-70 mt-0.5">{slot.pct}% of total</div>
-              </div>
-            ))}
+          {/* Global Timezones Breakdown */}
+          <div className="pt-2 border-t border-slate-100 space-y-2">
+            <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+              <Compass className="w-3.5 h-3.5 text-slate-400" />
+              <span>Active Inbound Timezones:</span>
+            </span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              {timezones?.map((tz: TimezoneData, i: number) => (
+                <div key={i} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div>
+                    <span className="font-semibold text-slate-900 block text-[11px]">{tz.zone} ({tz.offset})</span>
+                    <span className="text-[10px] text-slate-500">{tz.label} • {tz.hours}</span>
+                  </div>
+                  <span className="font-bold text-slate-700 text-xs bg-white px-2 py-0.5 rounded border border-slate-200">
+                    {tz.share}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Client Origin / Location (5 cols) */}
+        {/* International Locations Breakdown (Dimana / 5 cols) */}
         <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-          <div className="border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-amber-600" />
-              <span>Visitor & Inquiry Location Breakdown</span>
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Geographic origin of corporate advisory requests
-            </p>
+          <div className="border-b border-slate-100 pb-3 flex items-start justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
+                <Globe className="w-4 h-4 text-sky-600" />
+                <span>International Client Locations</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Cross-border corporate advisory & FDI market entry hubs
+              </p>
+            </div>
+            <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+              Global
+            </span>
           </div>
 
-          {/* Location Progress Bars */}
+          {/* Location Progress List */}
           <div className="space-y-3.5 pt-1">
             {locationDistribution?.map((loc: LocationData, idx: number) => (
               <div key={idx} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-800">{loc.region}</span>
-                  <span className="font-semibold text-slate-600">{loc.pct}%</span>
+                  <div className="flex items-center gap-1.5 font-medium text-slate-900">
+                    <span className="text-sm">{loc.flag}</span>
+                    <span>{loc.country}</span>
+                    <span className="text-[10px] text-slate-400 font-normal">({loc.hub})</span>
+                  </div>
+                  <span className="font-semibold text-slate-700">{loc.pct}%</span>
                 </div>
+
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full ${
                       idx === 0
-                        ? 'bg-slate-900'
-                        : idx === 1
                         ? 'bg-sky-600'
+                        : idx === 1
+                        ? 'bg-slate-900'
                         : idx === 2
-                        ? 'bg-amber-600'
+                        ? 'bg-rose-600'
+                        : idx === 3
+                        ? 'bg-indigo-600'
                         : 'bg-slate-400'
                     }`}
                     style={{ width: `${loc.pct}%` }}
                   />
                 </div>
+
+                <div className="text-[10px] text-slate-500 truncate">
+                  Scope: {loc.scope}
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Device & Channel Context */}
-          <div className="pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600">
-            <span className="text-[11px] font-semibold text-slate-500 block">Access Channels:</span>
-            <div className="flex items-center justify-between py-1 border-b border-slate-50">
-              <span>Mobile Smartphone (WhatsApp / Web)</span>
-              <strong className="text-slate-800 font-semibold">68%</strong>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <span>Desktop (Corporate Office / Laptop)</span>
-              <strong className="text-slate-800 font-semibold">32%</strong>
-            </div>
+          {/* Summary Box */}
+          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 text-xs text-slate-600 space-y-1">
+            <strong className="text-slate-900 block text-[11px] font-semibold">
+              🌐 Inbound Consultation Focus:
+            </strong>
+            <p className="text-[11px] leading-relaxed text-slate-500">
+              Singapore and East Asian corporate entities (Japan & Korea) represent <strong>58% of inbound demand</strong>, primarily seeking FDI entity structuring (PT PMA), cross-border M&A, and local supply chain optimization.
+            </p>
           </div>
         </div>
       </div>
@@ -301,14 +342,14 @@ export default function AnalyticsView() {
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
                 <MessageSquare className="w-4 h-4 text-slate-700" />
-                <span>Client Questions Log</span>
+                <span>Client Questions & Inquiries Log</span>
               </h3>
               <span className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
                 {filteredQuestions.length} questions
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Exact questions and inquiries typed by website visitors to the AI Assistant
+              Exact questions and inquiries typed by international & domestic website visitors
             </p>
           </div>
 
@@ -329,9 +370,9 @@ export default function AnalyticsView() {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
           {[
             { id: 'all', label: 'All Topics' },
-            { id: 'profitability', label: 'Profitability & Margin' },
             { id: 'funding', label: 'Funding & Investment' },
-            { id: 'growth', label: 'Business Growth' },
+            { id: 'profitability', label: 'Profitability & Margin' },
+            { id: 'growth', label: 'Business Growth & Market Entry' },
             { id: 'capacity', label: 'Executive Program' }
           ].map((pill) => (
             <button
@@ -363,7 +404,7 @@ export default function AnalyticsView() {
                     month: 'short',
                     hour: '2-digit',
                     minute: '2-digit'
-                  }) + ' WIB'
+                  }) + ' SGT'
                 : '-';
 
               return (

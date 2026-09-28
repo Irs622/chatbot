@@ -344,12 +344,75 @@ export function getAnalyticsSummary() {
     { label: 'Night (21:00 - 06:00 WIB)', count: nightCount, pct: Math.round((nightCount / totalSlots) * 100) }
   ];
 
-  // 2. Client Inquiries / Visitor Geographic Distribution
+  // 2. International & Cross-Border Client Geographic Distribution
   const locationDistribution = [
-    { region: 'Jakarta (Jabodetabek)', inquiries: Math.max(Math.round(leadsCount * 0.52), 2), pct: 52 },
-    { region: 'Surabaya & East Java', inquiries: Math.max(Math.round(leadsCount * 0.24), 1), pct: 24 },
-    { region: 'Bandung & West Java', inquiries: Math.max(Math.round(leadsCount * 0.14), 1), pct: 14 },
-    { region: 'Bali, Sumatera & Other', inquiries: Math.max(Math.round(leadsCount * 0.10), 0), pct: 10 }
+    {
+      country: 'Singapore',
+      code: 'SG',
+      flag: '🇸🇬',
+      region: 'Singapore (APAC Hub)',
+      hub: 'Marina Bay / Raffles Place',
+      scope: 'Regional Holding, Cross-Border M&A, VC/PE Funds',
+      inquiries: Math.max(Math.round(leadsCount * 0.32), 2),
+      pct: 32
+    },
+    {
+      country: 'Indonesia',
+      code: 'ID',
+      flag: '🇮🇩',
+      region: 'Indonesia (Domestic Market)',
+      hub: 'Jakarta (SCBD) & Surabaya',
+      scope: 'Operating Subsidiaries, Joint Ventures, Supply Chain',
+      inquiries: Math.max(Math.round(leadsCount * 0.26), 1),
+      pct: 26
+    },
+    {
+      country: 'Japan',
+      code: 'JP',
+      flag: '🇯🇵',
+      region: 'Japan (East Asia)',
+      hub: 'Tokyo (Marunouchi) & Osaka',
+      scope: 'Automotive, Industrial FDI, Energy Trading',
+      inquiries: Math.max(Math.round(leadsCount * 0.15), 1),
+      pct: 15
+    },
+    {
+      country: 'South Korea',
+      code: 'KR',
+      flag: '🇰🇷',
+      region: 'South Korea (East Asia)',
+      hub: 'Seoul (Gangnam) & Pangyo',
+      scope: 'EV Battery Tech, Consumer Retail, Gaming Entry',
+      inquiries: Math.max(Math.round(leadsCount * 0.11), 1),
+      pct: 11
+    },
+    {
+      country: 'United States & UK',
+      code: 'US/UK',
+      flag: '🇺🇸',
+      region: 'United States & United Kingdom',
+      hub: 'New York, London, San Francisco',
+      scope: 'Institutional Private Equity, ESG Infrastructure',
+      inquiries: Math.max(Math.round(leadsCount * 0.09), 1),
+      pct: 9
+    },
+    {
+      country: 'Australia & ASEAN',
+      code: 'AU/APAC',
+      flag: '🇦🇺',
+      region: 'Australia & Rest of ASEAN',
+      hub: 'Sydney, Melbourne, Kuala Lumpur',
+      scope: 'Mining, Agribusiness, Regional Trade',
+      inquiries: Math.max(Math.round(leadsCount * 0.07), 0),
+      pct: 7
+    }
+  ];
+
+  const timezones = [
+    { zone: 'SGT / WIB', label: 'Singapore & Indonesia', offset: 'UTC+8 / UTC+7', hours: '09:00 - 18:00', share: '58%' },
+    { zone: 'JST / KST', label: 'Tokyo (Japan) & Seoul (Korea)', offset: 'UTC+9', hours: '10:00 - 19:00', share: '26%' },
+    { zone: 'GMT / CET', label: 'London & Western Europe', offset: 'UTC+0 / UTC+1', hours: '14:00 - 18:00 (Overlap)', share: '9%' },
+    { zone: 'EST / PST', label: 'New York & California', offset: 'UTC-5 / UTC-8', hours: 'Evening / Early Morning', share: '7%' }
   ];
 
   // 3. Client Questions List Extracted from User Messages
@@ -396,6 +459,7 @@ export function getAnalyticsSummary() {
     hourlyDistribution,
     timeSlots,
     locationDistribution,
+    timezones,
     questions,
     eventsDistribution: eventsCountByName,
     recentEvents: db.analytics_events.slice(-20).reverse()
