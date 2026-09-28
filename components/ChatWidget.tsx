@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 import ChatbotIcon from '@/components/ChatbotIcon';
+import { validatePhoneNumber, validateEmail } from '@/lib/validation';
 
 interface ChatMessage {
   id: string;
@@ -337,17 +338,37 @@ export default function ChatWidget({
     setShowMenu(false);
   };
 
+  const phoneValidation = validatePhoneNumber(leadForm.phone);
+
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLeadError('');
 
-    if (!leadForm.name || !leadForm.businessNeed) {
-      setLeadError('Nama dan Kebutuhan Bisnis wajib diisi.');
+    if (!leadForm.name || leadForm.name.trim().length < 2) {
+      setLeadError('Nama lengkap wajib diisi minimal 2 karakter.');
+      return;
+    }
+
+    if (!leadForm.businessNeed) {
+      setLeadError('Kebutuhan Layanan Bisnis wajib dipilih.');
       return;
     }
 
     if (!leadForm.email && !leadForm.phone) {
-      setLeadError('Harap cantumkan Email atau Nomor WhatsApp untuk follow-up.');
+      setLeadError('Harap cantumkan Nomor WhatsApp atau Email untuk follow-up.');
+      return;
+    }
+
+    if (leadForm.phone) {
+      const pValidation = validatePhoneNumber(leadForm.phone);
+      if (!pValidation.isValid) {
+        setLeadError(pValidation.error || 'Format nomor WhatsApp tidak valid.');
+        return;
+      }
+    }
+
+    if (leadForm.email && !validateEmail(leadForm.email)) {
+      setLeadError('Format alamat email tidak valid (contoh: nama@perusahaan.com).');
       return;
     }
 
@@ -944,17 +965,33 @@ export default function ChatWidget({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Nomor WhatsApp / Telepon <span className="text-rose-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600">
+                      Nomor WhatsApp <span className="text-rose-500">*</span>
+                    </label>
+                    {leadForm.phone && (
+                      <span className={`text-[10px] font-semibold ${phoneValidation.isValid ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {phoneValidation.isValid ? '✓ Valid' : `${leadForm.phone.replace(/[^0-9]/g, '').length} digit`}
+                      </span>
+                    )}
+                  </div>
                   <input
                     type="tel"
                     required
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                     placeholder="0812xxxxxxxx"
-                    className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
+                    className={`w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border bg-slate-50/50 hover:bg-white focus:bg-white focus:outline-none transition-all placeholder:text-slate-400 text-slate-900 ${
+                      leadForm.phone && !phoneValidation.isValid && leadForm.phone.length >= 4
+                        ? 'border-amber-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200'
+                        : leadForm.phone && phoneValidation.isValid
+                        ? 'border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100'
+                        : 'border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15'
+                    }`}
                   />
+                  <span className="block text-[10px] text-slate-400 mt-1">
+                    Format: 08xx atau +628xx (10-14 digit)
+                  </span>
                 </div>
                 <div>
                   <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
@@ -967,6 +1004,9 @@ export default function ChatWidget({
                     placeholder="nama@perusahaan.com"
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
+                  <span className="block text-[10px] text-slate-400 mt-1">
+                    Opsional untuk dokumen proposal
+                  </span>
                 </div>
               </div>
 

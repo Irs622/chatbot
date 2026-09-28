@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAllLeads, createLead } from '@/lib/db';
 import { sendLeadNotification } from '@/lib/notifications';
 import { isAdminAuthenticated } from '@/lib/auth';
+import { validatePhoneNumber, validateEmail } from '@/lib/validation';
 
 export async function GET(req: NextRequest) {
   try {
@@ -32,12 +33,47 @@ export async function POST(req: NextRequest) {
       notes
     } = body;
 
-    // Minimum validation (FR-07: Name, Email / WhatsApp, Business Need)
-    if (!name || !business_need || (!email && !phone)) {
+    // Minimum validation: Name & Business Need
+    if (!name || typeof name !== 'string' || name.trim().length < 2) {
       return NextResponse.json(
-        { error: 'Name, Business Need, and either Email or Phone are required.' },
+        { error: 'Nama lengkap wajib diisi minimal 2 karakter.' },
         { status: 400 }
       );
+    }
+
+    if (!business_need || typeof business_need !== 'string' || !business_need.trim()) {
+      return NextResponse.json(
+        { error: 'Kebutuhan layanan bisnis wajib dipilih.' },
+        { status: 400 }
+      );
+    }
+
+    // Phone validation (Indonesian format 08xx / +628xx, 10-14 digits)
+    let validatedPhone = '';
+    if (phone && typeof phone === 'string' && phone.trim()) {
+      const phoneResult = validatePhoneNumber(phone);
+      if (!phoneResult.isValid) {
+        return NextResponse.json(
+          { error: phoneResult.error || 'Format nomor WhatsApp tidak valid.' },
+          { status: 400 }
+        );
+      }
+      validatedPhone = phoneResult.cleanPhone;
+    } else if (!email) {
+      return NextResponse.json(
+        { error: 'Harap cantumkan Nomor WhatsApp atau Email untuk tindak lanjut konsultasi.' },
+        { status: 400 }
+      );
+    }
+
+    // Email validation (if provided)
+    if (email && typeof email === 'string' && email.trim()) {
+      if (!validateEmail(email)) {
+        return NextResponse.json(
+          { error: 'Format alamat email tidak valid (contoh: nama@perusahaan.com).' },
+          { status: 400 }
+        );
+      }
     }
 
     const lead = createLead({
@@ -45,7 +81,7 @@ export async function POST(req: NextRequest) {
       name: name.trim(),
       company: company?.trim() || '',
       email: email?.trim() || '',
-      phone: phone?.trim() || '',
+      phone: validatedPhone || phone?.trim() || '',
       business_need: business_need.trim(),
       notes: notes?.trim() || '',
       status: 'new'
