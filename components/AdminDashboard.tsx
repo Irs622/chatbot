@@ -388,10 +388,13 @@ export default function AdminDashboard() {
             <div className="relative w-full sm:w-72">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
+                id="leads-search-input"
+                name="leadsSearch"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by name, company, scope..."
+                aria-label="Search leads"
                 className="w-full text-xs pl-9 pr-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD]"
               />
             </div>
@@ -399,8 +402,11 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Filter className="w-4 h-4 text-slate-400" />
               <select
+                id="leads-status-filter"
+                name="filterStatus"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
+                aria-label="Filter leads by status"
                 className="text-xs px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD] bg-white cursor-pointer"
               >
                 <option value="all">All Statuses</option>

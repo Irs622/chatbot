@@ -102,7 +102,10 @@ export default function KnowledgeView() {
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
+              id="rag-search-query"
+              name="ragQuery"
               type="text"
+              aria-label="Test RAG search query"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Test RAG search (e.g., 'revenue growing but margins dropping', 'direct loan capital', 'pakuwon office')..."

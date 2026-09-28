@@ -1013,7 +1013,10 @@ export default function ChatWidget({
             >
               <input
                 ref={inputRef}
+                id="chat-input-message"
+                name="chatMessage"
                 type="text"
+                autoComplete="off"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={agentConfig.inputPlaceholder}
@@ -1026,7 +1029,7 @@ export default function ChatWidget({
                   onClick={handleStopGeneration}
                   aria-label="Stop generation"
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer active:scale-95 shadow-xs border border-rose-200"
-                  title="Hentikan respons"
+                  title="Stop response"
                 >
                   <Square className="w-3.5 h-3.5 fill-rose-600 stroke-rose-600" />
                 </button>
@@ -1097,12 +1100,15 @@ export default function ChatWidget({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  <label htmlFor="lead-full-name" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
                     Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
+                    id="lead-full-name"
+                    name="fullName"
                     type="text"
                     required
+                    autoComplete="name"
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                     placeholder="e.g. John Doe / Budi Santoso"
@@ -1110,11 +1116,14 @@ export default function ChatWidget({
                   />
                 </div>
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  <label htmlFor="lead-company-name" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
                     Company Name
                   </label>
                   <input
+                    id="lead-company-name"
+                    name="company"
                     type="text"
+                    autoComplete="organization"
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
                     placeholder="e.g. Acme Corp / Enterprise Ltd"
@@ -1126,7 +1135,7 @@ export default function ChatWidget({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600">
+                    <label htmlFor="lead-phone-number" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600">
                       WhatsApp / Phone <span className="text-rose-500">*</span>
                     </label>
                     {leadForm.phone && (
@@ -1136,8 +1145,11 @@ export default function ChatWidget({
                     )}
                   </div>
                   <input
+                    id="lead-phone-number"
+                    name="phone"
                     type="tel"
                     required
+                    autoComplete="tel"
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                     placeholder="0812xxxxxxxx / +62..."
@@ -1154,11 +1166,14 @@ export default function ChatWidget({
                   </span>
                 </div>
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  <label htmlFor="lead-business-email" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
                     Business Email
                   </label>
                   <input
+                    id="lead-business-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
                     placeholder="name@company.com"
@@ -1171,10 +1186,12 @@ export default function ChatWidget({
               </div>
 
               <div>
-                <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <label htmlFor="lead-advisory-need" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
                   Primary Advisory Need <span className="text-rose-500">*</span>
                 </label>
                 <select
+                  id="lead-advisory-need"
+                  name="businessNeed"
                   value={leadForm.businessNeed}
                   onChange={(e) => setLeadForm({ ...leadForm, businessNeed: e.target.value })}
                   className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
@@ -1190,10 +1207,12 @@ export default function ChatWidget({
               </div>
 
               <div>
-                <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <label htmlFor="lead-project-notes" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
                   Project Scope / Additional Notes
                 </label>
                 <textarea
+                  id="lead-project-notes"
+                  name="notes"
                   rows={2}
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
@@ -1206,6 +1225,7 @@ export default function ChatWidget({
                 <input
                   type="checkbox"
                   id="lead-consent"
+                  name="consent"
                   checked={leadForm.consent}
                   onChange={(e) => setLeadForm({ ...leadForm, consent: e.target.checked })}
                   className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD] w-3.5 h-3.5 cursor-pointer accent-[#005DAD]"

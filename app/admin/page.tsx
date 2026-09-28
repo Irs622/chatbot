@@ -137,12 +137,15 @@ export default function AdminPage() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label htmlFor="admin-access-password" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                   Internal Access PIN / Password
                 </label>
                 <div className="relative">
                   <input
+                    id="admin-access-password"
+                    name="password"
                     type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter admin password..."
