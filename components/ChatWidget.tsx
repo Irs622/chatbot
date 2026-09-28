@@ -17,7 +17,8 @@ import {
   Sparkles,
   MessageSquare,
   ExternalLink,
-  Square
+  Square,
+  Globe
 } from 'lucide-react';
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 import ChatbotIcon from '@/components/ChatbotIcon';
@@ -69,10 +70,70 @@ export default function ChatWidget({
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
+  const [lang, setLang] = useState<'id' | 'en'>('id');
 
-  // Inpartner Agent Configuration
-  const agentConfig = {
-    name: 'Inpartner Agent',
+  // Bilingual UI Translations
+  const t = lang === 'id' ? {
+    onlineStatus: 'Online • Siap Membantu',
+    newChat: 'Percakapan baru',
+    scheduleConsultation: 'Jadwalkan Konsultasi',
+    chatWa: 'Chat WhatsApp Resmi',
+    callOffice: 'Hubungi Kantor Pusat',
+    privacyPolicy: 'Kebijakan Privasi',
+    title: 'Solusi Bisnis Apa yang Anda Butuhkan?',
+    subtitle: 'Inpartner AI siap menganalisis tantangan korporasi dan merekomendasikan solusi penasihat strategis yang tepat.',
+    featured: {
+      title: 'Pertumbuhan Bisnis & Ekspansi Pasar',
+      desc: 'Riset penetrasi pasar, peta jalan penjualan, & strategi ekspansi bisnis',
+      query: 'Bagaimana Inpartner mendampingi strategi Pertumbuhan Bisnis & ekspansi pasar untuk perusahaan saya?',
+      intent: 'Growth'
+    },
+    dividerText: 'JELAJAHI AREA KONSULTASI LAINNYA',
+    secondary1: {
+      title: 'Pendanaan & Profitabilitas',
+      query: 'Saya butuh pendampingan mengenai skema pendanaan institusional dan optimalisasi margin keuntungan operasional.',
+      intent: 'Funding'
+    },
+    secondary2: {
+      title: 'Diagnostik Kebutuhan Bisnis',
+      query: 'Saya belum yakin solusi apa yang paling dibutuhkan perusahaan saya saat ini. Mohon pandu melalui diagnostik kebutuhan bisnis.',
+      intent: 'other'
+    },
+    inputPlaceholder: 'Tanyakan seputar solusi bisnis atau kendala perusahaan Anda...',
+    sending: 'Sedang mengetik...',
+    stopGenerating: 'Hentikan respon',
+    disclaimer: 'AI dapat melakukan kesalahan. Silakan konfirmasi informasi dengan tim konsultan.',
+    consultationSchedule: 'Jadwalkan Konsultasi Bisnis',
+    consultationDesc: 'Sampaikan profil bisnis Anda agar konsultan senior Inpartner dapat mengagendakan sesi diagnostik awal.',
+    fullName: 'Nama Lengkap',
+    companyName: 'Nama Perusahaan',
+    phone: 'WhatsApp / Telepon',
+    phoneFormatHint: 'Format: 08xx atau internasional dengan + (10-14 digit)',
+    email: 'Email Kantor / Bisnis',
+    emailHint: 'Opsional untuk pengiriman proposal resmi & materi eksekutif',
+    advisoryNeed: 'Kebutuhan Konsultasi Utama',
+    selectPillar: '-- Pilih Pilar Konsultasi Utama --',
+    notes: 'Ringkasan Tantangan / Kebutuhan Bisnis',
+    notesPlaceholder: 'Ceritakan kendala, skala omset, atau target ekspansi perusahaan Anda...',
+    consent: 'Saya menyetujui data di atas digunakan untuk dihubungi oleh tim konsultan Inpartner sesuai Kebijakan Privasi dan regulasi perlindungan data.',
+    cancel: 'Batal',
+    submit: 'Kirim Permintaan Konsultasi',
+    submitting: 'Mengirimkan Permintaan...',
+    successTitle: 'Permintaan Konsultasi Diterima!',
+    successDesc: 'Data Anda telah tersimpan dengan aman. Tim Business Development Inpartner akan menghubungi Anda dalam waktu 1x24 jam kerja.',
+    chatNowWa: 'Chat Langsung di WhatsApp',
+    sources: 'Sumber Resmi:',
+    service: 'Layanan:',
+    generating: 'Menyusun analisis...',
+    interestedCta: 'Tertarik dengan Konsultasi Strategis Lebih Lanjut?',
+    interestedDesc: 'Tinggalkan kontak bisnis Anda, dan konsultan senior Inpartner akan menghubungi Anda untuk analisis diagnostik mendalam.'
+  } : {
+    onlineStatus: 'Online • Ready to assist',
+    newChat: 'New conversation',
+    scheduleConsultation: 'Schedule Consultation',
+    chatWa: 'Official WhatsApp Chat',
+    callOffice: 'Call Corporate Office',
+    privacyPolicy: 'Privacy Policy',
     title: 'What Business Solutions Do You Need?',
     subtitle: 'Inpartner AI is ready to analyze your corporate challenges and recommend tailored strategic advisory solutions.',
     featured: {
@@ -92,7 +153,46 @@ export default function ChatWidget({
       query: 'I am not sure which solution my company needs most. Please guide me through a business needs diagnosis.',
       intent: 'other'
     },
-    inputPlaceholder: 'Ask about business solutions or your company’s challenges...'
+    inputPlaceholder: 'Ask about business solutions or your company’s challenges...',
+    sending: 'Thinking...',
+    stopGenerating: 'Stop generating',
+    disclaimer: 'AI can make mistakes. Double-check replies with our advisory team.',
+    consultationSchedule: 'Schedule Advisory Consultation',
+    consultationDesc: 'Share your corporate details so Inpartner senior partners can prepare an initial diagnostic session.',
+    fullName: 'Full Name',
+    companyName: 'Company Name',
+    phone: 'WhatsApp / Phone',
+    phoneFormatHint: 'Format: 08xx or international format with + (10-14 digits)',
+    email: 'Business Email',
+    emailHint: 'Optional for proposals and executive teasers',
+    advisoryNeed: 'Primary Advisory Need',
+    selectPillar: '-- Select Primary Advisory Pillar --',
+    notes: 'Project Scope / Additional Notes',
+    notesPlaceholder: 'Share a brief overview of your business challenges or goals...',
+    consent: 'I agree to be contacted by the Inpartner corporate advisory team for consultation follow-up in accordance with the Privacy Policy.',
+    cancel: 'Cancel',
+    submit: 'Submit Consultation Request',
+    submitting: 'Submitting Inquiry...',
+    successTitle: 'Consultation Request Received!',
+    successDesc: 'Your inquiry has been successfully recorded. The Inpartner advisory team will contact you within 1 business day.',
+    chatNowWa: 'Chat Directly on WhatsApp',
+    sources: 'Sources:',
+    service: 'Service:',
+    generating: 'Generating response...',
+    interestedCta: 'Interested in Further Corporate Advisory?',
+    interestedDesc: 'Leave your business contact details, and an Inpartner senior consultant will connect with you for an in-depth needs analysis.'
+  };
+
+  // Inpartner Agent Configuration derived from active language
+  const agentConfig = {
+    name: 'Inpartner Agent',
+    title: t.title,
+    subtitle: t.subtitle,
+    featured: t.featured,
+    dividerText: t.dividerText,
+    secondary1: t.secondary1,
+    secondary2: t.secondary2,
+    inputPlaceholder: t.inputPlaceholder
   };
 
   // Lead Form State
@@ -127,6 +227,14 @@ export default function ChatWidget({
     }
     setSessionId(sess);
 
+    // Restore saved language preference
+    try {
+      const savedLang = localStorage.getItem('inpartner_chat_lang') as 'id' | 'en' | null;
+      if (savedLang === 'id' || savedLang === 'en') {
+        setLang(savedLang);
+      }
+    } catch {}
+
     // Restore previously saved conversation state
     try {
       const savedMessagesStr = localStorage.getItem(`inpartner_chat_messages_${sess}`);
@@ -155,6 +263,37 @@ export default function ChatWidget({
       console.warn('Could not restore chat state from localStorage:', err);
     }
   }, []);
+
+  const handleToggleLanguage = (targetLang?: 'id' | 'en') => {
+    const next = targetLang || (lang === 'id' ? 'en' : 'id');
+    setLang(next);
+    try {
+      localStorage.setItem('inpartner_chat_lang', next);
+    } catch {}
+  };
+
+  const trackEvent = (eventName: string, metadata?: Record<string, any>) => {
+    if (!sessionId) return;
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_name: eventName,
+        session_id: sessionId,
+        conversation_id: conversationId,
+        metadata: { ...metadata, lang }
+      })
+    }).catch(() => {});
+  };
+
+  const handleOpenLeadModal = (defaultNeed?: string) => {
+    if (defaultNeed && !leadForm.businessNeed) {
+      setLeadForm((prev) => ({ ...prev, businessNeed: defaultNeed }));
+    }
+    setShowLeadModal(true);
+    setShowMenu(false);
+    trackEvent('lead_form_opened', { defaultNeed });
+  };
 
   // Auto-save messages to localStorage
   useEffect(() => {
@@ -281,6 +420,11 @@ export default function ChatWidget({
     setInputMessage('');
     setIsLoading(true);
 
+    if (textToSend && needCategory) {
+      trackEvent('intent_selected', { intent: needCategory, query: textToSend });
+    }
+    trackEvent('chat_message_sent', { text_length: text.length, need: currentNeed });
+
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
     const botMsgId = `bot_${Date.now()}`;
@@ -375,6 +519,9 @@ export default function ChatWidget({
                 }
               } else if (event.type === 'done') {
                 const finalAnswer = event.fullAnswer || accumulatedText;
+                if (event.recommendedService) {
+                  trackEvent('service_viewed', { service: event.recommendedService });
+                }
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === botMsgId
@@ -410,8 +557,11 @@ export default function ChatWidget({
           setConversationId(data.conversationId);
         }
 
-        if (data.recommendedService && !leadForm.businessNeed) {
-          setLeadForm((prev) => ({ ...prev, businessNeed: data.recommendedService }));
+        if (data.recommendedService) {
+          trackEvent('service_viewed', { service: data.recommendedService });
+          if (!leadForm.businessNeed) {
+            setLeadForm((prev) => ({ ...prev, businessNeed: data.recommendedService }));
+          }
         }
 
         const botMsg: ChatMessage = {
@@ -437,7 +587,9 @@ export default function ChatWidget({
         const errorMsg: ChatMessage = {
           id: `err_${Date.now()}`,
           sender: 'bot',
-          text: 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 896 2831 0192](https://wa.me/6289628310192).',
+          text: lang === 'id'
+            ? 'Mohon maaf, terjadi gangguan koneksi ke server. Silakan coba kembali atau hubungi konsultan kami via WhatsApp di [+62 896 2831 0192](https://wa.me/6289628310192).'
+            : 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 896 2831 0192](https://wa.me/6289628310192).',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isFallback: true,
           isStreaming: false
@@ -482,35 +634,35 @@ export default function ChatWidget({
     setLeadError('');
 
     if (!leadForm.name || leadForm.name.trim().length < 2) {
-      setLeadError('Full name is required (minimum 2 characters).');
+      setLeadError(lang === 'id' ? 'Nama lengkap wajib diisi (minimal 2 karakter).' : 'Full name is required (minimum 2 characters).');
       return;
     }
 
     if (!leadForm.businessNeed) {
-      setLeadError('Primary advisory need must be selected.');
+      setLeadError(lang === 'id' ? 'Kebutuhan konsultasi utama wajib dipilih.' : 'Primary advisory need must be selected.');
       return;
     }
 
     if (!leadForm.email && !leadForm.phone) {
-      setLeadError('Please provide a WhatsApp phone number or business email for consultation follow-up.');
+      setLeadError(lang === 'id' ? 'Harap cantumkan nomor WhatsApp atau email kantor untuk tindak lanjut konsultasi.' : 'Please provide a WhatsApp phone number or business email for consultation follow-up.');
       return;
     }
 
     if (leadForm.phone) {
       const pValidation = validatePhoneNumber(leadForm.phone);
       if (!pValidation.isValid) {
-        setLeadError(pValidation.error || 'Invalid phone or WhatsApp number format.');
+        setLeadError(lang === 'id' ? 'Format nomor WhatsApp / telepon tidak valid (contoh: 08123456789 atau +62...).' : (pValidation.error || 'Invalid phone or WhatsApp number format.'));
         return;
       }
     }
 
     if (leadForm.email && !validateEmail(leadForm.email)) {
-      setLeadError('Invalid email address format (e.g. name@company.com).');
+      setLeadError(lang === 'id' ? 'Format email tidak valid (contoh: nama@perusahaan.com).' : 'Invalid email address format (e.g. name@company.com).');
       return;
     }
 
     if (!leadForm.consent) {
-      setLeadError('Please agree to communication consent so our team can reach out to you.');
+      setLeadError(lang === 'id' ? 'Harap centang persetujuan komunikasi agar tim kami dapat menghubungi Anda.' : 'Please agree to communication consent so our team can reach out to you.');
       return;
     }
 
@@ -532,21 +684,28 @@ export default function ChatWidget({
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to submit consultation inquiry');
+        throw new Error(data.error || (lang === 'id' ? 'Gagal mengirimkan permintaan konsultasi' : 'Failed to submit consultation inquiry'));
       }
 
       setLeadSubmitted(true);
       setShowLeadModal(false);
+      trackEvent('lead_captured', {
+        need: leadForm.businessNeed,
+        has_email: !!leadForm.email,
+        has_phone: !!leadForm.phone
+      });
 
       const confirmMsg: ChatMessage = {
         id: `sys_lead_${Date.now()}`,
         sender: 'bot',
-        text: `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`,
+        text: lang === 'id'
+          ? `✅ **Terima kasih, ${leadForm.name}!**\n\nPermintaan konsultasi Anda telah kami terima. Tim konsultan senior Inpartner akan menganalisis profil bisnis Anda (**${leadForm.company || 'perusahaan Anda'}**) dan menghubungi Anda dalam 1x24 jam kerja.\n\nUntuk respon cepat, Anda juga dapat menghubungi tim kami langsung via WhatsApp di **[+62 896 2831 0192](https://wa.me/6289628310192)**.`
+          : `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, confirmMsg]);
     } catch (err: any) {
-      setLeadError(err.message || 'A system error occurred while submitting.');
+      setLeadError(err.message || (lang === 'id' ? 'Terjadi kesalahan sistem saat mengirimkan data.' : 'A system error occurred while submitting.'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -680,13 +839,26 @@ export default function ChatWidget({
                 </h2>
                 <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold tracking-normal">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Online • Ready to assist
+                  {t.onlineStatus}
                 </div>
               </div>
             </div>
 
-            {/* Right: Header Action Buttons (Menu + Close) */}
+            {/* Right: Header Action Buttons (Lang Toggle + Menu + Close) */}
             <div className="flex items-center gap-1">
+              {/* Language Switcher Badge Button */}
+              <button
+                type="button"
+                onClick={() => handleToggleLanguage()}
+                className="px-2 py-1 text-[11px] font-bold rounded-lg border border-slate-200 hover:border-[#005DAD] hover:bg-[#005DAD]/5 text-slate-700 transition-colors cursor-pointer mr-0.5 flex items-center gap-0.5"
+                aria-label="Switch Language"
+                title={lang === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
+              >
+                <span className={lang === 'id' ? 'text-[#005DAD] font-extrabold' : 'text-slate-400 font-medium'}>ID</span>
+                <span className="text-slate-300">/</span>
+                <span className={lang === 'en' ? 'text-[#005DAD] font-extrabold' : 'text-slate-400 font-medium'}>EN</span>
+              </button>
+
               {/* Dropdown Options Menu */}
               <div className="relative" ref={menuRef}>
                 <button
@@ -702,33 +874,48 @@ export default function ChatWidget({
                 {/* Header Dropdown Menu */}
                 {showMenu && (
                   <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150 text-xs">
+                    {/* Toggle Language inside menu */}
+                    <button
+                      onClick={() => {
+                        handleToggleLanguage();
+                        setShowMenu(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center justify-between font-medium cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{lang === 'id' ? 'Bahasa: Indonesia' : 'Language: English'}</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-[#005DAD] uppercase bg-[#005DAD]/10 px-1.5 py-0.5 rounded">
+                        {lang.toUpperCase()}
+                      </span>
+                    </button>
+
                     <button
                       onClick={handleResetConversation}
                       className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium cursor-pointer"
                     >
                       <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-                      <span>New conversation</span>
+                      <span>{t.newChat}</span>
                     </button>
 
                     <button
-                      onClick={() => {
-                        setShowLeadModal(true);
-                        setShowMenu(false);
-                      }}
+                      onClick={() => handleOpenLeadModal()}
                       className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-[#005DAD]/10 hover:text-[#005DAD] flex items-center gap-2 font-medium transition-colors cursor-pointer"
                     >
                       <Building2 className="w-3.5 h-3.5 text-[#005DAD]" />
-                      <span>Schedule Consultation</span>
+                      <span>{t.scheduleConsultation}</span>
                     </button>
 
                     <a
                       href={getWhatsAppUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackEvent('contact_clicked', { channel: 'whatsapp', location: 'menu' })}
                       className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
                     >
                       <Phone className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Official WhatsApp</span>
+                      <span>{t.chatWa}</span>
                     </a>
 
                     <a
@@ -747,7 +934,7 @@ export default function ChatWidget({
                         className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
-                        <span>Close Chat</span>
+                        <span>{lang === 'id' ? 'Tutup Chat' : 'Close Chat'}</span>
                       </button>
                     </div>
                   </div>
@@ -890,14 +1077,14 @@ export default function ChatWidget({
                       {msg.recommendedService && !msg.isStreaming && (
                         <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-[11px] font-bold tracking-tight">
                           <Sparkles className="w-3.5 h-3.5 text-[#005DAD]" />
-                          <span>Service: {msg.recommendedService}</span>
+                          <span>{t.service} {msg.recommendedService}</span>
                         </div>
                       )}
 
                       {/* Official Sources */}
                       {msg.sources && msg.sources.length > 0 && !msg.isStreaming && (
                         <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
-                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">Sources:</span>
+                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">{t.sources}</span>
                           {msg.sources.map((s, idx) => (
                             <span key={idx} className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono text-[10px] text-slate-600 font-medium">
                               {s}
@@ -915,7 +1102,7 @@ export default function ChatWidget({
                         {msg.sender === 'bot' && msg.isStreaming ? (
                           <span className="inline-flex items-center gap-1 text-[#005DAD] font-medium not-italic animate-pulse">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#005DAD]" />
-                            Generating response...
+                            {t.generating}
                           </span>
                         ) : (
                           <span></span>
@@ -949,23 +1136,24 @@ export default function ChatWidget({
                           </div>
                           <div className="flex-1 min-w-0">
                             <h4 className="text-[13px] font-bold text-slate-900 tracking-tight leading-snug">
-                              Interested in Further Corporate Advisory?
+                              {t.interestedCta}
                             </h4>
                             <p className="text-[11.5px] text-slate-600 mt-1 leading-relaxed font-normal">
-                              Leave your business contact details, and an Inpartner senior consultant will connect with you for an in-depth needs analysis.
+                              {t.interestedDesc}
                             </p>
                             <div className="mt-3 flex flex-wrap items-center gap-2">
                               <button
-                                onClick={() => setShowLeadModal(true)}
+                                onClick={() => handleOpenLeadModal(msg.recommendedService)}
                                 className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold tracking-tight px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
                               >
                                 <Building2 className="w-3.5 h-3.5" />
-                                <span>Schedule Consultation</span>
+                                <span>{t.scheduleConsultation}</span>
                               </button>
                               <a
-                                href={getWhatsAppUrl('Hello Inpartner team, I would like to inquire about business advisory services.')}
+                                href={getWhatsAppUrl(lang === 'id' ? 'Halo tim Inpartner, saya ingin berkonsultasi mengenai layanan penasihat bisnis.' : 'Hello Inpartner team, I would like to inquire about business advisory services.')}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={() => trackEvent('contact_clicked', { channel: 'whatsapp', location: 'chat_cta' })}
                                 className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1 shadow-2xs hover:shadow-xs transition-all"
                               >
                                 <Phone className="w-3.5 h-3.5" /> WhatsApp
@@ -991,7 +1179,7 @@ export default function ChatWidget({
                         <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.2s]"></div>
                         <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.4s]"></div>
                         <span className="text-xs text-slate-500 font-medium ml-1.5">
-                          Inpartner AI is thinking...
+                          {t.sending}
                         </span>
                       </div>
                     </div>
@@ -1027,9 +1215,9 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={handleStopGeneration}
-                  aria-label="Stop generation"
+                  aria-label={t.stopGenerating}
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer active:scale-95 shadow-xs border border-rose-200"
-                  title="Stop response"
+                  title={t.stopGenerating}
                 >
                   <Square className="w-3.5 h-3.5 fill-rose-600 stroke-rose-600" />
                 </button>
@@ -1047,7 +1235,7 @@ export default function ChatWidget({
 
             {/* Disclaimer Matching Screenshot */}
             <div className="text-center text-[10.5px] text-slate-400 mt-2 font-medium tracking-normal select-none">
-              AI can make mistakes. Double-check replies.
+              {t.disclaimer}
             </div>
           </div>
         </div>
@@ -1072,10 +1260,10 @@ export default function ChatWidget({
                 </div>
                 <div className="min-w-0">
                   <h3 className="font-extrabold text-[15px] sm:text-base text-white tracking-tight leading-snug truncate">
-                    Schedule a Business Consultation
+                    {t.consultationSchedule}
                   </h3>
                   <p className="text-[11.5px] text-sky-100/90 leading-tight font-normal truncate mt-0.5">
-                    Our corporate advisory team will reach out within 1 business day.
+                    {t.consultationDesc}
                   </p>
                 </div>
               </div>
@@ -1101,7 +1289,7 @@ export default function ChatWidget({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
                   <label htmlFor="lead-full-name" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Full Name <span className="text-rose-500">*</span>
+                    {t.fullName} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     id="lead-full-name"
@@ -1111,13 +1299,13 @@ export default function ChatWidget({
                     autoComplete="name"
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
-                    placeholder="e.g. John Doe / Budi Santoso"
+                    placeholder={lang === 'id' ? 'contoh: Budi Santoso' : 'e.g. John Doe / Budi Santoso'}
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
                 <div>
                   <label htmlFor="lead-company-name" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Company Name
+                    {t.companyName}
                   </label>
                   <input
                     id="lead-company-name"
@@ -1126,7 +1314,7 @@ export default function ChatWidget({
                     autoComplete="organization"
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
-                    placeholder="e.g. Acme Corp / Enterprise Ltd"
+                    placeholder={lang === 'id' ? 'contoh: PT Maju Bersama' : 'e.g. Acme Corp / Enterprise Ltd'}
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
@@ -1136,7 +1324,7 @@ export default function ChatWidget({
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label htmlFor="lead-phone-number" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600">
-                      WhatsApp / Phone <span className="text-rose-500">*</span>
+                      {t.phone} <span className="text-rose-500">*</span>
                     </label>
                     {leadForm.phone && (
                       <span className={`text-[10px] font-semibold ${phoneValidation.isValid ? 'text-emerald-600' : 'text-slate-400'}`}>
@@ -1162,12 +1350,12 @@ export default function ChatWidget({
                     }`}
                   />
                   <span className="block text-[10px] text-slate-400 mt-1">
-                    Format: 08xx or international format with + (10-14 digits)
+                    {t.phoneFormatHint}
                   </span>
                 </div>
                 <div>
                   <label htmlFor="lead-business-email" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Business Email
+                    {t.email}
                   </label>
                   <input
                     id="lead-business-email"
@@ -1180,14 +1368,14 @@ export default function ChatWidget({
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                   <span className="block text-[10px] text-slate-400 mt-1">
-                    Optional for proposals and executive teasers
+                    {t.emailHint}
                   </span>
                 </div>
               </div>
 
               <div>
                 <label htmlFor="lead-advisory-need" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Primary Advisory Need <span className="text-rose-500">*</span>
+                  {t.advisoryNeed} <span className="text-rose-500">*</span>
                 </label>
                 <select
                   id="lead-advisory-need"
@@ -1197,18 +1385,28 @@ export default function ChatWidget({
                   className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
                   required
                 >
-                  <option value="">-- Select Primary Advisory Pillar --</option>
-                  <option value="Business Growth & Market Expansion">Business Growth & Market Expansion</option>
-                  <option value="Funding & Investment Advisory">Funding & Investment Advisory</option>
-                  <option value="Profitability & Cost Optimization">Profitability & Margin Optimization</option>
-                  <option value="Capacity Building">Capacity Building / Executive Program</option>
-                  <option value="Other Consulting Service">Other Corporate Advisory Services</option>
+                  <option value="">{t.selectPillar}</option>
+                  <option value="Business Growth & Market Expansion">
+                    {lang === 'id' ? 'Pertumbuhan Bisnis & Ekspansi Pasar' : 'Business Growth & Market Expansion'}
+                  </option>
+                  <option value="Funding & Investment Advisory">
+                    {lang === 'id' ? 'Pendanaan & Konsultasi Investasi' : 'Funding & Investment Advisory'}
+                  </option>
+                  <option value="Profitability & Cost Optimization">
+                    {lang === 'id' ? 'Optimalisasi Profitabilitas & Margin Biaya' : 'Profitability & Margin Optimization'}
+                  </option>
+                  <option value="Capacity Building">
+                    {lang === 'id' ? 'Pengembangan Kapasitas / Program Eksekutif' : 'Capacity Building / Executive Program'}
+                  </option>
+                  <option value="Other Consulting Service">
+                    {lang === 'id' ? 'Layanan Penasihat Korporasi Lainnya' : 'Other Corporate Advisory Services'}
+                  </option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="lead-project-notes" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Project Scope / Additional Notes
+                  {t.notes}
                 </label>
                 <textarea
                   id="lead-project-notes"
@@ -1216,7 +1414,7 @@ export default function ChatWidget({
                   rows={2}
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
-                  placeholder="Share a brief overview of your business challenges or goals..."
+                  placeholder={t.notesPlaceholder}
                   className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900 resize-none"
                 />
               </div>
@@ -1231,7 +1429,22 @@ export default function ChatWidget({
                   className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD] w-3.5 h-3.5 cursor-pointer accent-[#005DAD]"
                 />
                 <label htmlFor="lead-consent" className="text-[11px] font-medium text-slate-700 leading-snug cursor-pointer select-none">
-                  I agree to be contacted by the Inpartner corporate advisory team for consultation follow-up and understand my data is stored securely in accordance with the privacy policy.
+                  {lang === 'id' ? (
+                    <>
+                      Saya menyetujui data di atas digunakan untuk dihubungi oleh tim konsultan Inpartner sesuai{' '}
+                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#005DAD] underline underline-offset-2 hover:text-[#004785]">
+                        Kebijakan Privasi
+                      </a>{' '}
+                      dan regulasi perlindungan data.
+                    </>
+                  ) : (
+                    <>
+                      I agree to be contacted by the Inpartner corporate advisory team for consultation follow-up in accordance with the{' '}
+                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#005DAD] underline underline-offset-2 hover:text-[#004785]">
+                        Privacy Policy
+                      </a>.
+                    </>
+                  )}
                 </label>
               </div>
 
@@ -1241,7 +1454,7 @@ export default function ChatWidget({
                   onClick={() => setShowLeadModal(false)}
                   className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
@@ -1251,10 +1464,10 @@ export default function ChatWidget({
                   {leadSubmitting ? (
                     <>
                       <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Submitting Inquiry...</span>
+                      <span>{t.submitting}</span>
                     </>
                   ) : (
-                    <span>Submit Consultation Request</span>
+                    <span>{t.submit}</span>
                   )}
                 </button>
               </div>

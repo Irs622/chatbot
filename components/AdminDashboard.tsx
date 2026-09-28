@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Search,
   Phone,
@@ -15,7 +15,8 @@ import {
   X,
   ChevronRight,
   ChevronLeft,
-  RefreshCw
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 
@@ -46,34 +47,67 @@ export default function AdminDashboard() {
   const [internalNote, setInternalNote] = useState('');
   const [savingNote, setSavingNote] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [transcriptMessages, setTranscriptMessages] = useState<Array<{ id?: string; sender: string; text: string; created_at?: string }>>([]);
+  const [loadingTranscript, setLoadingTranscript] = useState(false);
 
-  const fetchLeads = async () => {
+  const loadTranscript = async (leadId: string) => {
+    setLoadingTranscript(true);
+    try {
+      const res = await fetch(`/api/leads/${leadId}`);
+      const data = await res.json();
+      if (data.messages && Array.isArray(data.messages)) {
+        setTranscriptMessages(data.messages);
+      } else {
+        setTranscriptMessages([]);
+      }
+    } catch (err) {
+      console.error('Failed to load transcript:', err);
+      setTranscriptMessages([]);
+    } finally {
+      setLoadingTranscript(false);
+    }
+  };
+
+  const handleSelectLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    setInternalNote(lead.notes || '');
+    loadTranscript(lead.id);
+  };
+
+  const fetchLeads = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/leads');
       const data = await res.json();
       if (data.leads) {
         setLeads(data.leads);
-        if (!selectedLead && data.leads.length > 0) {
-          setSelectedLead(data.leads[0]);
-          setInternalNote(data.leads[0].notes || '');
-        }
+        setSelectedLead((prev) => {
+          if (!prev && data.leads.length > 0) {
+            const first = data.leads[0];
+            setInternalNote(first.notes || '');
+            loadTranscript(first.id);
+            return first;
+          }
+          if (prev) {
+            const updated = data.leads.find((l: Lead) => l.id === prev.id);
+            if (updated) {
+              setInternalNote(updated.notes || '');
+              return updated;
+            }
+          }
+          return prev;
+        });
       }
     } catch (err) {
       console.error('Error fetching leads:', err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchLeads();
-  }, []);
-
-  const handleSelectLead = (lead: Lead) => {
-    setSelectedLead(lead);
-    setInternalNote(lead.notes || '');
-  };
+  }, [fetchLeads]);
 
   const handleStatusChange = async (leadId: string, newStatus: LeadStatus) => {
     try {
@@ -99,7 +133,7 @@ export default function AdminDashboard() {
       const res = await fetch(`/api/leads/${selectedLead.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: selectedLead.status, notes: internalNote })
+        body: JSON.stringify({ notes: internalNote })
       });
       const data = await res.json();
       if (data.lead) {
@@ -110,6 +144,29 @@ export default function AdminDashboard() {
       console.error('Failed to save note:', err);
     } finally {
       setSavingNote(false);
+    }
+  };
+
+  const handleDeleteLead = async (leadId: string) => {
+    if (!window.confirm('Are you sure you want to permanently delete this client inquiry?')) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/leads/${leadId}`, { method: 'DELETE' });
+      if (res.ok) {
+        setLeads((prev) => prev.filter((l) => l.id !== leadId));
+        if (selectedLead?.id === leadId) {
+          const remaining = leads.filter((l) => l.id !== leadId);
+          if (remaining.length > 0) {
+            handleSelectLead(remaining[0]);
+          } else {
+            setSelectedLead(null);
+            setTranscriptMessages([]);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to delete lead:', err);
     }
   };
 
@@ -389,17 +446,27 @@ export default function AdminDashboard() {
                   </p>
                 </div>
 
-                <select
-                  value={selectedLead.status}
-                  onChange={(e) => handleStatusChange(selectedLead.id, e.target.value as LeadStatus)}
-                  className="text-xs px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-medium focus:outline-none cursor-pointer"
-                >
-                  <option value="new">Needs Reply</option>
-                  <option value="contacted">Contacted</option>
-                  <option value="in_progress">In Discussion</option>
-                  <option value="converted">Qualified</option>
-                  <option value="closed">Closed</option>
-                </select>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={selectedLead.status}
+                    onChange={(e) => handleStatusChange(selectedLead.id, e.target.value as LeadStatus)}
+                    className="text-xs px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-medium focus:outline-none cursor-pointer"
+                  >
+                    <option value="new">Needs Reply</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="in_progress">In Discussion</option>
+                    <option value="converted">Qualified</option>
+                    <option value="closed">Closed</option>
+                  </select>
+
+                  <button
+                    onClick={() => handleDeleteLead(selectedLead.id)}
+                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                    title="Delete Inquiry"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               {/* Scrollable Dossier Content Body */}
@@ -447,6 +514,60 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                 )}
+
+                {/* AI Chat Transcript Box */}
+                <div className="pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                      <MessageSquare className="w-3.5 h-3.5 text-[#005DAD]" />
+                      <span>Chat Transcript</span>
+                      {transcriptMessages.length > 0 && (
+                        <span className="bg-[#005DAD]/10 text-[#005DAD] font-mono text-[10px] px-1.5 py-0.2 rounded font-bold">
+                          {transcriptMessages.length}
+                        </span>
+                      )}
+                    </span>
+                    {loadingTranscript && (
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <RefreshCw className="w-3 h-3 animate-spin" /> Loading...
+                      </span>
+                    )}
+                  </div>
+
+                  {loadingTranscript ? (
+                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 text-center text-[11px] text-slate-400">
+                      Loading conversation messages...
+                    </div>
+                  ) : transcriptMessages.length > 0 ? (
+                    <div className="max-h-44 overflow-y-auto space-y-2 p-2.5 bg-slate-50/80 rounded-lg border border-slate-200/80">
+                      {transcriptMessages.map((m, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex flex-col text-[11px] leading-relaxed ${
+                            m.sender === 'user' ? 'items-end' : 'items-start'
+                          }`}
+                        >
+                          <span className="text-[9px] font-mono text-slate-400 mb-0.5">
+                            {m.sender === 'user' ? 'Client' : 'Inpartner AI'}
+                          </span>
+                          <div
+                            className={`px-2.5 py-1.5 rounded-lg max-w-[92%] ${
+                              m.sender === 'user'
+                                ? 'bg-[#005DAD] text-white rounded-br-none'
+                                : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-2xs'
+                            }`}
+                          >
+                            <span className="whitespace-pre-wrap">{m.text}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-3 bg-slate-50 rounded-lg border border-slate-100 text-[11px] text-slate-400 italic">
+                      Direct form inquiry (No prior AI chat history).
+                    </div>
+                  )}
+                </div>
 
                 {/* Internal Consultant Notes */}
                 <div className="space-y-2 pt-1 border-t border-slate-100">

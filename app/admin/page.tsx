@@ -63,7 +63,7 @@ export default function AdminPage() {
         setIsAuthenticated(true);
         setPassword('');
       } else {
-        setLoginError(data.error || 'Incorrect PIN. Default is inpartner2026');
+        setLoginError(data.error || 'Incorrect PIN. Please enter the authorized administrator PIN.');
       }
     } catch {
       setLoginError('Network error. Please try again.');
@@ -112,7 +112,6 @@ export default function AdminPage() {
                 <label htmlFor="admin-pin" className="block text-xs font-medium text-slate-700">
                   Access PIN
                 </label>
-                <span className="text-[10px] text-slate-400 font-mono">inpartner2026</span>
               </div>
               <div className="relative">
                 <input

@@ -268,14 +268,30 @@ export function getAllLeads(): Lead[] {
   return db.leads.slice().reverse();
 }
 
-export function updateLeadStatus(leadId: string, status: LeadStatus, notes?: string): Lead | null {
+export function getLeadById(leadId: string): Lead | null {
+  const db = initDb();
+  return db.leads.find((l) => l.id === leadId) || null;
+}
+
+export function updateLeadStatus(leadId: string, status?: LeadStatus, notes?: string): Lead | null {
   const db = initDb();
   const lead = db.leads.find((l) => l.id === leadId);
   if (!lead) return null;
-  lead.status = status;
+  if (status) lead.status = status;
   if (notes !== undefined) lead.notes = notes;
   saveDb(db);
   return lead;
+}
+
+export function deleteLead(leadId: string): boolean {
+  const db = initDb();
+  const initialLength = db.leads.length;
+  db.leads = db.leads.filter((l) => l.id !== leadId);
+  if (db.leads.length !== initialLength) {
+    saveDb(db);
+    return true;
+  }
+  return false;
 }
 
 // Analytics helpers
