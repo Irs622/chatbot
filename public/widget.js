@@ -22,16 +22,16 @@
   // Create launcher button
   var launcher = document.createElement('button');
   launcher.id = 'inpartner-chat-launcher';
-  launcher.setAttribute('aria-label', 'Open Inpartner Agent');
+  launcher.setAttribute('aria-label', 'Open Inpartner Business Assistant');
   launcher.style.cssText =
     'position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; ' +
     'border-radius: 9999px; background: #005DAD; color: white; border: none; ' +
-    'box-shadow: 0 10px 25px -5px rgba(0, 93, 173, 0.4), 0 8px 10px -6px rgba(0, 93, 173, 0.2); ' +
+    'box-shadow: 0 10px 25px -5px rgba(0, 93, 173, 0.45), 0 8px 10px -6px rgba(0, 93, 173, 0.25); ' +
     'cursor: pointer; z-index: 999998; display: flex; align-items: center; justify-content: center; ' +
-    'transition: transform 0.2s ease, background 0.2s ease; outline: none; padding: 0;';
+    'transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease; outline: none; padding: 0;';
 
   var botIconSvg =
-    '<svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
     '<line x1="50" y1="24" x2="50" y2="12" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />' +
     '<circle cx="50" cy="11" r="5.5" fill="#38bdf8" />' +
     '<circle cx="50" cy="11" r="2.5" fill="#ffffff" />' +
@@ -47,11 +47,17 @@
     '<circle cx="68" cy="54" r="2" fill="#fb7185" opacity="0.6" />' +
     '</svg>';
 
+  var closeIconSvg =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+    '<line x1="18" y1="6" x2="6" y2="18"></line>' +
+    '<line x1="6" y1="6" x2="18" y2="18"></line>' +
+    '</svg>';
+
   launcher.innerHTML = botIconSvg;
 
   launcher.onmouseenter = function () {
     launcher.style.background = '#004785';
-    launcher.style.transform = 'scale(1.05)';
+    launcher.style.transform = 'scale(1.06)';
   };
   launcher.onmouseleave = function () {
     launcher.style.background = '#005DAD';
@@ -62,56 +68,45 @@
   var container = document.createElement('div');
   container.id = 'inpartner-chat-container';
   container.style.cssText =
-    'position: fixed; bottom: 92px; right: 24px; width: 420px; max-width: calc(100vw - 32px); ' +
-    'height: 720px; max-height: calc(100vh - 120px); border-radius: 24px; overflow: hidden; ' +
-    'box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 999999; display: none; ' +
-    'background: white; border: 1px solid rgba(226, 232, 240, 0.8); transition: opacity 0.2s ease, transform 0.2s ease; ' +
-    'opacity: 0; transform: translateY(10px);';
+    'position: fixed; z-index: 999999; display: none; ' +
+    'background: white; overflow: hidden; ' +
+    'transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1); ' +
+    'opacity: 0; transform: translateY(14px);';
 
   var iframe = document.createElement('iframe');
   iframe.src = baseUrl + '/embed-view';
-  iframe.title = 'Inpartner Agent';
-  iframe.style.cssText = 'width: 100%; height: 100%; border: none; display: block;';
+  iframe.title = 'Inpartner AI Business Consultation Assistant';
+  iframe.setAttribute('allow', 'clipboard-write');
+  iframe.style.cssText = 'width: 100%; height: 100%; border: none; display: block; background: white;';
   container.appendChild(iframe);
 
   var isOpen = false;
+  var previousBodyOverflow = '';
 
-  function toggleChat() {
-    isOpen = !isOpen;
-    if (isOpen) {
-      container.style.display = 'block';
-      setTimeout(function () {
-        container.style.opacity = '1';
-        container.style.transform = 'translateY(0)';
-      }, 10);
-      launcher.innerHTML =
-        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-        '<line x1="18" y1="6" x2="6" y2="18"></line>' +
-        '<line x1="6" y1="6" x2="18" y2="18"></line>' +
-        '</svg>';
-    } else {
-      container.style.opacity = '0';
-      container.style.transform = 'translateY(10px)';
-      setTimeout(function () {
-        container.style.display = 'none';
-      }, 200);
-      launcher.innerHTML = botIconSvg;
-    }
-  }
-
-  launcher.onclick = toggleChat;
-
-  // Responsive mobile adjust
-  function handleResize() {
-    if (window.innerWidth < 640) {
+  function applyResponsiveLayout() {
+    var isMobile = window.innerWidth < 640;
+    if (isMobile) {
+      container.style.top = '0';
+      container.style.left = '0';
       container.style.bottom = '0';
       container.style.right = '0';
       container.style.width = '100vw';
       container.style.maxWidth = '100vw';
-      container.style.height = '100vh';
-      container.style.maxHeight = '100vh';
+      container.style.height = '100%';
+      container.style.maxHeight = '100%';
       container.style.borderRadius = '0';
+      container.style.boxShadow = 'none';
+      container.style.border = 'none';
+
+      // Hide launcher on mobile when chat is open to avoid obscuring chat inputs
+      if (isOpen) {
+        launcher.style.display = 'none';
+      } else {
+        launcher.style.display = 'flex';
+      }
     } else {
+      container.style.top = 'auto';
+      container.style.left = 'auto';
       container.style.bottom = '92px';
       container.style.right = '24px';
       container.style.width = '420px';
@@ -119,11 +114,88 @@
       container.style.height = '720px';
       container.style.maxHeight = 'calc(100vh - 120px)';
       container.style.borderRadius = '24px';
+      container.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.06)';
+      container.style.border = '1px solid rgba(226, 232, 240, 0.9)';
+      launcher.style.display = 'flex';
     }
   }
 
-  window.addEventListener('resize', handleResize);
-  handleResize();
+  function openChat() {
+    if (isOpen) return;
+    isOpen = true;
+    applyResponsiveLayout();
+
+    container.style.display = 'block';
+    // Small timeout to trigger CSS opacity & transform transition
+    setTimeout(function () {
+      container.style.opacity = '1';
+      container.style.transform = 'translateY(0)';
+    }, 15);
+
+    launcher.innerHTML = closeIconSvg;
+    launcher.setAttribute('aria-label', 'Close Inpartner Assistant');
+
+    // Prevent background page scrolling on mobile
+    if (window.innerWidth < 640) {
+      previousBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      launcher.style.display = 'none';
+    }
+  }
+
+  function closeChat() {
+    if (!isOpen) return;
+    isOpen = false;
+
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(14px)';
+
+    // Restore background page scrolling
+    if (window.innerWidth < 640) {
+      document.body.style.overflow = previousBodyOverflow || '';
+    }
+
+    setTimeout(function () {
+      container.style.display = 'none';
+      launcher.style.display = 'flex';
+    }, 220);
+
+    launcher.innerHTML = botIconSvg;
+    launcher.setAttribute('aria-label', 'Open Inpartner Business Assistant');
+  }
+
+  function toggleChat() {
+    if (isOpen) {
+      closeChat();
+    } else {
+      openChat();
+    }
+  }
+
+  launcher.onclick = toggleChat;
+
+  // Listen for postMessage from inside iframe (e.g. ChatWidget close button clicked)
+  window.addEventListener('message', function (event) {
+    if (!event || !event.data) return;
+    var type = event.data.type;
+    if (type === 'inpartner_close_chat') {
+      closeChat();
+    } else if (type === 'inpartner_open_chat') {
+      openChat();
+    } else if (type === 'inpartner_toggle_chat') {
+      toggleChat();
+    }
+  });
+
+  // ESC key to close on desktop
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && isOpen) {
+      closeChat();
+    }
+  });
+
+  window.addEventListener('resize', applyResponsiveLayout);
+  applyResponsiveLayout();
 
   document.body.appendChild(launcher);
   document.body.appendChild(container);

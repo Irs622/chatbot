@@ -37,13 +37,26 @@ interface ChatMessage {
 interface ChatWidgetProps {
   initialOpen?: boolean;
   embeddedMode?: boolean;
+  onClose?: () => void;
 }
 
 export default function ChatWidget({
   initialOpen = false,
-  embeddedMode = false
+  embeddedMode = false,
+  onClose
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
+
+  const handleCloseWidget = () => {
+    setIsOpen(false);
+    setShowMenu(false);
+    if (onClose) {
+      onClose();
+    }
+    if (typeof window !== 'undefined') {
+      window.parent?.postMessage({ type: 'inpartner_close_chat' }, '*');
+    }
+  };
   const [sessionId, setSessionId] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [inputMessage, setInputMessage] = useState('');
@@ -350,80 +363,85 @@ export default function ChatWidget({
               </div>
             </div>
 
-            {/* Right: Chevron Down / Dropdown trigger */}
-            <div className="relative" ref={menuRef}>
-              <button
-                onClick={() => {
-                  if (!embeddedMode && !showMenu) {
-                    setIsOpen(false);
-                  } else {
-                    setShowMenu(!showMenu);
-                  }
-                }}
-                className="p-1 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100/80 transition-colors focus:outline-none"
-                aria-label="Options"
-              >
-                <ChevronDown className="w-5 h-5 transition-transform duration-200" />
-              </button>
+            {/* Right: Header Action Buttons (Menu + Close) */}
+            <div className="flex items-center gap-1">
+              {/* Dropdown Options Menu */}
+              <div className="relative" ref={menuRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowMenu(!showMenu)}
+                  className="p-1.5 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none"
+                  aria-label="Options"
+                  title="Menu Opsi"
+                >
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showMenu ? 'rotate-180' : ''}`} />
+                </button>
 
-              {/* Header Dropdown Menu */}
-              {showMenu && (
-                <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150 text-xs">
-                  <button
-                    onClick={handleResetConversation}
-                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-                    <span>New conversation</span>
-                  </button>
+                {/* Header Dropdown Menu */}
+                {showMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150 text-xs">
+                    <button
+                      onClick={handleResetConversation}
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                      <span>New conversation</span>
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setShowLeadModal(true);
-                      setShowMenu(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-[#005DAD]/10 hover:text-[#005DAD] flex items-center gap-2 font-medium transition-colors"
-                  >
-                    <Building2 className="w-3.5 h-3.5 text-[#005DAD]" />
-                    <span>Jadwalkan Konsultasi</span>
-                  </button>
+                    <button
+                      onClick={() => {
+                        setShowLeadModal(true);
+                        setShowMenu(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-[#005DAD]/10 hover:text-[#005DAD] flex items-center gap-2 font-medium transition-colors"
+                    >
+                      <Building2 className="w-3.5 h-3.5 text-[#005DAD]" />
+                      <span>Jadwalkan Konsultasi</span>
+                    </button>
 
-                  <a
-                    href={getWhatsAppUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Official WhatsApp</span>
-                  </a>
+                    <a
+                      href={getWhatsAppUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                    >
+                      <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Official WhatsApp</span>
+                    </a>
 
-                  <a
-                    href={INPARTNER_CONFIG.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Visit inpartner.id</span>
-                  </a>
+                    <a
+                      href={INPARTNER_CONFIG.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Visit inpartner.id</span>
+                    </a>
 
-                  {!embeddedMode && (
                     <div className="border-t border-slate-100 mt-1 pt-1">
                       <button
-                        onClick={() => {
-                          setIsOpen(false);
-                          setShowMenu(false);
-                        }}
+                        onClick={handleCloseWidget}
                         className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium"
                       >
                         <X className="w-3.5 h-3.5" />
-                        <span>Close chat</span>
+                        <span>Tutup Percakapan</span>
                       </button>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
+
+              {/* Dedicated Close / Minimize Button (Works on both desktop & mobile / iframe) */}
+              <button
+                type="button"
+                onClick={handleCloseWidget}
+                className="p-1.5 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none"
+                aria-label="Tutup Percakapan"
+                title="Tutup Chat"
+              >
+                <X className="w-4 h-4 stroke-[2.2]" />
+              </button>
             </div>
           </div>
 
