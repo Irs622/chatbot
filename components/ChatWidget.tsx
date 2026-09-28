@@ -65,6 +65,7 @@ export default function ChatWidget({
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [showTeaser, setShowTeaser] = useState(false);
 
   // Inpartner Agent Configuration
   const agentConfig = {
@@ -206,6 +207,22 @@ export default function ChatWidget({
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [showMenu]);
+
+  // Proactive Teaser Bubble timer (trigger after 8 seconds)
+  useEffect(() => {
+    if (embeddedMode || isOpen) return;
+    try {
+      if (sessionStorage.getItem('inpartner_teaser_dismissed')) return;
+    } catch {}
+
+    const timer = setTimeout(() => {
+      if (!isOpen) {
+        setShowTeaser(true);
+      }
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, embeddedMode]);
 
   // Track chatbot open
   useEffect(() => {
@@ -390,31 +407,95 @@ export default function ChatWidget({
 
   return (
     <>
-      {/* Floating Launcher Button (Only when not in embeddedMode) */}
+      {/* Floating Launcher Button & Proactive Teaser Bubble (Standalone Mode) */}
       {!embeddedMode && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-          {!isOpen && (
-            <button
-              onClick={() => setIsOpen(true)}
-              className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all"
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+          {/* Proactive Bubble Teaser */}
+          {showTeaser && !isOpen && (
+            <div
+              onClick={() => {
+                setShowTeaser(false);
+                try {
+                  sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
+                } catch {}
+                setIsOpen(true);
+              }}
+              className="pointer-events-auto max-w-[310px] w-full bg-white rounded-2xl p-4 shadow-2xl border border-[#005DAD]/20 animate-in fade-in slide-in-from-bottom-3 duration-300 cursor-pointer hover:shadow-3xl hover:border-[#005DAD]/40 transition-all group"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Konsultasi {agentConfig.name}
-            </button>
-          )}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? 'Tutup Chatbot' : `Buka ${agentConfig.name}`}
-            className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#005DAD] hover:bg-[#004785] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200"
-          >
-            {isOpen ? (
-              <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
-            ) : (
-              <div className="flex items-center justify-center">
-                <ChatbotIcon size="md" className="transition-transform group-hover:scale-110 duration-200" />
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="font-bold text-[11px] text-[#005DAD]">Inpartner AI Assistant</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowTeaser(false);
+                    try {
+                      sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
+                    } catch {}
+                  }}
+                  className="text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition-colors"
+                  aria-label="Tutup sapaan"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
+
+              <h4 className="font-bold text-xs text-slate-900 leading-snug group-hover:text-[#005DAD] transition-colors">
+                Butuh Konsultasi Strategi Bisnis atau Optimasi Laba?
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Dapatkan analisis ringkas & solusi 4 pilar Inpartner dalam 2 menit.
+              </p>
+
+              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
+                <span className="font-bold text-[#005DAD] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                  Mulai Diskusi &rarr;
+                </span>
+                <span className="text-slate-400">Online 24/7 • Gratis</span>
+              </div>
+            </div>
+          )}
+
+          {/* Launcher Row */}
+          <div className="flex items-center gap-3 pointer-events-auto">
+            {!isOpen && !showTeaser && (
+              <button
+                onClick={() => {
+                  setShowTeaser(false);
+                  try {
+                    sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
+                  } catch {}
+                  setIsOpen(true);
+                }}
+                className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Konsultasi {agentConfig.name}
+              </button>
             )}
-          </button>
+            <button
+              onClick={() => {
+                setShowTeaser(false);
+                try {
+                  sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
+                } catch {}
+                setIsOpen(!isOpen);
+              }}
+              aria-label={isOpen ? 'Tutup Chatbot' : `Buka ${agentConfig.name}`}
+              className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#005DAD] hover:bg-[#004785] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200"
+            >
+              {isOpen ? (
+                <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
+              ) : (
+                <div className="flex items-center justify-center">
+                  <ChatbotIcon size="md" className="transition-transform group-hover:scale-110 duration-200" />
+                </div>
+              )}
+            </button>
+          </div>
         </div>
       )}
 

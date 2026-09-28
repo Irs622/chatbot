@@ -64,6 +64,39 @@
     launcher.style.transform = 'scale(1)';
   };
 
+  // Create proactive teaser bubble
+  var teaser = document.createElement('div');
+  teaser.id = 'inpartner-chat-teaser';
+  teaser.style.cssText =
+    'position: fixed; bottom: 92px; right: 24px; width: 310px; max-width: calc(100vw - 32px); ' +
+    'background: white; border: 1px solid rgba(0, 93, 173, 0.2); border-radius: 20px; ' +
+    'box-shadow: 0 20px 35px -10px rgba(0, 45, 95, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04); ' +
+    'padding: 14px 16px; z-index: 999997; cursor: pointer; display: none; opacity: 0; ' +
+    'transform: translateY(12px) scale(0.96); ' +
+    'transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); ' +
+    'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;';
+
+  teaser.innerHTML =
+    '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">' +
+      '<div style="display:flex; align-items:center; gap:6px;">' +
+        '<span style="width:7px; height:7px; border-radius:50%; background:#10b981; display:inline-block; box-shadow:0 0 0 2px rgba(16,185,129,0.25);"></span>' +
+        '<span style="font-weight:700; font-size:11.5px; color:#005DAD; letter-spacing:-0.01em;">Inpartner AI Assistant</span>' +
+      '</div>' +
+      '<button id="inpartner-teaser-close" aria-label="Tutup sapaan" style="background:none; border:none; color:#94a3b8; font-size:13px; line-height:1; cursor:pointer; padding:3px 5px; border-radius:6px;">✕</button>' +
+    '</div>' +
+    '<div style="font-weight:700; font-size:13px; color:#0f172a; line-height:1.35; margin-bottom:4px;">' +
+      'Butuh Konsultasi Strategi Bisnis atau Optimasi Laba?' +
+    '</div>' +
+    '<div style="font-size:11.5px; color:#64748b; line-height:1.4; margin-bottom:10px;">' +
+      'Dapatkan analisis ringkas & solusi 4 pilar Inpartner dalam 2 menit.' +
+    '</div>' +
+    '<div style="display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid #f1f5f9;">' +
+      '<span style="font-size:11.5px; font-weight:700; color:#005DAD; display:flex; align-items:center; gap:4px;">' +
+        'Mulai Diskusi &rarr;' +
+      '</span>' +
+      '<span style="font-size:10.5px; color:#94a3b8; font-weight:500;">Online 24/7 • Gratis</span>' +
+    '</div>';
+
   // Create iframe container
   var container = document.createElement('div');
   container.id = 'inpartner-chat-container';
@@ -98,7 +131,12 @@
       container.style.boxShadow = 'none';
       container.style.border = 'none';
 
-      // Hide launcher on mobile when chat is open to avoid obscuring chat inputs
+      teaser.style.bottom = '90px';
+      teaser.style.right = '16px';
+      teaser.style.left = '16px';
+      teaser.style.width = 'auto';
+      teaser.style.maxWidth = 'calc(100vw - 32px)';
+
       if (isOpen) {
         launcher.style.display = 'none';
       } else {
@@ -116,17 +154,49 @@
       container.style.borderRadius = '24px';
       container.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.06)';
       container.style.border = '1px solid rgba(226, 232, 240, 0.9)';
+
+      teaser.style.bottom = '92px';
+      teaser.style.right = '24px';
+      teaser.style.left = 'auto';
+      teaser.style.width = '310px';
+
       launcher.style.display = 'flex';
     }
   }
 
+  function showTeaser() {
+    if (isOpen) return;
+    try {
+      if (sessionStorage.getItem('inpartner_teaser_dismissed')) return;
+    } catch (e) {}
+
+    teaser.style.display = 'block';
+    setTimeout(function () {
+      teaser.style.opacity = '1';
+      teaser.style.transform = 'translateY(0) scale(1)';
+    }, 25);
+  }
+
+  function hideTeaser(permanently) {
+    if (permanently) {
+      try {
+        sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
+      } catch (e) {}
+    }
+    teaser.style.opacity = '0';
+    teaser.style.transform = 'translateY(12px) scale(0.96)';
+    setTimeout(function () {
+      teaser.style.display = 'none';
+    }, 280);
+  }
+
   function openChat() {
     if (isOpen) return;
+    hideTeaser(true);
     isOpen = true;
     applyResponsiveLayout();
 
     container.style.display = 'block';
-    // Small timeout to trigger CSS opacity & transform transition
     setTimeout(function () {
       container.style.opacity = '1';
       container.style.transform = 'translateY(0)';
@@ -135,7 +205,6 @@
     launcher.innerHTML = closeIconSvg;
     launcher.setAttribute('aria-label', 'Close Inpartner Assistant');
 
-    // Prevent background page scrolling on mobile
     if (window.innerWidth < 640) {
       previousBodyOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
@@ -150,7 +219,6 @@
     container.style.opacity = '0';
     container.style.transform = 'translateY(14px)';
 
-    // Restore background page scrolling
     if (window.innerWidth < 640) {
       document.body.style.overflow = previousBodyOverflow || '';
     }
@@ -173,6 +241,30 @@
   }
 
   launcher.onclick = toggleChat;
+
+  // Teaser click handlers
+  teaser.onclick = function (e) {
+    var closeBtn = teaser.querySelector('#inpartner-teaser-close');
+    if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) {
+      e.stopPropagation();
+      hideTeaser(true);
+      return;
+    }
+    openChat();
+  };
+
+  var teaserCloseBtn = teaser.querySelector('#inpartner-teaser-close');
+  if (teaserCloseBtn) {
+    teaserCloseBtn.onclick = function (e) {
+      e.stopPropagation();
+      hideTeaser(true);
+    };
+  }
+
+  // Trigger proactive teaser after 8 seconds of browsing
+  setTimeout(function () {
+    showTeaser();
+  }, 8000);
 
   // Listen for postMessage from inside iframe (e.g. ChatWidget close button clicked)
   window.addEventListener('message', function (event) {
@@ -198,5 +290,6 @@
   applyResponsiveLayout();
 
   document.body.appendChild(launcher);
+  document.body.appendChild(teaser);
   document.body.appendChild(container);
 })();
