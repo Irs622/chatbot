@@ -95,7 +95,7 @@ export default function AdminPage() {
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 font-sans">
         <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-slate-200 p-8 space-y-6">
           <div className="text-center space-y-1">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900">Inpartner Portal</h1>
+            <h1 className="text-xl font-bold tracking-tight text-[#0779D1]">Inpartner Portal</h1>
             <p className="text-xs text-slate-500">Enter access PIN to view client inquiries</p>
           </div>
 
@@ -165,7 +165,7 @@ export default function AdminPage() {
           {/* Logo & Navigation Tabs */}
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-base tracking-tight text-slate-900">INPARTNER</span>
+              <span className="font-bold text-base tracking-tight text-[#0779D1]">INPARTNER</span>
               <span className="text-[10px] font-semibold bg-[#0779D1]/10 text-[#0779D1] px-2 py-0.5 rounded-full">
                 Portal
               </span>
