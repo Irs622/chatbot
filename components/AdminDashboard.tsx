@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Users,
   Search,
@@ -30,8 +30,13 @@ import {
   TrendingUp,
   Briefcase,
   AlertCircle,
-  MoreVertical,
-  Activity
+  PhoneCall,
+  Share2,
+  Info,
+  ChevronUp,
+  UserCheck,
+  Smile,
+  X
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 
@@ -43,6 +48,63 @@ const AVATAR_COLORS = [
   { bg: '#BE905F', border: '#A88055', text: '#FFFFFF' },
   { bg: '#AA7FB9', border: '#8E6C9A', text: '#FFFFFF' }
 ];
+
+// Helper: Format phone number cleanly (e.g. 0812-3456-7890 or +62 812-3456-7890)
+function formatPhoneNumber(phone: string): string {
+  if (!phone) return '-';
+  const clean = phone.replace(/[^0-9+]/g, '');
+  if (clean.startsWith('+62')) {
+    const rest = clean.slice(3);
+    if (rest.length >= 9) {
+      return `+62 ${rest.slice(0, 3)}-${rest.slice(3, 7)}-${rest.slice(7)}`;
+    }
+    return clean;
+  }
+  if (clean.startsWith('62')) {
+    const rest = clean.slice(2);
+    if (rest.length >= 9) {
+      return `+62 ${rest.slice(0, 3)}-${rest.slice(3, 7)}-${rest.slice(7)}`;
+    }
+    return `+${clean}`;
+  }
+  if (clean.startsWith('0')) {
+    if (clean.length >= 10) {
+      return `${clean.slice(0, 4)}-${clean.slice(4, 8)}-${clean.slice(8)}`;
+    }
+  }
+  return phone;
+}
+
+// Helper: Clean phone number for WhatsApp URL
+function getWhatsAppCleanNumber(phone: string): string {
+  let clean = phone.replace(/[^0-9]/g, '');
+  if (clean.startsWith('0')) {
+    clean = '62' + clean.slice(1);
+  }
+  return clean;
+}
+
+// Helper: Friendly relative date (e.g. "Just now", "2 hours ago", "Yesterday")
+function formatFriendlyDate(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 5) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays}d ago`;
+
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  } catch {
+    return dateStr;
+  }
+}
 
 export default function AdminDashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -60,8 +122,9 @@ export default function AdminDashboard() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [exportSuccess, setExportSuccess] = useState<string | null>(null);
   const [activeTemplate, setActiveTemplate] = useState<number>(0);
-  const [activeTabSubView, setActiveTabSubView] = useState<'table' | 'overview'>('table');
-  const [timeframe, setTimeframe] = useState<'week' | 'month'>('month');
+  const [customGreeting, setCustomGreeting] = useState<string>('');
+  const [showTranscript, setShowTranscript] = useState<boolean>(true);
+  const [showGuideBanner, setShowGuideBanner] = useState<boolean>(true);
 
   const fetchLeadsAndConversations = async () => {
     setIsLoading(true);
@@ -158,35 +221,89 @@ export default function AdminDashboard() {
     }
   };
 
+  // Quick 1-click note tag appender for non-dev consultants
+  const handleAppendNoteTag = (tag: string) => {
+    const timestamp = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const lineToAdd = `[${timestamp}] ${tag}`;
+    const newNote = internalNote.trim() ? `${internalNote}\n${lineToAdd}` : lineToAdd;
+    setInternalNote(newNote);
+  };
+
   const handleCopyText = (text: string, fieldKey: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(fieldKey);
     setTimeout(() => setCopiedField(null), 2500);
   };
 
+  // 1-Click WhatsApp Group Summary Generator for Team
+  const handleCopyTeamSummary = () => {
+    if (!selectedLead) return;
+    const cleanPhone = formatPhoneNumber(selectedLead.phone);
+    const dateFormatted = new Date(selectedLead.created_at).toLocaleString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const summaryText = `📌 *INPARTNER INBOUND CLIENT INQUIRY*
+━━━━━━━━━━━━━━━━━━━━
+👤 *Client Name:* ${selectedLead.name}
+🏢 *Company:* ${selectedLead.company || 'Direct Business Owner'}
+📞 *WhatsApp / Phone:* ${cleanPhone}
+✉️ *Email:* ${selectedLead.email || 'Not provided'}
+💼 *Advisory Topic:* ${selectedLead.business_need}
+📝 *Client Notes:* "${selectedLead.notes || 'Submitted via inpartner.id consultation form'}"
+🕒 *Received:* ${dateFormatted} WIB
+━━━━━━━━━━━━━━━━━━━━
+👉 *Status:* ${selectedLead.status.toUpperCase()}
+🔗 *Open in WhatsApp:* https://wa.me/${getWhatsAppCleanNumber(selectedLead.phone)}`;
+
+    handleCopyText(summaryText, 'team_summary');
+  };
+
+  // Outreach message templates crafted for business development & partners
   const outreachTemplates = useMemo(() => {
     if (!selectedLead) return [];
     const name = selectedLead.name;
     const need = selectedLead.business_need;
+    const company = selectedLead.company ? `di ${selectedLead.company}` : '';
 
     return [
       {
         id: 0,
-        title: 'Initial Intro',
-        text: `Hello ${name}, thank you for reaching out to Inpartner (inpartner.id) regarding your corporate advisory inquiry on ${need}. I am following up to understand your objectives and explore how our advisory partners can assist. Would you have 15 minutes for a brief conversation?`
+        badge: 'WA Formal (ID)',
+        title: 'Sapaan Resmi (ID)',
+        text: `Halo Bapak/Ibu ${name}, terima kasih telah menghubungi Inpartner Consulting via website kami (inpartner.id) mengenai konsultasi ${need}. Saya dari tim corporate advisory Inpartner. Apakah ada waktu luang hari ini atau besok untuk berdiskusi singkat terkait kebutuhan ${company || 'perusahaan Anda'}?`
       },
       {
         id: 1,
-        title: 'Discovery Call',
-        text: `Dear ${name}, following your consultation request for ${need} on inpartner.id, our partner team would be delighted to host an exploratory discovery session this week. Please let us know your availability.`
+        badge: 'WA English (EN)',
+        title: 'Executive Intro (EN)',
+        text: `Hello ${name}, thank you for reaching out to Inpartner Consulting regarding your inquiry on ${need}. I am following up from our corporate advisory partner team. Would you have 15 minutes this week for an introductory discovery call to discuss your objectives?`
       },
       {
         id: 2,
-        title: 'Advisory Deck',
-        text: `Hi ${name}, this is the Inpartner corporate advisory team. We received your request on ${need}. We would be pleased to share our corporate credentials deck and case studies. Would this number be best to send the PDF?`
+        badge: 'Zoom / Meeting',
+        title: 'Jadwal Diskusi',
+        text: `Halo Bapak/Ibu ${name}, kami telah menerima detail kebutuhan konsultasi Anda terkait ${need}. Tim managing partner Inpartner siap menjadwalkan sesi discovery meeting (tatap muka atau Zoom). Boleh kami tahu hari dan jam yang paling nyaman untuk Anda?`
+      },
+      {
+        id: 3,
+        badge: 'Brochure / Deck',
+        title: 'Kirim Profil & Deck',
+        text: `Halo Bapak/Ibu ${name}, salam dari Inpartner Consulting. Kami memiliki rekam jejak dan proposal solusi untuk ${need}. Apakah nomor WhatsApp ini tepat untuk kami kirimkan dokumen ringkas profil perusahaan dan studi kasus kami?`
       }
     ];
   }, [selectedLead]);
+
+  // Keep custom greeting in sync when switching templates
+  useEffect(() => {
+    if (outreachTemplates[activeTemplate]) {
+      setCustomGreeting(outreachTemplates[activeTemplate].text);
+    }
+  }, [activeTemplate, outreachTemplates]);
 
   // Filtered Leads
   const filteredLeads = useMemo(() => {
@@ -208,18 +325,31 @@ export default function AdminDashboard() {
     });
   }, [leads, filterStatus, filterPillar, searchQuery]);
 
+  // Lead Counts by Status for quick filter buttons
+  const counts = useMemo(() => {
+    return {
+      all: leads.length,
+      new: leads.filter((l) => l.status === 'new').length,
+      contacted: leads.filter((l) => l.status === 'contacted').length,
+      in_progress: leads.filter((l) => l.status === 'in_progress').length,
+      converted: leads.filter((l) => l.status === 'converted').length,
+      closed: leads.filter((l) => l.status === 'closed').length
+    };
+  }, [leads]);
+
+  // Clean CSV Export formatted for Microsoft Excel & Google Sheets
   const handleExportCSV = () => {
     if (filteredLeads.length === 0) return;
     const headers = [
-      'Ref ID',
-      'Date',
+      'Inquiry ID',
+      'Date Received',
       'Client Name',
-      'Company',
+      'Company Name',
       'WhatsApp / Phone',
-      'Email',
-      'Advisory Pillar',
-      'Status',
-      'Notes'
+      'Email Address',
+      'Advisory Scope Needed',
+      'Follow-up Status',
+      'Consultant Notes'
     ];
     const escapeCsv = (val?: string | null) => {
       if (!val) return '""';
@@ -227,12 +357,12 @@ export default function AdminDashboard() {
       if (/^[=+@\-\t\r]/.test(str)) str = `'${str}`;
       return `"${str}"`;
     };
-    const rows = filteredLeads.map((lead, idx) => [
-      `"#${String(idx + 1).padStart(6, '0')}"`,
-      escapeCsv(new Date(lead.created_at).toLocaleDateString('en-GB')),
+    const rows = filteredLeads.map((lead) => [
+      `"#${lead.id.slice(-6).toUpperCase()}"`,
+      escapeCsv(new Date(lead.created_at).toLocaleString('en-GB')),
       escapeCsv(lead.name),
-      escapeCsv(lead.company || '-'),
-      `="${lead.phone}"`,
+      escapeCsv(lead.company || 'Direct Owner'),
+      `="${formatPhoneNumber(lead.phone)}"`,
       escapeCsv(lead.email || '-'),
       escapeCsv(lead.business_need),
       escapeCsv(lead.status),
@@ -244,11 +374,11 @@ export default function AdminDashboard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `inpartner-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `inpartner-inquiries-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     URL.revokeObjectURL(url);
-    setExportSuccess(`Exported ${filteredLeads.length} leads successfully`);
-    setTimeout(() => setExportSuccess(null), 3000);
+    setExportSuccess(`Downloaded ${filteredLeads.length} client inquiries to Excel (.csv)`);
+    setTimeout(() => setExportSuccess(null), 3500);
   };
 
   // Helper for initials
@@ -259,182 +389,268 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 1. Top Metric Cards Row (Matching Figma Stat Cards #F5F5F5 style) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {/* Stat Card 1: Revenue / Pipeline */}
-        <div className="bg-[#F5F5F5] rounded-[10px] p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_0px_6px_rgba(0,0,0,0.02)] relative overflow-hidden flex flex-col justify-between h-[100px]">
-          <div className="text-[#747374] font-semibold text-xs tracking-wide">
-            Total Pipeline
-          </div>
-          <div className="flex items-baseline gap-1 text-[#5FA0BE] font-medium text-lg tracking-tight">
-            <span>{leads.length}</span>
-            <span className="text-xs text-[#8B8B8B] font-normal">inquiries</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-[#8B8B8B]">All active</span>
-            <div className="bg-[#DCF1DD] text-[#6FA672] text-[10px] font-semibold px-2 py-0.5 rounded-[5px] flex items-center gap-1">
-              <span>+10%</span>
-              <TrendingUp className="w-2.5 h-2.5" />
+    <div className="space-y-5">
+      {/* 0. Consultant & Business Development Quick Guide Banner (Non-Dev Friendly) */}
+      {showGuideBanner && (
+        <div className="bg-[#F5F5F5] rounded-[10px] p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.04)] flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-[#CEEBF9] border border-[#5FA0BE]/40 flex items-center justify-center text-[#5FA0BE] shrink-0 mt-0.5">
+              <Sparkles className="w-4 h-4" />
             </div>
+            <div>
+              <h4 className="text-xs font-bold text-[#747374] flex items-center gap-2">
+                <span>Welcome to Inpartner Inbound Inquiries Portal</span>
+                <span className="bg-[#DCF1DD] text-[#3E7A41] text-[10px] font-semibold px-2 py-0.5 rounded-[4px]">
+                  Team Guide
+                </span>
+              </h4>
+              <p className="text-[11px] text-[#8B8B8B] mt-1 leading-relaxed">
+                This portal tracks business owners and corporate decision-makers who requested consultations on <strong>inpartner.id</strong>. 
+                Click any client to send a <strong>pre-filled WhatsApp greeting</strong>, copy their details for your team WhatsApp group, or record follow-up notes.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowGuideBanner(false)}
+            className="text-[#8B8B8B] hover:text-[#747374] text-xs p-1 cursor-pointer shrink-0"
+            title="Dismiss guide"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* 1. Top Metric Cards Row (Figma Stat Cards #F5F5F5 style) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+        {/* Stat Card 1: Total Inquiries */}
+        <div className="bg-[#F5F5F5] rounded-[10px] p-3.5 sm:p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between h-[104px]">
+          <div className="text-[#747374] font-semibold text-xs tracking-wide">
+            Total Inquiries
+          </div>
+          <div className="flex items-baseline gap-1 text-[#5FA0BE] font-bold text-xl tracking-tight">
+            <span>{counts.all}</span>
+            <span className="text-xs text-[#8B8B8B] font-normal">clients</span>
+          </div>
+          <div className="flex items-center justify-between text-[11px] text-[#8B8B8B]">
+            <span>All website leads</span>
+            <span className="text-[#6FA672] font-semibold text-[10px] bg-[#DCF1DD] px-1.5 py-0.5 rounded-[4px]">
+              Live 24/7
+            </span>
           </div>
         </div>
 
-        {/* Stat Card 2: Uncontacted Leads */}
-        <div className="bg-[#F5F5F5] rounded-[10px] p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_0px_6px_rgba(0,0,0,0.02)] relative overflow-hidden flex flex-col justify-between h-[100px]">
+        {/* Stat Card 2: Needs Response (Critical for BD) */}
+        <div className="bg-[#F5F5F5] rounded-[10px] p-3.5 sm:p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between h-[104px]">
           <div className="text-[#747374] font-semibold text-xs tracking-wide flex items-center justify-between">
+            <span>Needs Reply</span>
+            {counts.new > 0 && (
+              <span className="w-2 h-2 rounded-full bg-[#BE5F5F] animate-pulse" />
+            )}
+          </div>
+          <div className="text-[#BE5F5F] font-bold text-xl tracking-tight">
+            {counts.new}
+          </div>
+          <div className="flex items-center justify-between text-[11px] text-[#8B8B8B]">
             <span>Uncontacted</span>
-            <span className="w-2 h-2 rounded-full bg-[#BE5F5F] animate-pulse" />
-          </div>
-          <div className="text-[#BE5F5F] font-semibold text-lg tracking-tight">
-            {leads.filter((l) => l.status === 'new').length}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-[#8B8B8B]">Needs response</span>
-            <div className="bg-[#F8E0E0] text-[#BE5F5F] text-[10px] font-semibold px-2 py-0.5 rounded-[5px]">
-              &lt; 24h
-            </div>
+            <span className="text-[#BE5F5F] font-semibold text-[10px] bg-[#F8E0E0] px-1.5 py-0.5 rounded-[4px]">
+              Action today
+            </span>
           </div>
         </div>
 
         {/* Stat Card 3: In Discussion */}
-        <div className="bg-[#F5F5F5] rounded-[10px] p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_0px_6px_rgba(0,0,0,0.02)] relative overflow-hidden flex flex-col justify-between h-[100px]">
+        <div className="bg-[#F5F5F5] rounded-[10px] p-3.5 sm:p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between h-[104px]">
           <div className="text-[#747374] font-semibold text-xs tracking-wide">
             In Discussion
           </div>
-          <div className="text-[#5FA0BE] font-semibold text-lg tracking-tight">
-            {leads.filter((l) => l.status === 'in_progress' || l.status === 'contacted').length}
+          <div className="text-[#5FA0BE] font-bold text-xl tracking-tight">
+            {counts.contacted + counts.in_progress}
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-[#8B8B8B]">Active pipeline</span>
-            <div className="bg-[#DCF1DD] text-[#6FA672] text-[10px] font-semibold px-2 py-0.5 rounded-[5px]">
-              +15%
-            </div>
-          </div>
-        </div>
-
-        {/* Stat Card 4: Qualified / Converted */}
-        <div className="bg-[#F5F5F5] rounded-[10px] p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_0px_6px_rgba(0,0,0,0.02)] relative overflow-hidden flex flex-col justify-between h-[100px]">
-          <div className="text-[#747374] font-semibold text-xs tracking-wide">
-            Qualified Retainers
-          </div>
-          <div className="text-[#3E7A41] font-semibold text-lg tracking-tight">
-            {leads.filter((l) => l.status === 'converted').length}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-[#8B8B8B]">High intent</span>
-            <div className="bg-[#DCF1DD] text-[#6FA672] text-[10px] font-semibold px-2 py-0.5 rounded-[5px]">
-              21%
-            </div>
+          <div className="flex items-center justify-between text-[11px] text-[#8B8B8B]">
+            <span>Being followed up</span>
+            <span className="text-[#5FA0BE] font-semibold text-[10px] bg-[#CEEBF9] px-1.5 py-0.5 rounded-[4px]">
+              Active
+            </span>
           </div>
         </div>
 
-        {/* Stat Card 5: Advisory Pillars Performance Widget */}
-        <div className="bg-[#F5F5F5] rounded-[10px] p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_0px_6px_rgba(0,0,0,0.02)] relative overflow-hidden flex flex-col justify-between h-[100px] col-span-2 sm:col-span-1">
+        {/* Stat Card 4: Qualified / Won Deals */}
+        <div className="bg-[#F5F5F5] rounded-[10px] p-3.5 sm:p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between h-[104px]">
           <div className="text-[#747374] font-semibold text-xs tracking-wide">
-            Top Pillar
+            Qualified Clients
           </div>
-          <div className="text-[#747374] font-medium text-xs truncate">
-            Business Growth & Margin
+          <div className="text-[#3E7A41] font-bold text-xl tracking-tight">
+            {counts.converted}
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-[#8B8B8B]">4 Pillars Active</span>
-            <span className="text-[10px] text-[#5FA0BE] font-semibold">100% RAG</span>
+          <div className="flex items-center justify-between text-[11px] text-[#8B8B8B]">
+            <span>Proposal stage</span>
+            <span className="text-[#3E7A41] font-semibold text-[10px] bg-[#DCF1DD] px-1.5 py-0.5 rounded-[4px]">
+              High intent
+            </span>
+          </div>
+        </div>
+
+        {/* Stat Card 5: Top Advisory Topic */}
+        <div className="bg-[#F5F5F5] rounded-[10px] p-3.5 sm:p-4 border border-[#E3E3E3] shadow-[0px_2px_4px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between h-[104px] col-span-2 sm:col-span-1">
+          <div className="text-[#747374] font-semibold text-xs tracking-wide">
+            Top Service Topic
+          </div>
+          <div className="text-[#747374] font-semibold text-xs truncate">
+            Profitability & Margin
+          </div>
+          <div className="flex items-center justify-between text-[11px] text-[#8B8B8B]">
+            <span>4 Pillars Active</span>
+            <span className="text-[#5FA0BE] font-semibold text-[10px]">Inpartner AI</span>
           </div>
         </div>
       </div>
 
-      {/* Export notification */}
+      {/* Export notification toast */}
       {exportSuccess && (
-        <div className="bg-[#DCF1DD] border border-[#6FA672]/30 text-[#3E7A41] text-xs px-4 py-2.5 rounded-[10px] flex items-center justify-between shadow-2xs">
-          <span>{exportSuccess}</span>
-          <button onClick={() => setExportSuccess(null)} className="cursor-pointer text-xs">✕</button>
+        <div className="bg-[#DCF1DD] border border-[#6FA672]/40 text-[#3E7A41] text-xs px-4 py-2.5 rounded-[10px] flex items-center justify-between shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-[#3E7A41]" />
+            <span>{exportSuccess}</span>
+          </div>
+          <button onClick={() => setExportSuccess(null)} className="cursor-pointer text-xs font-bold">✕</button>
         </div>
       )}
 
-      {/* 2. Main Invoices & Leads Table (Exact Figma Table Styling) */}
+      {/* 2. Main Inquiries Table Card (Figma Style #F5F5F5) */}
       <div className="bg-[#F5F5F5] rounded-[10px] border border-[#E3E3E3] shadow-[0px_4px_8px_rgba(0,0,0,0.06),0px_0px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-        {/* Table Card Header with Title and Pagination Tools */}
-        <div className="p-4 sm:px-6 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-[#E3E3E3]">
-          <div className="flex items-center gap-3">
-            <h2 className="text-[#747374] text-sm font-semibold tracking-[0.7px]">
-              Inquiries & Client Invoices
-            </h2>
-            <span className="text-[11px] text-[#8B8B8B] bg-[#DFDFDF] px-2.5 py-0.5 rounded-full font-medium">
-              {filteredLeads.length} records
-            </span>
+        {/* Table Header: Quick Filter Tabs, Search & Export */}
+        <div className="p-4 sm:px-5 sm:py-3.5 flex flex-col gap-3 border-b border-[#E3E3E3]">
+          {/* Top Row: Title + Status Filter Pills for non-devs */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-[#747374] text-sm font-bold tracking-[0.7px]">
+                Client Consultation Inquiries
+              </h2>
+              <span className="text-[11px] text-[#8B8B8B] bg-[#DFDFDF] px-2.5 py-0.5 rounded-full font-medium">
+                {filteredLeads.length} inquiries
+              </span>
+            </div>
+
+            {/* Quick Status Filter Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              <button
+                onClick={() => setFilterStatus('all')}
+                className={`text-[11px] px-2.5 py-1 rounded-[5px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                  filterStatus === 'all'
+                    ? 'bg-[#5FA0BE] text-white shadow-2xs'
+                    : 'bg-white text-[#747374] border border-[#E3E3E3] hover:bg-[#EAEAEA]'
+                }`}
+              >
+                All ({counts.all})
+              </button>
+              <button
+                onClick={() => setFilterStatus('new')}
+                className={`text-[11px] px-2.5 py-1 rounded-[5px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                  filterStatus === 'new'
+                    ? 'bg-[#BE5F5F] text-white shadow-2xs'
+                    : 'bg-white text-[#BE5F5F] border border-[#E3E3E3] hover:bg-[#F8E0E0]'
+                }`}
+              >
+                🔴 Needs Reply ({counts.new})
+              </button>
+              <button
+                onClick={() => setFilterStatus('contacted')}
+                className={`text-[11px] px-2.5 py-1 rounded-[5px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                  filterStatus === 'contacted'
+                    ? 'bg-[#BE905F] text-white shadow-2xs'
+                    : 'bg-white text-[#747374] border border-[#E3E3E3] hover:bg-[#EAEAEA]'
+                }`}
+              >
+                🟡 Contacted ({counts.contacted})
+              </button>
+              <button
+                onClick={() => setFilterStatus('converted')}
+                className={`text-[11px] px-2.5 py-1 rounded-[5px] font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                  filterStatus === 'converted'
+                    ? 'bg-[#3E7A41] text-white shadow-2xs'
+                    : 'bg-white text-[#3E7A41] border border-[#E3E3E3] hover:bg-[#DCF1DD]'
+                }`}
+              >
+                🟢 Qualified ({counts.converted})
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          {/* Bottom Row: Search Box, Advisory Pillar Filter, Download CSV */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
             {/* Search Input */}
-            <div className="relative w-48 sm:w-64">
+            <div className="relative w-full sm:w-80">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#747374]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search inquiries..."
-                className="w-full text-xs pl-8 pr-3 py-1.5 rounded-[5px] border border-[#E3E3E3] bg-white text-[#747374] focus:outline-none focus:border-[#5FA0BE]"
+                placeholder="Search name, company, WhatsApp number, topic..."
+                className="w-full text-xs pl-8 pr-3 py-1.5 rounded-[5px] border border-[#E3E3E3] bg-white text-[#747374] placeholder:text-[#9E9E9E] focus:outline-none focus:border-[#5FA0BE]"
               />
             </div>
 
-            {/* Filter by Status */}
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="text-xs px-2.5 py-1.5 rounded-[5px] border border-[#E3E3E3] bg-white text-[#747374] focus:outline-none cursor-pointer"
-            >
-              <option value="all">All Status</option>
-              <option value="new">New</option>
-              <option value="contacted">Contacted</option>
-              <option value="in_progress">In Progress</option>
-              <option value="converted">Qualified</option>
-              <option value="closed">Closed</option>
-            </select>
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              {/* Filter by Advisory Pillar */}
+              <select
+                value={filterPillar}
+                onChange={(e) => setFilterPillar(e.target.value)}
+                className="text-xs px-2.5 py-1.5 rounded-[5px] border border-[#E3E3E3] bg-white text-[#747374] focus:outline-none cursor-pointer"
+              >
+                <option value="all">All Advisory Services</option>
+                <option value="growth">Business Growth & Market</option>
+                <option value="profitability">Profitability & Margin</option>
+                <option value="funding">Funding & Investment</option>
+                <option value="capacity">Executive Program</option>
+              </select>
 
-            {/* Export Button */}
-            <button
-              onClick={handleExportCSV}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#747374] text-xs font-semibold rounded-[5px] border border-[#DADADA] shadow-[0px_2px_4px_rgba(0,0,0,0.06)] transition-all cursor-pointer"
-              title="Download CSV"
-            >
-              <Download className="w-3.5 h-3.5 text-[#5FA0BE]" />
-              <span className="hidden sm:inline">Export</span>
-            </button>
+              {/* Download CSV / Excel */}
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#EAEAEA] text-[#747374] text-xs font-semibold rounded-[5px] border border-[#DADADA] shadow-[0px_2px_4px_rgba(0,0,0,0.04)] transition-all cursor-pointer whitespace-nowrap"
+                title="Download spreadsheet to open in Microsoft Excel or Google Sheets"
+              >
+                <Download className="w-3.5 h-3.5 text-[#5FA0BE]" />
+                <span>Download to Excel</span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Table Content */}
-        <div className="overflow-x-auto p-4 sm:p-5">
+        <div className="overflow-x-auto p-3.5 sm:p-4">
           <div className="rounded-[5px] border border-[#E3E3E3] overflow-hidden bg-white">
             <table className="w-full text-left text-xs text-[#747374]">
               {/* Header row matching Figma background #DFDFDF */}
-              <thead className="bg-[#DFDFDF] text-[#747374] font-bold text-[12px] tracking-[0.6px]">
+              <thead className="bg-[#DFDFDF] text-[#747374] font-bold text-[11px] tracking-[0.6px]">
                 <tr>
-                  <th className="py-2.5 px-4 w-12 text-center">No</th>
-                  <th className="py-2.5 px-4">Inquiry Ref</th>
-                  <th className="py-2.5 px-4">Client / Customer</th>
-                  <th className="py-2.5 px-4">Advisory Scope</th>
-                  <th className="py-2.5 px-4">Date</th>
-                  <th className="py-2.5 px-4">Status</th>
-                  <th className="py-2.5 px-4 text-center">Action</th>
+                  <th className="py-2.5 px-3 w-10 text-center">No</th>
+                  <th className="py-2.5 px-3">Ref</th>
+                  <th className="py-2.5 px-3">Client & Company</th>
+                  <th className="py-2.5 px-3">Advisory Need</th>
+                  <th className="py-2.5 px-3">Phone / WhatsApp</th>
+                  <th className="py-2.5 px-3">Received</th>
+                  <th className="py-2.5 px-3">Follow-up Status</th>
+                  <th className="py-2.5 px-3 text-center">Quick Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E3E3E3]">
                 {filteredLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-10 text-center text-[#8B8B8B]">
-                      No inquiry records matching your filter.
+                    <td colSpan={8} className="py-12 text-center text-[#8B8B8B]">
+                      No inquiry records found matching your filter criteria.
                     </td>
                   </tr>
                 ) : (
                   filteredLeads.map((lead, idx) => {
                     const avatarStyle = AVATAR_COLORS[idx % AVATAR_COLORS.length];
                     const isSelected = selectedLead?.id === lead.id;
-                    const cleanPhone = lead.phone ? lead.phone.replace(/[^0-9]/g, '') : '';
-                    const waUrl = cleanPhone
-                      ? `https://wa.me/${cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone}`
-                      : '';
+                    const cleanPhone = getWhatsAppCleanNumber(lead.phone);
+                    const formattedPhone = formatPhoneNumber(lead.phone);
+                    const waGreeting = encodeURIComponent(
+                      `Halo Bapak/Ibu ${lead.name}, terima kasih telah menghubungi Inpartner Consulting via website kami mengenai ${lead.business_need}. Boleh kami tahu waktu yang tepat untuk berdiskusi singkat?`
+                    );
+                    const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${waGreeting}` : '';
 
                     return (
                       <tr
@@ -445,108 +661,135 @@ export default function AdminDashboard() {
                         }`}
                       >
                         {/* No */}
-                        <td className="py-3 px-4 text-center text-[#8B8B8B] font-medium text-[11px]">
+                        <td className="py-2.5 px-3 text-center text-[#8B8B8B] font-medium text-[11px]">
                           {idx + 1}.
                         </td>
 
-                        {/* Invoice/Inquiry ID */}
-                        <td className="py-3 px-4 font-semibold text-[#8B8B8B] font-mono text-[11px]">
+                        {/* Ref ID */}
+                        <td className="py-2.5 px-3 font-semibold text-[#8B8B8B] font-mono text-[11px]">
                           #{lead.id.slice(-6).toUpperCase()}
                         </td>
 
                         {/* Customer Avatar & Name */}
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2.5">
+                        <td className="py-2.5 px-3">
+                          <div className="flex items-center gap-2">
                             <div
                               style={{
                                 backgroundColor: avatarStyle.bg,
                                 borderColor: avatarStyle.border,
                                 color: avatarStyle.text
                               }}
-                              className="w-[23px] h-[23px] rounded-full flex items-center justify-center text-[10px] font-semibold border shrink-0"
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border shrink-0"
                             >
                               {getInitials(lead.name)}
                             </div>
                             <div>
-                              <div className="font-medium text-[#747374]">{lead.name}</div>
+                              <div className="font-semibold text-[#747374]">{lead.name}</div>
                               <div className="text-[10px] text-[#8B8B8B]">
-                                {lead.company || 'Enterprise Client'}
+                                {lead.company || 'Business Owner'}
                               </div>
                             </div>
                           </div>
                         </td>
 
                         {/* Advisory Scope */}
-                        <td className="py-3 px-4 text-[#747374] font-normal">
-                          <span className="line-clamp-1 max-w-[220px]">
+                        <td className="py-2.5 px-3 text-[#747374]">
+                          <span className="line-clamp-1 max-w-[200px] text-[11px]">
                             {lead.business_need}
                           </span>
                         </td>
 
-                        {/* Date */}
-                        <td className="py-3 px-4 text-[#8B8B8B] whitespace-nowrap text-[11px]">
-                          {new Date(lead.created_at).toLocaleDateString('en-GB', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: '2-digit'
-                          })}
+                        {/* WhatsApp / Phone formatted */}
+                        <td className="py-2.5 px-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-1.5 font-mono text-[11px] text-[#747374]">
+                            <span>{formattedPhone}</span>
+                            <button
+                              onClick={() => handleCopyText(lead.phone, `phone_${lead.id}`)}
+                              className="text-[#8B8B8B] hover:text-[#5FA0BE] p-0.5"
+                              title="Copy phone number"
+                            >
+                              {copiedField === `phone_${lead.id}` ? (
+                                <Check className="w-3 h-3 text-[#3E7A41]" />
+                              ) : (
+                                <Copy className="w-3 h-3" />
+                              )}
+                            </button>
+                          </div>
                         </td>
 
-                        {/* Status */}
-                        <td className="py-3 px-4 whitespace-nowrap">
+                        {/* Date Received */}
+                        <td className="py-2.5 px-3 text-[#8B8B8B] whitespace-nowrap text-[11px]">
+                          <div title={new Date(lead.created_at).toLocaleString('en-GB')}>
+                            {formatFriendlyDate(lead.created_at)}
+                          </div>
+                        </td>
+
+                        {/* Status Badge */}
+                        <td className="py-2.5 px-3 whitespace-nowrap">
                           {lead.status === 'new' && (
-                            <span className="text-[#BE5F5F] font-semibold text-[11px]">New</span>
+                            <span className="inline-flex items-center gap-1 text-[#BE5F5F] font-bold text-[11px] bg-[#F8E0E0] px-2 py-0.5 rounded-[4px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#BE5F5F] animate-pulse" />
+                              Needs Reply
+                            </span>
                           )}
                           {lead.status === 'contacted' && (
-                            <span className="text-[#BE905F] font-semibold text-[11px]">Contacted</span>
+                            <span className="inline-flex items-center gap-1 text-[#BE905F] font-semibold text-[11px] bg-[#F5ECE1] px-2 py-0.5 rounded-[4px]">
+                              Contacted
+                            </span>
                           )}
                           {lead.status === 'in_progress' && (
-                            <span className="text-[#5FA0BE] font-semibold text-[11px]">In Progress</span>
+                            <span className="inline-flex items-center gap-1 text-[#5FA0BE] font-semibold text-[11px] bg-[#CEEBF9] px-2 py-0.5 rounded-[4px]">
+                              In Discussion
+                            </span>
                           )}
                           {lead.status === 'converted' && (
-                            <span className="text-[#3E7A41] font-semibold text-[11px]">Qualified</span>
+                            <span className="inline-flex items-center gap-1 text-[#3E7A41] font-semibold text-[11px] bg-[#DCF1DD] px-2 py-0.5 rounded-[4px]">
+                              Qualified
+                            </span>
                           )}
                           {lead.status === 'closed' && (
-                            <span className="text-[#8B8B8B] font-semibold text-[11px]">Closed</span>
+                            <span className="inline-flex items-center gap-1 text-[#8B8B8B] font-semibold text-[11px] bg-[#EAEAEA] px-2 py-0.5 rounded-[4px]">
+                              Closed / Won
+                            </span>
                           )}
                         </td>
 
-                        {/* Action with 3 colored square buttons from Figma */}
-                        <td className="py-3 px-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                          <div className="flex items-center justify-center gap-2">
-                            {/* Blue Square: WhatsApp Outreach */}
+                        {/* Action with 3 colored square buttons matching Figma */}
+                        <td className="py-2.5 px-3 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-center gap-1.5">
+                            {/* Blue Square: 1-Click WhatsApp */}
                             <a
                               href={waUrl || '#'}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-5 h-5 rounded-[5px] bg-[#CEEBF9] border border-[#5FA0BE]/40 flex items-center justify-center hover:opacity-80 transition-opacity"
-                              title="Connect on WhatsApp"
+                              className="w-6 h-6 rounded-[5px] bg-[#CEEBF9] border border-[#5FA0BE]/40 flex items-center justify-center hover:scale-105 transition-transform"
+                              title="1-Click Chat on WhatsApp with pre-filled greeting"
                             >
-                              <Phone className="w-3 h-3 text-[#457D97]" />
+                              <Phone className="w-3.5 h-3.5 text-[#457D97]" />
                             </a>
 
                             {/* Green Square: Email Client */}
                             {lead.email ? (
                               <a
-                                href={`mailto:${lead.email}`}
-                                className="w-5 h-5 rounded-[5px] bg-[#DCF1DD] border border-[#84BFB5]/50 flex items-center justify-center hover:opacity-80 transition-opacity"
-                                title="Send Email"
+                                href={`mailto:${lead.email}?subject=Inpartner Consulting - Advisory Follow-up for ${encodeURIComponent(lead.name)}`}
+                                className="w-6 h-6 rounded-[5px] bg-[#DCF1DD] border border-[#84BFB5]/50 flex items-center justify-center hover:scale-105 transition-transform"
+                                title="Send Email to Client"
                               >
-                                <Mail className="w-3 h-3 text-[#3E7A41]" />
+                                <Mail className="w-3.5 h-3.5 text-[#3E7A41]" />
                               </a>
                             ) : (
-                              <div className="w-5 h-5 rounded-[5px] bg-[#EAEAEA] flex items-center justify-center opacity-40">
-                                <Mail className="w-3 h-3 text-[#8B8B8B]" />
+                              <div className="w-6 h-6 rounded-[5px] bg-[#EAEAEA] flex items-center justify-center opacity-40">
+                                <Mail className="w-3.5 h-3.5 text-[#8B8B8B]" />
                               </div>
                             )}
 
-                            {/* Pink/Red Square: Inspect / Details */}
+                            {/* Red Square: Open Dossier Details */}
                             <button
                               onClick={() => handleSelectLead(lead)}
-                              className="w-5 h-5 rounded-[5px] bg-[#F8E0E0] border border-[#DE7E7E]/50 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer"
-                              title="Inspect Deal Brief"
+                              className="w-6 h-6 rounded-[5px] bg-[#F8E0E0] border border-[#DE7E7E]/50 flex items-center justify-center hover:scale-105 transition-transform cursor-pointer"
+                              title="View full client inquiry & notes"
                             >
-                              <FileText className="w-3 h-3 text-[#DE7E7E]" />
+                              <FileText className="w-3.5 h-3.5 text-[#DE7E7E]" />
                             </button>
                           </div>
                         </td>
@@ -560,118 +803,108 @@ export default function AdminDashboard() {
         </div>
 
         {/* Table Footer with Pagination info matching Figma layout */}
-        <div className="px-5 py-3 border-t border-[#E3E3E3] flex items-center justify-between text-xs text-[#8B8B8B]">
-          <span>Showing {filteredLeads.length} of {leads.length} data</span>
+        <div className="px-4 py-2.5 border-t border-[#E3E3E3] flex items-center justify-between text-xs text-[#8B8B8B]">
+          <span>Showing {filteredLeads.length} of {leads.length} client inquiries</span>
           <div className="flex items-center gap-1.5">
             <button
               disabled
-              className="w-7 h-7 bg-white rounded-[3px] border border-[#DADADA] flex items-center justify-center text-[#B3AEAE] shadow-xs disabled:opacity-50"
+              className="w-6 h-6 bg-white rounded-[3px] border border-[#DADADA] flex items-center justify-center text-[#B3AEAE] disabled:opacity-50"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
               disabled
-              className="w-7 h-7 bg-white rounded-[3px] border border-[#DADADA] flex items-center justify-center text-[#B3AEAE] shadow-xs disabled:opacity-50"
+              className="w-6 h-6 bg-white rounded-[3px] border border-[#DADADA] flex items-center justify-center text-[#B3AEAE] disabled:opacity-50"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* 3. Bottom Grid: Pipeline Progress & Deal Desk Panel (Matching Figma bottom cards) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Task Progress & Stage Distribution (Left Card - 5 cols) */}
-        <div className="lg:col-span-5 bg-[#F5F5F5] rounded-[10px] border border-[#E3E3E3] shadow-[0px_4px_8px_rgba(0,0,0,0.06),0px_0px_4px_rgba(0,0,0,0.04)] p-5 space-y-4">
+      {/* 3. Bottom Grid: Pipeline Progress & Selected Lead Action Desk (Figma bottom cards) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Left Card: 4 Advisory Pillars Demand & Quick Reference (5 cols) */}
+        <div className="lg:col-span-5 bg-[#F5F5F5] rounded-[10px] border border-[#E3E3E3] shadow-[0px_4px_8px_rgba(0,0,0,0.06),0px_0px_4px_rgba(0,0,0,0.04)] p-4 sm:p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-[#E3E3E3] pb-3">
-            <h3 className="text-[#747374] text-sm font-semibold tracking-[0.7px]">
-              Advisory Pipeline Progress
-            </h3>
-            <span className="text-[11px] text-[#8B8B8B]">Real-time Status</span>
+            <div>
+              <h3 className="text-[#747374] text-xs font-bold tracking-[0.7px]">
+                Advisory Service Demand
+              </h3>
+              <p className="text-[10px] text-[#8B8B8B] mt-0.5">Distribution of client requests</p>
+            </div>
+            <span className="text-[10px] text-[#5FA0BE] bg-[#CEEBF9] font-semibold px-2 py-0.5 rounded-[4px]">
+              4 Pillars
+            </span>
           </div>
 
-          {/* Progress Bar Items matching Figma style */}
-          <div className="space-y-4 pt-1">
-            {/* Pillar 1: Business Growth */}
+          {/* Progress Bars for Pillars */}
+          <div className="space-y-3.5 pt-1">
+            {/* Pillar 1: Growth */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-[#747374] font-medium">Business Growth & Market Expansion</span>
-                <span className="text-[#3E7A41] font-bold">36%</span>
+                <span className="text-[#747374] font-medium text-[11px]">Business Growth & Market Expansion</span>
+                <span className="text-[#3E7A41] font-bold text-xs">36%</span>
               </div>
               <div className="w-full bg-[#D9D9D9] h-2 rounded-[10px] overflow-hidden">
-                <div className="bg-[#3E7A41] h-full rounded-[10px]" style={{ width: '36%' }}></div>
+                <div className="bg-[#3E7A41] h-full rounded-[10px]" style={{ width: '36%' }} />
               </div>
             </div>
 
-            {/* Pillar 2: Funding & Investment */}
+            {/* Pillar 2: Funding */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-[#747374] font-medium">Funding & Investment Advisory</span>
-                <span className="text-[#5FA0BE] font-bold">28%</span>
+                <span className="text-[#747374] font-medium text-[11px]">Funding & Capital Advisory</span>
+                <span className="text-[#5FA0BE] font-bold text-xs">28%</span>
               </div>
               <div className="w-full bg-[#D9D9D9] h-2 rounded-[10px] overflow-hidden">
-                <div className="bg-[#5FA0BE] h-full rounded-[10px]" style={{ width: '28%' }}></div>
+                <div className="bg-[#5FA0BE] h-full rounded-[10px]" style={{ width: '28%' }} />
               </div>
             </div>
 
             {/* Pillar 3: Profitability */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-[#747374] font-medium">Profitability & Margin Optimization</span>
-                <span className="text-[#BE905F] font-bold">20%</span>
+                <span className="text-[#747374] font-medium text-[11px]">Profitability & Margin Optimization</span>
+                <span className="text-[#BE905F] font-bold text-xs">20%</span>
               </div>
               <div className="w-full bg-[#D9D9D9] h-2 rounded-[10px] overflow-hidden">
-                <div className="bg-[#BE905F] h-full rounded-[10px]" style={{ width: '20%' }}></div>
+                <div className="bg-[#BE905F] h-full rounded-[10px]" style={{ width: '20%' }} />
               </div>
             </div>
 
-            {/* Pillar 4: Capacity Building */}
+            {/* Pillar 4: Capacity */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-[#747374] font-medium">The Executive Business Program</span>
-                <span className="text-[#94839D] font-bold">16%</span>
+                <span className="text-[#747374] font-medium text-[11px]">Executive Business Program</span>
+                <span className="text-[#94839D] font-bold text-xs">16%</span>
               </div>
               <div className="w-full bg-[#D9D9D9] h-2 rounded-[10px] overflow-hidden">
-                <div className="bg-[#94839D] h-full rounded-[10px]" style={{ width: '16%' }}></div>
+                <div className="bg-[#94839D] h-full rounded-[10px]" style={{ width: '16%' }} />
               </div>
             </div>
           </div>
 
-          {/* Yearly Order Rate Mini Chart Visual */}
-          <div className="mt-5 pt-4 border-t border-[#E3E3E3]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-[#747374]">Monthly Inquiries Rate</span>
-              <div className="flex items-center gap-2 text-[10px] text-[#9C9C9C]">
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#5FA0BE]" /> Website
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#6BA77F]" /> Direct
-                </span>
-              </div>
-            </div>
-
-            {/* Mini SVG Trend Curves */}
-            <div className="h-20 w-full flex items-end justify-between px-2 pt-2 border-b border-[#E3E3E3] text-[9px] text-[#8B8B8B]">
-              {['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'].map((m, i) => (
-                <div key={m} className="flex flex-col items-center gap-1">
-                  <div
-                    className="w-2 bg-[#5FA0BE] rounded-t-[3px]"
-                    style={{ height: `${20 + i * 8}px` }}
-                  />
-                  <span>{m}</span>
-                </div>
-              ))}
-            </div>
+          {/* Quick Best Practice for Non-Dev Team */}
+          <div className="mt-4 pt-3.5 border-t border-[#E3E3E3] space-y-2">
+            <span className="text-xs font-bold text-[#747374] block">
+              💡 Advisory Team Follow-Up Protocol:
+            </span>
+            <ul className="text-[11px] text-[#8B8B8B] space-y-1.5 list-disc list-inside leading-relaxed">
+              <li><strong>Step 1:</strong> Reply via WhatsApp within 15 minutes of submission.</li>
+              <li><strong>Step 2:</strong> Clarify business scope & invite to a 20-minute discovery call.</li>
+              <li><strong>Step 3:</strong> Click <em>&quot;Copy Summary for Team&quot;</em> to alert relevant partner.</li>
+              <li><strong>Step 4:</strong> Advance status to <em>&quot;Contacted&quot;</em> or <em>&quot;In Discussion&quot;</em>.</li>
+            </ul>
           </div>
         </div>
 
-        {/* Selected Lead Deal Desk & Transcript (Right Card - 7 cols) */}
-        <div className="lg:col-span-7 bg-[#F5F5F5] rounded-[10px] border border-[#E3E3E3] shadow-[0px_4px_8px_rgba(0,0,0,0.06),0px_0px_4px_rgba(0,0,0,0.04)] p-5 sm:p-6 space-y-5">
+        {/* Right Card: Selected Lead Action Desk & Outreach Toolkit (7 cols) */}
+        <div className="lg:col-span-7 bg-[#F5F5F5] rounded-[10px] border border-[#E3E3E3] shadow-[0px_4px_8px_rgba(0,0,0,0.06),0px_0px_4px_rgba(0,0,0,0.04)] p-4 sm:p-5 space-y-4">
           {selectedLead ? (
             <>
-              {/* Header Dossier */}
-              <div className="flex items-start justify-between border-b border-[#E3E3E3] pb-4">
+              {/* Dossier Header with Name, Phone, and 1-Click Copy Team Summary */}
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-[#E3E3E3] pb-3.5">
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-base text-[#747374]">
@@ -681,43 +914,81 @@ export default function AdminDashboard() {
                       #{selectedLead.id.slice(-6).toUpperCase()}
                     </span>
                   </div>
-                  <p className="text-xs text-[#8B8B8B] flex items-center gap-1 mt-0.5">
-                    <Building className="w-3 h-3 text-[#5FA0BE]" />
-                    <span>{selectedLead.company || 'Direct Client'}</span>
+                  <p className="text-xs text-[#8B8B8B] flex items-center gap-1.5 mt-0.5">
+                    <Building className="w-3.5 h-3.5 text-[#5FA0BE]" />
+                    <span>{selectedLead.company || 'Direct Business Owner'}</span>
+                    <span>•</span>
+                    <Clock className="w-3.5 h-3.5 text-[#8B8B8B]" />
+                    <span>{formatFriendlyDate(selectedLead.created_at)}</span>
                   </p>
                 </div>
 
-                {/* Pipeline Step Advance Buttons */}
-                <div className="flex items-center gap-1">
-                  {(['new', 'contacted', 'in_progress', 'converted'] as const).map((st) => (
+                {/* 1-Click Button: Copy Summary for Team WhatsApp Group */}
+                <button
+                  onClick={handleCopyTeamSummary}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#CEEBF9]/50 text-[#5FA0BE] text-xs font-semibold rounded-[5px] border border-[#5FA0BE]/40 shadow-xs transition-all cursor-pointer whitespace-nowrap self-start"
+                  title="Copy a nicely formatted bullet summary ready to paste into team WhatsApp group"
+                >
+                  {copiedField === 'team_summary' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-[#3E7A41]" />
+                      <span className="text-[#3E7A41]">Copied for WA Group!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5 text-[#5FA0BE]" />
+                      <span>📋 Copy Summary for Team</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Status Stepper Buttons (Easy 1-click for non-devs) */}
+              <div className="bg-white p-3 rounded-[8px] border border-[#E3E3E3] space-y-1.5">
+                <span className="text-[11px] font-semibold text-[#8B8B8B] block">
+                  Click to Update Follow-up Stage:
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                  {[
+                    { id: 'new', label: 'Needs Reply', color: 'bg-[#BE5F5F]' },
+                    { id: 'contacted', label: 'Contacted', color: 'bg-[#BE905F]' },
+                    { id: 'in_progress', label: 'In Discussion', color: 'bg-[#5FA0BE]' },
+                    { id: 'converted', label: 'Qualified', color: 'bg-[#3E7A41]' },
+                    { id: 'closed', label: 'Closed / Won', color: 'bg-[#747374]' }
+                  ].map((st) => (
                     <button
-                      key={st}
-                      onClick={() => handleStatusChange(selectedLead.id, st as LeadStatus)}
+                      key={st.id}
+                      onClick={() => handleStatusChange(selectedLead.id, st.id as LeadStatus)}
                       disabled={updatingStatus}
-                      className={`text-[10px] px-2 py-1 rounded-[5px] font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                        selectedLead.status === st
-                          ? 'bg-[#5FA0BE] text-white shadow-2xs'
-                          : 'bg-white text-[#747374] border border-[#E3E3E3] hover:bg-[#EAEAEA]'
+                      className={`text-[10px] py-1.5 px-2 rounded-[5px] font-semibold transition-all cursor-pointer text-center ${
+                        selectedLead.status === st.id
+                          ? `${st.color} text-white shadow-xs`
+                          : 'bg-[#F5F5F5] text-[#747374] border border-[#E3E3E3] hover:bg-[#EAEAEA]'
                       }`}
                     >
-                      {st === 'in_progress' ? 'Diag' : st}
+                      {st.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Outreach Toolkit */}
-              <div className="space-y-3 bg-white p-4 rounded-[8px] border border-[#E3E3E3]">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#747374]">
-                    Consultant Outreach Template
+              {/* 1-Click Outreach Toolkit: Pre-crafted Greetings */}
+              <div className="space-y-2.5 bg-white p-3.5 rounded-[8px] border border-[#E3E3E3]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <span className="text-xs font-bold text-[#747374] flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-[#3E7A41]" />
+                    <span>WhatsApp Outreach Message:</span>
                   </span>
-                  <div className="flex items-center gap-1">
+                  {/* Template Switcher Tabs */}
+                  <div className="flex items-center gap-1 overflow-x-auto pb-0.5">
                     {outreachTemplates.map((t) => (
                       <button
                         key={t.id}
-                        onClick={() => setActiveTemplate(t.id)}
-                        className={`text-[10px] px-2 py-0.5 rounded-[4px] cursor-pointer ${
+                        onClick={() => {
+                          setActiveTemplate(t.id);
+                          setCustomGreeting(t.text);
+                        }}
+                        className={`text-[10px] px-2 py-0.5 rounded-[4px] cursor-pointer whitespace-nowrap transition-colors ${
                           activeTemplate === t.id
                             ? 'bg-[#5FA0BE] text-white font-semibold'
                             : 'text-[#8B8B8B] hover:bg-[#F5F5F5]'
@@ -729,111 +1000,165 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <p className="text-xs text-[#747374] italic bg-[#F5F5F5] p-2.5 rounded-[6px] border border-[#E3E3E3] leading-relaxed">
-                  &quot;{outreachTemplates[activeTemplate]?.text}&quot;
-                </p>
+                {/* Editable Greeting Box */}
+                <textarea
+                  rows={3}
+                  value={customGreeting}
+                  onChange={(e) => setCustomGreeting(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-[6px] border border-[#E3E3E3] bg-[#F9F9F9] text-[#747374] focus:outline-none focus:border-[#5FA0BE] focus:bg-white leading-relaxed resize-none"
+                  placeholder="Personalize your greeting message before sending..."
+                />
 
-                <div className="flex items-center gap-2 pt-1">
+                {/* Action Buttons: Open WhatsApp, Email, Phone Call */}
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   <a
-                    href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                      outreachTemplates[activeTemplate]?.text || ''
+                    href={`https://wa.me/${getWhatsAppCleanNumber(selectedLead.phone)}?text=${encodeURIComponent(
+                      customGreeting
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-[#5FA0BE] hover:bg-[#558BA4] text-white rounded-[5px] text-xs font-semibold transition-all shadow-xs"
+                    className="flex-1 min-w-[200px] flex items-center justify-center gap-1.5 py-2 px-3 bg-[#3E7A41] hover:bg-[#346737] text-white rounded-[5px] text-xs font-semibold transition-all shadow-xs"
+                    title="Open WhatsApp Web or WhatsApp Desktop with this message"
                   >
                     <Phone className="w-3.5 h-3.5" />
-                    <span>Send via WhatsApp ({selectedLead.phone})</span>
+                    <span>Open in WhatsApp ({formatPhoneNumber(selectedLead.phone)})</span>
                   </a>
 
                   {selectedLead.email && (
                     <a
                       href={`mailto:${selectedLead.email}?subject=${encodeURIComponent(
-                        `Inpartner Advisory - ${selectedLead.name}`
-                      )}&body=${encodeURIComponent(outreachTemplates[activeTemplate]?.text || '')}`}
-                      className="px-3 py-2 bg-white hover:bg-slate-50 text-[#747374] border border-[#DADADA] rounded-[5px] text-xs font-semibold"
+                        `Inpartner Consulting - Consultation Inquiry (${selectedLead.name})`
+                      )}&body=${encodeURIComponent(customGreeting)}`}
+                      className="px-3 py-2 bg-white hover:bg-slate-50 text-[#747374] border border-[#DADADA] rounded-[5px] text-xs font-semibold flex items-center gap-1"
+                      title="Send email via your email client"
                     >
-                      Email
+                      <Mail className="w-3.5 h-3.5 text-[#5FA0BE]" />
+                      <span>Email</span>
                     </a>
                   )}
+
+                  <a
+                    href={`tel:${selectedLead.phone.replace(/[^0-9+]/g, '')}`}
+                    className="px-3 py-2 bg-white hover:bg-slate-50 text-[#747374] border border-[#DADADA] rounded-[5px] text-xs font-semibold flex items-center gap-1"
+                    title="Direct call"
+                  >
+                    <PhoneCall className="w-3.5 h-3.5 text-[#747374]" />
+                    <span>Call</span>
+                  </a>
                 </div>
               </div>
 
-              {/* Client Notes & Details */}
-              <div className="space-y-2 text-xs text-[#747374]">
-                <div className="flex items-center justify-between border-b border-[#E3E3E3] pb-2">
-                  <span className="text-[#8B8B8B]">Target Pillar:</span>
+              {/* Client Original Inquiry Details */}
+              <div className="space-y-2 text-xs text-[#747374] bg-white p-3.5 rounded-[8px] border border-[#E3E3E3]">
+                <div className="flex items-center justify-between border-b border-[#E3E3E3] pb-1.5">
+                  <span className="text-[#8B8B8B]">Requested Advisory Pillar:</span>
                   <span className="font-semibold text-[#5FA0BE]">{selectedLead.business_need}</span>
                 </div>
                 {selectedLead.notes && (
-                  <div className="border-b border-[#E3E3E3] pb-2">
-                    <span className="text-[#8B8B8B] block mb-1">Submitted Challenge:</span>
-                    <p className="bg-white p-2.5 rounded-[6px] border border-[#E3E3E3] italic">
+                  <div className="pt-1">
+                    <span className="text-[#8B8B8B] block mb-1 text-[11px] font-medium">
+                      Visitor&apos;s Submitted Challenge / Notes:
+                    </span>
+                    <p className="bg-[#F9F9F9] p-2.5 rounded-[6px] border border-[#E3E3E3] italic text-xs leading-relaxed text-[#747374]">
                       &quot;{selectedLead.notes}&quot;
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Internal Consultant Note Editor */}
-              <div className="space-y-2 pt-2 border-t border-[#E3E3E3]">
+              {/* Internal Consultant Notes with Quick Tag Shortcuts */}
+              <div className="space-y-2 bg-white p-3.5 rounded-[8px] border border-[#E3E3E3]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#747374]">Internal Advisory Notes</span>
+                  <span className="text-xs font-bold text-[#747374]">Internal Consultant Notes</span>
                   {noteSavedFeedback && (
-                    <span className="text-xs text-[#3E7A41] font-semibold flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Saved!
+                    <span className="text-xs text-[#3E7A41] font-semibold flex items-center gap-1 animate-in fade-in">
+                      <Check className="w-3.5 h-3.5" /> Note Saved!
                     </span>
                   )}
                 </div>
+
+                {/* 1-Click Quick Note Tags */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                  <span className="text-[10px] text-[#8B8B8B] shrink-0">Quick tags:</span>
+                  {[
+                    'Called (No answer)',
+                    'Sent WA follow-up',
+                    'Discovery call booked',
+                    'Proposal sent',
+                    'Follow up Monday'
+                  ].map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => handleAppendNoteTag(tag)}
+                      className="text-[10px] px-2 py-0.5 rounded-[4px] bg-[#F5F5F5] hover:bg-[#EAEAEA] text-[#747374] border border-[#E3E3E3] whitespace-nowrap cursor-pointer transition-colors"
+                    >
+                      + {tag}
+                    </button>
+                  ))}
+                </div>
+
                 <textarea
                   rows={2}
                   value={internalNote}
                   onChange={(e) => setInternalNote(e.target.value)}
-                  placeholder="Record consultant observations or scheduled follow-up dates..."
-                  className="w-full text-xs p-2.5 rounded-[5px] border border-[#E3E3E3] bg-white text-[#747374] focus:outline-none focus:border-[#5FA0BE]"
+                  placeholder="Record consultant observations, discussion summary, or scheduled follow-up dates..."
+                  className="w-full text-xs p-2.5 rounded-[5px] border border-[#E3E3E3] bg-[#F9F9F9] focus:bg-white text-[#747374] focus:outline-none focus:border-[#5FA0BE]"
                 />
                 <button
                   onClick={handleSaveNotes}
                   disabled={savingNote}
-                  className="w-full py-1.5 bg-[#747374] hover:bg-[#5a595a] text-white text-xs font-semibold rounded-[5px] transition-all cursor-pointer"
+                  className="w-full py-2 bg-[#747374] hover:bg-[#5a595a] text-white text-xs font-semibold rounded-[5px] transition-all cursor-pointer shadow-xs"
                 >
-                  {savingNote ? 'Saving...' : 'Save Note'}
+                  {savingNote ? 'Saving Notes...' : '💾 Save Internal Note'}
                 </button>
               </div>
 
-              {/* Chatbot Transcript Stream */}
-              <div className="pt-2 border-t border-[#E3E3E3]">
-                <span className="text-xs font-semibold text-[#747374] block mb-2">
-                  Visitor AI Chatbot Transcript
-                </span>
-                <div className="max-h-48 overflow-y-auto space-y-2 bg-white p-3 rounded-[6px] border border-[#E3E3E3] text-xs">
-                  {selectedLeadConversation?.messages?.length > 0 ? (
-                    selectedLeadConversation.messages.map((m: any) => (
-                      <div
-                        key={m.id}
-                        className={`p-2 rounded-[5px] text-[11px] leading-relaxed ${
-                          m.sender === 'user'
-                            ? 'bg-[#EAEAEA] text-[#747374] ml-4'
-                            : 'bg-[#F5F5F5] text-[#747374] border border-[#E3E3E3] mr-4'
-                        }`}
-                      >
-                        <span className="font-bold text-[9px] uppercase block mb-0.5 text-[#8B8B8B]">
-                          {m.sender === 'user' ? 'Client' : 'Inpartner Assistant'}:
-                        </span>
-                        <div>{m.message}</div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-4 text-[#8B8B8B] text-xs">
-                      Direct form consultation inquiry.
-                    </div>
-                  )}
+              {/* Chatbot Conversation Transcript Stream */}
+              <div className="bg-white p-3.5 rounded-[8px] border border-[#E3E3E3] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#747374] flex items-center gap-1.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-[#5FA0BE]" />
+                    <span>Website Chatbot Conversation Transcript</span>
+                  </span>
+                  <button
+                    onClick={() => setShowTranscript(!showTranscript)}
+                    className="text-[11px] text-[#5FA0BE] hover:underline cursor-pointer"
+                  >
+                    {showTranscript ? 'Hide' : 'Show'}
+                  </button>
                 </div>
+
+                {showTranscript && (
+                  <div className="max-h-48 overflow-y-auto space-y-2 bg-[#F9F9F9] p-3 rounded-[6px] border border-[#E3E3E3] text-xs">
+                    {selectedLeadConversation?.messages?.length > 0 ? (
+                      selectedLeadConversation.messages.map((m: any) => (
+                        <div
+                          key={m.id}
+                          className={`p-2 rounded-[5px] text-[11px] leading-relaxed ${
+                            m.sender === 'user'
+                              ? 'bg-[#EAEAEA] text-[#747374] ml-4'
+                              : 'bg-white text-[#747374] border border-[#E3E3E3] mr-4 shadow-2xs'
+                          }`}
+                        >
+                          <span className="font-bold text-[9px] uppercase block mb-0.5 text-[#8B8B8B]">
+                            {m.sender === 'user' ? 'Client' : 'Inpartner AI Assistant'}:
+                          </span>
+                          <div>{m.message}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-4 text-[#8B8B8B] text-xs">
+                        This client submitted their inquiry directly via the consultation form.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </>
           ) : (
-            <div className="text-center py-16 text-[#8B8B8B] text-xs">
-              Select an inquiry row from the table to inspect details.
+            <div className="text-center py-20 text-[#8B8B8B] text-xs">
+              Select an inquiry row from the table above to view client details and outreach tools.
             </div>
           )}
         </div>

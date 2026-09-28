@@ -282,7 +282,7 @@ export default function AdminPage() {
               <span className="tracking-[0.8px]">Home</span>
             </button>
 
-            {/* Logistics / Advisory Leads (Active tab in snippet) */}
+            {/* Client Inquiries Tab */}
             <button
               onClick={() => setActiveTab('leads')}
               className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-semibold transition-all text-left cursor-pointer ${
@@ -294,10 +294,10 @@ export default function AdminPage() {
               <div className="w-5 h-5 flex items-center justify-center">
                 <Briefcase className="w-4 h-4 text-[#5FA0BE]" />
               </div>
-              <span className="tracking-[0.8px] text-[#5FA0BE]">Logistics & CRM</span>
+              <span className="tracking-[0.8px] text-[#5FA0BE]">Client Inquiries</span>
             </button>
 
-            {/* Education / Knowledge Base */}
+            {/* AI Knowledge Base Tab */}
             <button
               onClick={() => setActiveTab('knowledge')}
               className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
@@ -309,10 +309,10 @@ export default function AdminPage() {
               <div className="w-5 h-5 flex items-center justify-center">
                 <GraduationCap className="w-4 h-4" />
               </div>
-              <span className="tracking-[0.8px]">Education / RAG</span>
+              <span className="tracking-[0.8px]">AI Knowledge</span>
             </button>
 
-            {/* Finance / Analytics */}
+            {/* Analytics Tab */}
             <button
               onClick={() => setActiveTab('analytics')}
               className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
@@ -324,10 +324,10 @@ export default function AdminPage() {
               <div className="w-5 h-5 flex items-center justify-center">
                 <DollarSign className="w-4 h-4" />
               </div>
-              <span className="tracking-[0.8px]">Finance & Stats</span>
+              <span className="tracking-[0.8px]">Analytics</span>
             </button>
 
-            {/* Embed / Integrations */}
+            {/* Website Integration / Embed */}
             <button
               onClick={() => setActiveTab('embed')}
               className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
@@ -339,14 +339,14 @@ export default function AdminPage() {
               <div className="w-5 h-5 flex items-center justify-center">
                 <Code2 className="w-4 h-4" />
               </div>
-              <span className="tracking-[0.8px]">Embed Script</span>
+              <span className="tracking-[0.8px]">Website Widget</span>
             </button>
 
             {/* Supplementary Nav Placeholders from Figma */}
             <div className="pt-2">
               <div className="flex items-center gap-3.5 px-3.5 py-2 text-xs text-[#98939A] opacity-75">
                 <PiggyBank className="w-4 h-4" />
-                <span className="tracking-[0.8px]">Savings</span>
+                <span className="tracking-[0.8px]">Client Portfolios</span>
               </div>
               <div className="flex items-center gap-3.5 px-3.5 py-2 text-xs text-[#98939A] opacity-75">
                 <Gift className="w-4 h-4" />
@@ -362,14 +362,14 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* + New Button */}
+            {/* Refresh / View Inquiries Button */}
             <div className="pt-3">
               <button
                 onClick={() => setActiveTab('leads')}
-                className="w-full flex items-center gap-2 px-3.5 py-2 rounded-[5px] bg-[#EAEAEA] hover:bg-[#DFDFDF] text-[#747374] text-xs font-medium transition-colors"
+                className="w-full flex items-center gap-2 px-3.5 py-2 rounded-[5px] bg-[#EAEAEA] hover:bg-[#DFDFDF] text-[#747374] text-xs font-semibold transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>New Inquiry</span>
+                <span>View Inbound Leads</span>
               </button>
             </div>
           </nav>
@@ -385,7 +385,7 @@ export default function AdminPage() {
               <span className="w-2 h-2 rounded-full bg-[#5CA65F] border border-[#95CB97] absolute -top-0.5 -right-0.5" />
             </div>
             <div>
-              <div className="text-xs font-semibold text-[#747374]">Admin</div>
+              <div className="text-xs font-semibold text-[#747374]">Consultant Team</div>
               <div className="text-[10px] text-[#8B8B8B]">inpartner.id</div>
             </div>
           </div>
@@ -393,7 +393,7 @@ export default function AdminPage() {
           <button
             onClick={handleLogout}
             className="text-[#8B8B8B] hover:text-[#BE5F5F] p-1.5 rounded-[5px] transition-colors cursor-pointer"
-            title="Sign out"
+            title="Sign out of portal"
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
@@ -403,7 +403,7 @@ export default function AdminPage() {
       {/* ============================================================== */}
       {/* RIGHT MAIN WORKSPACE */}
       {/* ============================================================== */}
-      <div className="flex-1 w-full space-y-6 overflow-hidden">
+      <div className="flex-1 w-full space-y-5 overflow-hidden">
         {/* Top Header Capsule Bar (Matching Figma top bar) */}
         <header className="w-full bg-[#F5F5F5] h-[63px] rounded-[10px] shadow-[0px_2px_4px_rgba(0,0,0,0.08),0px_0px_6px_rgba(0,0,0,0.02)] border border-[#E3E3E3] px-5 sm:px-6 flex items-center justify-between gap-4">
           {/* Search Input */}
@@ -411,7 +411,7 @@ export default function AdminPage() {
             <Search className="w-4 h-4 text-[#747374]" />
             <input
               type="text"
-              placeholder="Search here...."
+              placeholder="Search portal (clients, topics, documents)..."
               className="bg-transparent text-sm text-[#747374] placeholder:text-[#9E9E9E] focus:outline-none w-full tracking-[0.7px]"
             />
           </div>
@@ -427,20 +427,22 @@ export default function AdminPage() {
             <Link
               href="/"
               target="_blank"
-              className="w-8 h-8 rounded-[5px] bg-[#F5F5F5] hover:bg-[#EAEAEA] flex items-center justify-center text-[#747374] transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[5px] bg-[#F5F5F5] hover:bg-[#EAEAEA] text-[#747374] text-xs font-semibold border border-[#E3E3E3] transition-colors"
               title="Open Public Chatbot"
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#5FA0BE]" />
+              <span className="hidden md:inline">Open Chatbot</span>
             </Link>
 
             <a
               href={getWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 rounded-[5px] bg-[#F5F5F5] hover:bg-[#EAEAEA] flex items-center justify-center text-[#747374] transition-colors"
-              title="Official WhatsApp"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[5px] bg-[#DCF1DD] hover:bg-[#cdebc3] text-[#3E7A41] text-xs font-semibold border border-[#6FA672]/30 transition-colors"
+              title="Official Inpartner WhatsApp"
             >
-              <Phone className="w-4 h-4" />
+              <Phone className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Official WA</span>
             </a>
 
             <div className="w-[1px] h-5 bg-[#747374]/30 hidden sm:block" />
@@ -455,22 +457,25 @@ export default function AdminPage() {
           </div>
         </header>
 
-        {/* Section Heading Title matching Figma "Logistics" */}
+        {/* Section Heading Title */}
         <div className="flex items-center justify-between px-1">
           <div>
-            <h1 className="text-2xl font-normal text-[#8B8B8B] tracking-[1.44px] leading-none">
-              {activeTab === 'leads' && 'Logistics & Advisory CRM'}
-              {activeTab === 'analytics' && 'Performance & Analytics'}
-              {activeTab === 'knowledge' && 'Education & Knowledge Base'}
-              {activeTab === 'embed' && 'Integration & Embed SDK'}
+            <h1 className="text-xl sm:text-2xl font-bold text-[#747374] tracking-[0.5px] leading-tight">
+              {activeTab === 'leads' && 'Client Inquiries & Consultation Leads'}
+              {activeTab === 'analytics' && 'Consultation Analytics & Visitor Insights'}
+              {activeTab === 'knowledge' && 'Inpartner AI Knowledge & Answers'}
+              {activeTab === 'embed' && 'Website Widget & Integration Guide'}
             </h1>
-            <p className="text-xs text-[#8B8B8B] mt-1.5">
-              PT Inpartner Optima Integra • Corporate Advisory Consultation Records
+            <p className="text-xs text-[#8B8B8B] mt-1">
+              {activeTab === 'leads' && 'Inbound inquiries from visitors on inpartner.id • Ready for consultant follow-up'}
+              {activeTab === 'analytics' && 'Visitor traffic, high-demand advisory pillars, and lead conversion rates'}
+              {activeTab === 'knowledge' && 'Official company knowledge documents that power the website AI assistant'}
+              {activeTab === 'embed' && 'Share this with your webmaster or IT team to install the chatbot in 2 minutes'}
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[#8B8B8B] font-mono">
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="text-xs text-[#8B8B8B] font-mono bg-white px-2.5 py-1 rounded-[5px] border border-[#E3E3E3]">
               STATUS: <strong className="text-[#3E7A41]">LIVE</strong>
             </span>
           </div>
