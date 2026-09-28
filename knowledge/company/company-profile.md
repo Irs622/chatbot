@@ -1,43 +1,41 @@
 # Inpartner Company Profile
 
-## Tentang INPARTNER (PT Inpartner Optima Integra)
-INPARTNER (PT Inpartner Optima Integra) adalah perusahaan konsultan bisnis dan manajemen terkemuka di Indonesia yang berbasis di Jakarta Selatan dan Surabaya. Didirikan oleh tim profesional sejak tahun 2009 (sebagai transformasi dari layanan konsultasi manajemen), Inpartner bermula sebagai konsultan yang membantu peningkatan aksesibilitas pasar, pembiayaan, teknologi, dan produktivitas bagi sektor usaha serta capacity building di Jawa Timur.
+## About INPARTNER (PT Inpartner Optima Integra)
+INPARTNER (PT Inpartner Optima Integra) is a premier business and management consulting firm in Indonesia, headquartered in South Jakarta and Surabaya. Founded by senior industry professionals in 2009 (evolving from boutique management advisory services), Inpartner originally focused on unlocking market accessibility, structured financing, advanced technology, and operational productivity for growing enterprises and regional capacity building.
 
-Melalui perbaikan berkelanjutan (continuous improvement), Inpartner kini telah bertransformasi menjadi konsultan strategis bisnis dan manajemen komprehensif bagi perusahaan berskala menengah (medium) dan korporasi besar (large corporations) di tingkat nasional maupun internasional.
+Through relentless continuous improvement, Inpartner has matured into a comprehensive corporate strategy and management consultancy advising middle-market enterprises and large corporations across domestic and international markets.
 
-## Visi Perusahaan
-"The Most Trusted Consulting Partner To help create positive and endure changes in Local and Global Coverage."
-(Menjadi mitra konsultan paling tepercaya untuk membantu menciptakan perubahan positif dan berkelanjutan dalam cakupan lokal maupun global.)
+## Corporate Vision
+"The Most Trusted Consulting Partner To help create positive and enduring changes in Local and Global Coverage."
 
-## Misi Perusahaan
-"Our mission is to combine knowledge, technology, information, and network to unlock solution and reach client's goals."
-(Menggabungkan keahlian pengetahuan, teknologi modern, analisis informasi teruji, dan jaringan strategis yang luas untuk membuka solusi bisnis dan mencapai target klien.)
+## Corporate Mission
+"Our mission is to combine knowledge, technology, information, and network to unlock solutions and reach client goals."
 
-## Nilai Utama (Core Values)
+## Core Values
 **"Go Beyond than Just Consultancy"**
-Inpartner tidak sekadar memberikan saran teoritis di atas kertas, melainkan berkomitmen membuka seluruh akses strategis yang dibutuhkan klien secara menyeluruh:
-1. **Akses Pembiayaan & Investasi (Financing Access):** Membantu menstrukturkan permodalan dan menghubungkan dengan mitra modal/investor.
-2. **Pengembangan Bisnis (Business Development):** Membantu ekspansi pasar, studi segmen, riset pertumbuhan, dan eksekusi strategi.
-3. **Pengembangan SDM & Organisasi (People & Capacity Development):** Memperkuat kapasitas pimpinan dan tim operasional melalui program eksekutif.
+Inpartner goes far beyond theoretical paper reports, committing to unlock critical strategic capabilities across all client dimensions:
+1. **Financing & Investment Access:** Capital structuring, valuation rigor, and strategic introductions to institutional capital providers.
+2. **Business Development:** Market expansion analysis, consumer segmentation, scalable go-to-market strategies, and execution.
+3. **People & Capacity Development:** Elevating leadership and managerial excellence through structured executive development programs.
 
-## Filosofi Pendekatan
-Inpartner menggunakan pendekatan holistik (*holistic approach*) untuk mengidentifikasi akar permasalahan (*root cause problem*) bisnis klien secara tepat, menyusun panduan terarah (*clear guides*), dan mendampingi implementasi nyata di setiap tahapan pertumbuhan (*be there for you every step of the way*).
+## Advisory Methodology & Philosophy
+Inpartner employs a rigorous holistic approach to accurately diagnose root-cause business problems, establish clear actionable roadmaps, and provide hands-on implementation support at every phase of organizational growth (*be there for you every step of the way*).
 
-## Komitmen Keberagaman & Keberlanjutan (Diversity & Sustainability)
-- **Diversity:** Inpartner menjunjung tinggi keberagaman latar belakang, keahlian sektoral, dan perspektif multidisiplin untuk menghadirkan solusi komprehensif.
-- **Sustainability & ESG:** Inpartner secara aktif mendukung tata kelola perusahaan yang berwawasan lingkungan, sosial, dan tata kelola berintegritas tinggi (ESG - Environmental, Social, and Governance).
+## Diversity & Sustainability Commitment
+- **Diversity:** Inpartner embraces diversity across sectoral backgrounds, functional skill sets, and multidisciplinary perspectives to generate robust, resilient solutions.
+- **Sustainability & ESG:** Inpartner actively champions sustainable governance, environmental stewardship, and social integrity (ESG - Environmental, Social, and Governance frameworks).
 
-## Lokasi Kantor Resmi
-1. **Kantor Pusat Jakarta:**
-   Pakuwon Tower Lantai 10, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, Jakarta Selatan 12870, DKI Jakarta.
-2. **Kantor Surabaya:**
-   Jemur Sari Street V No. 10, Surabaya, Jawa Timur.
+## Official Office Locations
+1. **Jakarta Head Office:**
+   Pakuwon Tower 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta 12870, Indonesia.
+2. **Surabaya Office:**
+   Jemur Sari Street V No. 10, Surabaya, East Java, Indonesia.
 
-## Saluran Kontak Resmi
-- **Telepon / WhatsApp Resmi:** 0896 2831 0192 (+6289628310192)
-- **Email Resmi:** corporatesecretary@inpartner.id
-- **Website:** https://inpartner.id/
-- **Media Sosial:**
+## Official Contact Channels
+- **Official Phone / WhatsApp:** +62 896 2831 0192 (0896 2831 0192)
+- **Official Email:** corporatesecretary@inpartner.id
+- **Corporate Website:** https://inpartner.id/
+- **Social Media:**
   - Instagram: @inpartnerconsulting
   - LinkedIn: Inpartner (PT Inpartner Optima Integra)
   - TikTok: @inpartnerconsulting

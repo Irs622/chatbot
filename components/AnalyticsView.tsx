@@ -7,12 +7,7 @@ import {
   Users,
   Target,
   PhoneCall,
-  Activity,
-  ArrowUpRight,
-  Sparkles,
-  PieChart,
-  CheckCircle2,
-  Clock
+  Activity
 } from 'lucide-react';
 
 export default function AnalyticsView() {
@@ -40,7 +35,7 @@ export default function AnalyticsView() {
     return (
       <div className="flex items-center justify-center p-12 text-slate-500">
         <Activity className="w-6 h-6 animate-spin text-[#005DAD] mr-2" />
-        <span>Memuat data analitik Inpartner...</span>
+        <span>Loading Inpartner analytics data...</span>
       </div>
     );
   }
@@ -62,7 +57,7 @@ export default function AnalyticsView() {
           <div className="mt-3">
             <div className="text-3xl font-extrabold text-slate-800">{kpis.engagementRate}%</div>
             <p className="text-[11px] text-slate-400 mt-1">
-              {totals.conversations} percakapan dari pengunjung website
+              {totals.conversations} conversations from website visitors
             </p>
           </div>
           <div className="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
@@ -84,7 +79,7 @@ export default function AnalyticsView() {
           <div className="mt-3">
             <div className="text-3xl font-extrabold text-slate-800">{kpis.serviceDiscoveryRate}%</div>
             <p className="text-[11px] text-slate-400 mt-1">
-              Visitor mengeksplorasi 4 pilar Inpartner
+              Visitors exploring Inpartner’s 4 advisory pillars
             </p>
           </div>
           <div className="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
@@ -106,7 +101,7 @@ export default function AnalyticsView() {
           <div className="mt-3">
             <div className="text-3xl font-extrabold text-emerald-600">{kpis.leadCaptureRate}%</div>
             <p className="text-[11px] text-slate-400 mt-1">
-              {totals.leads} prospek bisnis terkumpul
+              {totals.leads} corporate leads captured
             </p>
           </div>
           <div className="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
@@ -128,7 +123,7 @@ export default function AnalyticsView() {
           <div className="mt-3">
             <div className="text-3xl font-extrabold text-amber-600">{kpis.humanHandoffRate}%</div>
             <p className="text-[11px] text-slate-400 mt-1">
-              Klik kontak langsung WA / Email
+              Direct clicks to WhatsApp / Email advisory
             </p>
           </div>
           <div className="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
@@ -146,7 +141,7 @@ export default function AnalyticsView() {
         <div className="lg:col-span-6 bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
           <h3 className="font-bold text-base text-slate-800 flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4 text-[#005DAD]" />
-            Distribusi Event Chatbot (PRD Section 16)
+            Chatbot Event Distribution
           </h3>
 
           <div className="space-y-3">
@@ -169,7 +164,7 @@ export default function AnalyticsView() {
                 <div key={evt.key} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-medium text-slate-700">{evt.label}</span>
-                    <span className="font-bold text-slate-800">{count} event</span>
+                    <span className="font-bold text-slate-800">{count} events</span>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                     <div
@@ -188,11 +183,11 @@ export default function AnalyticsView() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-base text-slate-800 flex items-center gap-2">
               <Activity className="w-4 h-4 text-emerald-500" />
-              Aktivitas Terkini (Live Stream)
+              Recent Activity (Live Stream)
             </h3>
             <button
               onClick={fetchAnalytics}
-              className="text-xs text-[#005DAD] hover:underline font-semibold"
+              className="text-xs text-[#005DAD] hover:underline font-semibold cursor-pointer"
             >
               Refresh
             </button>
@@ -229,7 +224,7 @@ export default function AnalyticsView() {
               ))
             ) : (
               <div className="text-center py-10 text-slate-400 text-xs">
-                Belum ada aktivitas tercatat. Coba buka chatbot dan ajukan pertanyaan untuk melihat analitik langsung.
+                No events recorded yet. Open the chatbot and ask a question to see real-time analytics.
               </div>
             )}
           </div>

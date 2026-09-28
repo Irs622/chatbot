@@ -35,11 +35,11 @@ export default function EmbedGuide() {
         <div className="flex items-center gap-2">
           <Globe className="w-5 h-5 text-[#005DAD]" />
           <h2 className="text-xl font-bold text-slate-800">
-            Panduan Integrasi Website inpartner.id (Embed Widget)
+            Website Integration Guide (Embed Widget)
           </h2>
         </div>
         <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-          Chatbot Inpartner dirancang sebagai widget plug-and-play ringan yang dapat dipasang langsung pada kode website existing Inpartner (Next.js, WordPress, atau HTML statis) hanya dengan 1 baris tag script.
+          The Inpartner Chatbot is engineered as a lightweight plug-and-play widget that can be embedded into any corporate website (Next.js, WordPress, or static HTML) with a single script tag.
         </p>
       </div>
 
@@ -57,12 +57,12 @@ export default function EmbedGuide() {
             {copied ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Tersalin ke Clipboard!</span>
+                <span className="text-emerald-400">Copied to Clipboard!</span>
               </>
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5" />
-                <span>Salin Kode</span>
+                <span>Copy Code</span>
               </>
             )}
           </button>
@@ -73,13 +73,13 @@ export default function EmbedGuide() {
         </pre>
 
         <p className="text-xs text-slate-400">
-          *Catatan: Ganti domain URL dengan alamat hosting tempat backend chatbot ini di-deploy (misalnya Vercel, VPS, atau subdomain inpartner.id).
+          *Note: Replace the domain URL with the deployment host of your chatbot backend (e.g., Vercel, VPS, or inpartner.id subdomain).
         </p>
       </div>
 
       {/* Step by Step Instructions */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
-        <h3 className="font-bold text-base text-slate-800">Langkah Pemasangan di Website Inpartner:</h3>
+        <h3 className="font-bold text-base text-slate-800">Integration Steps for Corporate Website:</h3>
 
         <div className="space-y-4 text-xs sm:text-sm text-slate-700">
           <div className="flex items-start gap-3">
@@ -87,8 +87,8 @@ export default function EmbedGuide() {
               1
             </div>
             <div>
-              <strong className="text-slate-900 block font-semibold">Salin Kode Embed Script:</strong>
-              Klik tombol &quot;Salin Kode&quot; pada kotak di atas.
+              <strong className="text-slate-900 block font-semibold">Copy Embed Script:</strong>
+              Click the &quot;Copy Code&quot; button in the code box above.
             </div>
           </div>
 
@@ -98,9 +98,9 @@ export default function EmbedGuide() {
             </div>
             <div>
               <strong className="text-slate-900 block font-semibold">
-                Tempelkan sebelum penutup &lt;/body&gt;:
+                Paste Before Closing &lt;/body&gt; Tag:
               </strong>
-              Buka file template website inpartner.id (misal: <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">pages/_app.tsx</code> atau <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">app/layout.tsx</code> atau <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">index.html</code>) dan tempelkan script sebelum tag penutup <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">&lt;/body&gt;</code>.
+              Open your website template (e.g., <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">pages/_app.tsx</code>, <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">app/layout.tsx</code>, or <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">index.html</code>) and paste the script right before the closing <code className="bg-slate-100 px-1 py-0.5 rounded font-mono">&lt;/body&gt;</code> tag.
             </div>
           </div>
 
@@ -109,8 +109,8 @@ export default function EmbedGuide() {
               3
             </div>
             <div>
-              <strong className="text-slate-900 block font-semibold">Verifikasi Tampilan:</strong>
-              Muat ulang halaman website. Tombol floating konsultan AI Inpartner akan muncul otomatis di pojok kanan bawah desktop dan mobile dengan responsif.
+              <strong className="text-slate-900 block font-semibold">Verify Deployment:</strong>
+              Reload your website page. The floating Inpartner AI Corporate Advisory launcher and proactive teaser bubble will appear automatically at the bottom right corner with responsive mobile support.
             </div>
           </div>
         </div>
@@ -120,13 +120,13 @@ export default function EmbedGuide() {
       <div className="bg-sky-50/60 border border-sky-200 rounded-2xl p-6 text-xs text-sky-900 space-y-3">
         <h4 className="font-bold text-sm text-[#005DAD] flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-[#005DAD]" />
-          Checklist Kepatuhan PRD & Non-Functional Requirements:
+          Production Readiness & Security Standards:
         </h4>
         <ul className="space-y-1.5 list-disc list-inside text-slate-700">
-          <li><strong>Performance:</strong> Target respon rata-rata &lt; 2 detik (memenuhi NFR target &lt; 5s).</li>
-          <li><strong>Security:</strong> Semua API key terlindungi di server-side, tidak terekspos di browser client.</li>
-          <li><strong>Privacy:</strong> Form lead capture meminta persetujuan eksplisit (consent) sebelum pengiriman.</li>
-          <li><strong>Fallback:</strong> Sistem tidak berhalusinasi data palsu; mengarahkan ke WA resmi 0896 2831 0192 jika pertanyaan belum ada di knowledge base.</li>
+          <li><strong>Performance:</strong> Average response time target &lt; 2 seconds (comfortably under the 5s SLA).</li>
+          <li><strong>Security:</strong> All LLM API keys and admin credentials are strictly server-side protected.</li>
+          <li><strong>Privacy & Consent:</strong> Explicit client consent required prior to consultation lead submission.</li>
+          <li><strong>Zero Hallucination:</strong> System will not hallucinate facts; routes unknown inquiries to official senior partners via WhatsApp or email.</li>
         </ul>
       </div>
     </div>

@@ -1,32 +1,31 @@
-# Layanan Inpartner: Funding & Investment
+# Inpartner Advisory Pillar: Funding & Investment Advisory
 
-## Deskripsi Layanan
-Layanan Funding (Pembiayaan & Investasi) Inpartner didedikasikan untuk membantu perusahaan menengah dan besar, institusi investor, maupun pemilik proyek dalam merencanakan, menstrukturkan, dan memperoleh permodalan yang sesuai untuk ekspansi bisnis, restrukturisasi keuangan, maupun proyek strategis baru.
+## Pillar Overview
+Inpartner's Funding & Investment Advisory pillar is dedicated to assisting middle-market companies, large corporate enterprises, fund managers, and project sponsors in planning, structuring, and securing optimal capital for strategic growth, financial restructuring, or landmark development projects.
 
-Para profesional berpengalaman di Inpartner bekerja erat bersama klien untuk memahami profil risiko, kebutuhan modal (*capital requirements*), dan tujuan investasi, kemudian mengembangkan solusi keuangan yang disesuaikan (*customized solutions*).
+Our seasoned financial professionals collaborate closely with leadership teams to evaluate risk profiles, quantify precise capital requirements, and formulate customized financing architectures.
 
-## Ruang Lingkup Layanan Funding
-1. **Investment Advisory & Readiness:**
-   - Evaluasi kesiapan bisnis menerima investasi (*investment readiness assessment*).
-   - Valuasi bisnis obyektif dan pemodelan keuangan (*financial modeling & projections*).
-   - Penyusunan materi presentasi investor (*Investment Teaser & Pitch Deck* terstandarisasi institusional).
-2. **Access to Capital & Financing:**
-   - Menghubungkan klien dengan ekosistem investor terverifikasi (Venture Capital, Private Equity, Family Offices, Strategic Investors, institusi perbankan dan pembiayaan alternatif).
-   - Bantuan penataan struktur permodalan (*debt, equity, or mezzanine financing*).
-3. **Alternative Investment Services:**
-   - Pendampingan peluang investasi alternatif di berbagai sektor (seperti energi terbarukan, properti, agritech, infrastruktur).
-   - Analisis kelayakan proyek (*Feasibility Study*) dan uji tuntas keuangan (*financial due diligence assistance*).
-4. **Investor & Transaction Support:**
-   - Pendampingan negosiasi dengan calon investor.
-   - Penyelarasan kepentingan pemegang saham dengan calon mitra modal.
+## Scope of Funding Advisory Services
+1. **Investment Advisory & Investment Readiness:**
+   - Rigorous institutional investment readiness diagnostics.
+   - Independent enterprise valuation, DCF modeling, and institutional multi-year financial projections.
+   - Preparation of institutional-grade marketing collateral: *Executive Investment Teasers*, *Information Memorandums (CIM)*, and *Data Room Pitch Decks*.
+2. **Access to Institutional Capital Providers:**
+   - Curated introductions across our verified capital ecosystem: Venture Capital, Private Equity, Sovereign Wealth & Family Offices, and Strategic Corporate Investors.
+   - Capital stack structuring: growth equity, convertible debt, structured debt, or mezzanine capital solutions.
+3. **Alternative Investment Advisory:**
+   - Advisory for specialized capital allocation across renewable energy, real estate development, infrastructure, and green technology.
+   - Comprehensive commercial feasibility studies and financial due diligence support.
+4. **Transaction Architecture & Negotiation Support:**
+   - Advisory support throughout term sheet negotiations and capitalization table scenario modeling.
+   - Aligning existing shareholder interests with institutional incoming investor covenants.
 
-## Kapan Perusahaan Membutuhkan Layanan Funding?
-- Sedang merencanakan ekspansi pasar atau pembukaan pabrik/cabang baru namun membutuhkan suntikan modal eksternal.
-- Ingin melakukan restrukturisasi permodalan atau mencari alternatif pembiayaan selain kredit perbankan konvensional.
-- Memiliki proyek berpotensi tinggi tetapi belum memiliki dokumen investasi terstruktur yang sesuai standar investor institusi.
-- Memerlukan mitra independen untuk memvalidasi nilai valuasi perusahaan sebelum bertemu calon investor.
+## Indicators That Your Enterprise Needs Funding Advisory
+- Planning major market expansion, capital equipment acquisitions, or new production facilities requiring external capital injection.
+- Seeking capital restructuring or alternative private equity/mezzanine financing outside traditional commercial bank debt.
+- Possessing high-potential commercial growth but lacking the standardized financial modeling required by institutional investment committees.
+- Requiring an independent, defensible business valuation prior to opening formal discussions with potential strategic investors.
 
-## Catatan Regulasi & Prinsip Integritas
-Inpartner memegang prinsip kepatuhan dan integritas:
-- Inpartner **bukan** pemberi pinjaman langsung (*direct lender*) dan tidak menjamin hasil investasi ataupun keuntungan finansial pasti (*no guaranteed returns*).
-- Seluruh keputusan investasi bergantung pada hasil kesepakatan antara klien dan pihak investor bersangkutan.
+## Regulatory Principles & Independence
+- Inpartner operates strictly as an independent corporate advisory consultancy and is **not a bank or direct lender** (*not a direct lender*).
+- Inpartner upholds professional regulatory standards and provides objective advisory without guaranteeing speculative investment returns. All transaction decisions remain subject to mutual agreement between clients and vetted institutional investors.

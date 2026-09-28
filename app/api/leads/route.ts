@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   try {
     if (!isAdminAuthenticated(req)) {
       return NextResponse.json(
-        { error: 'Unauthorized: Akses khusus manajemen dan tim internal Inpartner.' },
+        { error: 'Unauthorized: Inpartner corporate administrative access required.' },
         { status: 401 }
       );
     }
@@ -36,32 +36,32 @@ export async function POST(req: NextRequest) {
     // Minimum validation: Name & Business Need
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
       return NextResponse.json(
-        { error: 'Nama lengkap wajib diisi minimal 2 karakter.' },
+        { error: 'Full name is required (minimum 2 characters).' },
         { status: 400 }
       );
     }
 
     if (!business_need || typeof business_need !== 'string' || !business_need.trim()) {
       return NextResponse.json(
-        { error: 'Kebutuhan layanan bisnis wajib dipilih.' },
+        { error: 'Advisory need selection is required.' },
         { status: 400 }
       );
     }
 
-    // Phone validation (Indonesian format 08xx / +628xx, 10-14 digits)
+    // Phone validation
     let validatedPhone = '';
     if (phone && typeof phone === 'string' && phone.trim()) {
       const phoneResult = validatePhoneNumber(phone);
       if (!phoneResult.isValid) {
         return NextResponse.json(
-          { error: phoneResult.error || 'Format nomor WhatsApp tidak valid.' },
+          { error: phoneResult.error || 'Invalid phone or WhatsApp number format.' },
           { status: 400 }
         );
       }
       validatedPhone = phoneResult.cleanPhone;
     } else if (!email) {
       return NextResponse.json(
-        { error: 'Harap cantumkan Nomor WhatsApp atau Email untuk tindak lanjut konsultasi.' },
+        { error: 'Please provide either a WhatsApp phone number or business email for consultation follow-up.' },
         { status: 400 }
       );
     }
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     if (email && typeof email === 'string' && email.trim()) {
       if (!validateEmail(email)) {
         return NextResponse.json(
-          { error: 'Format alamat email tidak valid (contoh: nama@perusahaan.com).' },
+          { error: 'Invalid email address format (e.g. name@company.com).' },
           { status: 400 }
         );
       }
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Lead berhasil disimpan. Tim Inpartner akan segera menghubungi Anda.',
+      message: 'Inquiry saved successfully. The Inpartner team will contact you promptly.',
       lead,
       notification: notificationResult
     });

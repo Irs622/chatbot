@@ -39,14 +39,14 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
       
       const payload = isSlackOrDiscord
         ? {
-            text: `🚨 *PROSPEK KONSULTASI BARU (Inpartner Agent)*\n` +
-                  `• *Nama:* ${lead.name}\n` +
-                  `• *Perusahaan:* ${lead.company || '-'}\n` +
-                  `• *WhatsApp:* ${lead.phone} (<${waLink}|Chat WA>)\n` +
+            text: `🚨 *NEW CONSULTATION LEAD (Inpartner AI Agent)*\n` +
+                  `• *Name:* ${lead.name}\n` +
+                  `• *Company:* ${lead.company || '-'}\n` +
+                  `• *WhatsApp:* ${lead.phone} (<${waLink}|WhatsApp Chat>)\n` +
                   `• *Email:* ${lead.email || '-'}\n` +
-                  `• *Kebutuhan:* ${lead.business_need}\n` +
-                  `• *Catatan:* ${lead.notes || '-'}\n` +
-                  `• *Waktu:* ${formattedTime} WIB`
+                  `• *Advisory Need:* ${lead.business_need}\n` +
+                  `• *Notes:* ${lead.notes || '-'}\n` +
+                  `• *Timestamp:* ${formattedTime} WIB`
           }
         : {
             event: 'new_lead',
@@ -89,15 +89,15 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
   if (telegramBotToken && telegramChatId) {
     try {
       const telegramMessage =
-        `🚨 *PROSPEK KLIEN BARU (INPARTNER AGENT)*\n\n` +
-        `👤 *Nama:* ${escapeTelegramMarkdown(lead.name)}\n` +
-        `🏢 *Perusahaan:* ${escapeTelegramMarkdown(lead.company || '-')}\n` +
+        `🚨 *NEW CLIENT LEAD (INPARTNER AGENT)*\n\n` +
+        `👤 *Name:* ${escapeTelegramMarkdown(lead.name)}\n` +
+        `🏢 *Company:* ${escapeTelegramMarkdown(lead.company || '-')}\n` +
         `📱 *WhatsApp:* \`${escapeTelegramMarkdown(lead.phone)}\`\n` +
         `✉️ *Email:* ${escapeTelegramMarkdown(lead.email || '-')}\n` +
-        `🎯 *Kebutuhan:* ${escapeTelegramMarkdown(lead.business_need)}\n` +
-        `📝 *Catatan:* ${escapeTelegramMarkdown(lead.notes || '-')}\n` +
-        `🕒 *Waktu:* ${escapeTelegramMarkdown(formattedTime)} WIB\n\n` +
-        `👉 [Klik untuk Chat WhatsApp Klien](${waLink})`;
+        `🎯 *Advisory Need:* ${escapeTelegramMarkdown(lead.business_need)}\n` +
+        `📝 *Notes:* ${escapeTelegramMarkdown(lead.notes || '-')}\n` +
+        `🕒 *Timestamp:* ${escapeTelegramMarkdown(formattedTime)} WIB\n\n` +
+        `👉 [Click to Chat with Client via WhatsApp](${waLink})`;
 
       const res = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
         method: 'POST',
@@ -137,48 +137,48 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
         body: JSON.stringify({
           from: 'Inpartner Agent <notifications@inpartner.id>',
           to: [notificationEmail],
-          subject: `🚨 Prospek Baru: ${lead.name} (${lead.company || 'Pribadi'}) - ${lead.business_need}`,
+          subject: `🚨 New Consultation Lead: ${lead.name} (${lead.company || 'Direct'}) - ${lead.business_need}`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-              <h2 style="color: #005DAD; margin-top: 0;">Prospek Klien Baru Masuk</h2>
-              <p style="color: #475569; font-size: 14px;">Terdapat calon klien baru yang mengisi formulir konsultasi melalui Inpartner Agent di website:</p>
+              <h2 style="color: #005DAD; margin-top: 0;">New Client Consultation Inquiry</h2>
+              <p style="color: #475569; font-size: 14px;">A new prospective client submitted a consultation inquiry via Inpartner AI on the website:</p>
               
               <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin: 20px 0;">
                 <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; width: 140px;">Nama Lengkap:</td>
+                  <td style="padding: 10px 0; color: #64748b; width: 140px;">Full Name:</td>
                   <td style="padding: 10px 0; font-weight: bold; color: #0f172a;">${lead.name}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b;">Perusahaan:</td>
+                  <td style="padding: 10px 0; color: #64748b;">Company:</td>
                   <td style="padding: 10px 0; color: #0f172a;">${lead.company || '-'}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b;">WhatsApp / Telp:</td>
+                  <td style="padding: 10px 0; color: #64748b;">WhatsApp / Phone:</td>
                   <td style="padding: 10px 0; color: #005DAD; font-weight: bold;">
-                    <a href="${waLink}" style="color: #005DAD; text-decoration: none;">${lead.phone} (Hubungi WhatsApp)</a>
+                    <a href="${waLink}" style="color: #005DAD; text-decoration: none;">${lead.phone} (Contact on WhatsApp)</a>
                   </td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b;">Alamat Email:</td>
+                  <td style="padding: 10px 0; color: #64748b;">Email Address:</td>
                   <td style="padding: 10px 0; color: #0f172a;">${lead.email || '-'}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b;">Kebutuhan Utama:</td>
+                  <td style="padding: 10px 0; color: #64748b;">Primary Need:</td>
                   <td style="padding: 10px 0; font-weight: bold; color: #0f172a;">${lead.business_need}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 10px 0; color: #64748b;">Catatan Tambahan:</td>
+                  <td style="padding: 10px 0; color: #64748b;">Additional Notes:</td>
                   <td style="padding: 10px 0; color: #334155;">${lead.notes || '-'}</td>
                 </tr>
               </table>
 
               <div style="margin-top: 25px;">
                 <a href="${waLink}" style="display: inline-block; background: #005DAD; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px;">
-                  Hubungi Klien via WhatsApp
+                  Contact Client via WhatsApp
                 </a>
               </div>
               <p style="font-size: 12px; color: #94a3b8; margin-top: 25px;">
-                Waktu masuk: ${formattedTime} WIB • Inpartner AI Business Consultation Assistant
+                Submitted at: ${formattedTime} WIB • Inpartner AI Business Consultation Assistant
               </p>
             </div>
           `

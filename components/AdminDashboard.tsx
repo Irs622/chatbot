@@ -98,21 +98,21 @@ export default function AdminDashboard() {
     const listToExport = exportAll ? leads : filteredLeads;
 
     if (listToExport.length === 0) {
-      alert('Tidak ada data prospek yang dapat diekspor.');
+      alert('No lead inquiries available for export.');
       return;
     }
 
     const headers = [
-      'ID Prospek',
-      'Tanggal & Waktu Masuk (WIB)',
-      'Nama Calon Klien',
-      'Perusahaan',
-      'Nomor WhatsApp',
-      'Alamat Email',
-      'Kebutuhan Bisnis',
-      'Status Prospek',
-      'Catatan Tambahan',
-      'Tautan Chat WhatsApp'
+      'Lead ID',
+      'Date & Time (UTC+7)',
+      'Client Name',
+      'Company Name',
+      'WhatsApp / Phone',
+      'Email Address',
+      'Advisory Need',
+      'Status',
+      'Client Notes',
+      'Direct WhatsApp Link'
     ];
 
     const escapeCsv = (val?: string | null) => {
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
         : '';
 
       const formattedDate = lead.created_at
-        ? new Date(lead.created_at).toLocaleString('id-ID', {
+        ? new Date(lead.created_at).toLocaleString('en-US', {
             timeZone: 'Asia/Jakarta',
             dateStyle: 'medium',
             timeStyle: 'short'
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    setExportSuccess(`Berhasil mengunduh ${listToExport.length} data prospek ke berkas CSV (${filename})`);
+    setExportSuccess(`Successfully downloaded ${listToExport.length} lead inquiries to CSV (${filename})`);
     setTimeout(() => {
       setExportSuccess(null);
     }, 5000);
@@ -247,25 +247,25 @@ export default function AdminDashboard() {
             </span>
           </div>
           <p className="text-sm text-slate-500 mt-1">
-            Kelola prospek calon klien dan riwayat konsultasi bisnis dari chatbot website inpartner.id.
+            Manage prospective client inquiries, advisory leads, and conversation transcripts from inpartner.id.
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
           <button
             onClick={fetchLeadsAndConversations}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors"
-            title="Muat ulang data prospek terbaru"
+            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            title="Refresh latest leads dataset"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>Segarkan</span>
+            <span>Refresh</span>
           </button>
 
           <button
             onClick={() => handleExportCSV(false)}
             disabled={filteredLeads.length === 0}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs font-bold transition-all shadow-xs disabled:bg-slate-300 disabled:cursor-not-allowed"
-            title="Unduh data prospek dalam format Excel / CSV"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs font-bold transition-all shadow-xs disabled:bg-slate-300 disabled:cursor-not-allowed cursor-pointer"
+            title="Download leads to Excel / CSV format"
           >
             <Download className="w-3.5 h-3.5" />
             <span>
@@ -278,10 +278,10 @@ export default function AdminDashboard() {
           {(filterStatus !== 'all' || searchQuery.trim().length > 0) && (
             <button
               onClick={() => handleExportCSV(true)}
-              className="px-3 py-2 text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-100 rounded-xl transition-colors border border-slate-200"
-              title="Unduh seluruh data prospek tanpa filter"
+              className="px-3 py-2 text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-100 rounded-xl transition-colors border border-slate-200 cursor-pointer"
+              title="Download entire dataset without filter"
             >
-              Export Semua ({leads.length})
+              Export All ({leads.length})
             </button>
           )}
         </div>
@@ -296,8 +296,8 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={() => setExportSuccess(null)}
-            className="text-emerald-700 hover:text-emerald-900 text-xs font-bold p-1 hover:bg-emerald-100/60 rounded-lg transition-colors"
-            aria-label="Tutup notifikasi"
+            className="text-emerald-700 hover:text-emerald-900 text-xs font-bold p-1 hover:bg-emerald-100/60 rounded-lg transition-colors cursor-pointer"
+            aria-label="Dismiss notification"
           >
             ✕
           </button>
@@ -387,7 +387,7 @@ export default function AdminDashboard() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari nama, perusahaan, kebutuhan..."
+                placeholder="Search by name, company, scope..."
                 className="w-full text-xs pl-9 pr-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD]"
               />
             </div>
@@ -397,9 +397,9 @@ export default function AdminDashboard() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="text-xs px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD] bg-white"
+                className="text-xs px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD] bg-white cursor-pointer"
               >
-                <option value="all">Semua Status</option>
+                <option value="all">All Statuses</option>
                 <option value="new">New</option>
                 <option value="contacted">Contacted</option>
                 <option value="in_progress">In Progress</option>
@@ -411,8 +411,8 @@ export default function AdminDashboard() {
                 type="button"
                 onClick={() => handleExportCSV(false)}
                 disabled={filteredLeads.length === 0}
-                className="p-2 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl border border-slate-200 transition-colors disabled:opacity-50"
-                title="Download CSV dari daftar yang tampil"
+                className="p-2 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl border border-slate-200 transition-colors disabled:opacity-50 cursor-pointer"
+                title="Download CSV of current list"
               >
                 <Download className="w-4 h-4" />
               </button>
@@ -424,17 +424,17 @@ export default function AdminDashboard() {
             <table className="w-full text-left text-xs text-slate-600">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th className="py-3 px-4">Calon Klien & Perusahaan</th>
-                  <th className="py-3 px-4">Kebutuhan Bisnis</th>
+                  <th className="py-3 px-4">Client & Company</th>
+                  <th className="py-3 px-4">Advisory Scope</th>
                   <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Waktu</th>
+                  <th className="py-3 px-4">Timestamp</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredLeads.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="py-8 text-center text-slate-400">
-                      Tidak ada data lead yang cocok dengan filter.
+                      No lead records match your search filter.
                     </td>
                   </tr>
                 ) : (
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
                           <div className="font-semibold text-slate-800">{lead.name}</div>
                           <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                             <Building className="w-3 h-3 text-slate-400" />
-                            {lead.company || 'Perusahaan Pribadi'}
+                            {lead.company || 'Direct / Enterprise'}
                           </div>
                         </td>
                         <td className="py-3.5 px-4">
@@ -464,7 +464,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="py-3.5 px-4">{getStatusBadge(lead.status)}</td>
                         <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap text-[11px]">
-                          {new Date(lead.created_at).toLocaleDateString('id-ID', {
+                          {new Date(lead.created_at).toLocaleDateString('en-US', {
                             day: 'numeric',
                             month: 'short',
                             hour: '2-digit',
@@ -490,7 +490,7 @@ export default function AdminDashboard() {
                   <h3 className="font-bold text-lg text-slate-800">{selectedLead.name}</h3>
                   <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-0.5">
                     <Building className="w-3.5 h-3.5 text-[#005DAD]" />
-                    {selectedLead.company || 'Perusahaan Mandiri'}
+                    {selectedLead.company || 'Direct Client'}
                   </p>
                 </div>
                 <div>{getStatusBadge(selectedLead.status)}</div>
@@ -499,9 +499,9 @@ export default function AdminDashboard() {
               {/* Action Buttons: WhatsApp & Email */}
               <div className="grid grid-cols-2 gap-2">
                 <a
-                  href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}?text=Halo%20Bapak/Ibu%20${encodeURIComponent(
+                  href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(
                     selectedLead.name
-                  )},%20kami%20dari%20tim%20konsultan%20Inpartner%20(PT%20Inpartner%20Optima%20Integra)%20mengenai%20kebutuhan%20${encodeURIComponent(
+                  )},%20this%20is%20the%20Inpartner%20advisory%20team%20regarding%20your%20consultation%20inquiry%20for%20${encodeURIComponent(
                     selectedLead.business_need
                   )}.`}
                   target="_blank"
@@ -509,22 +509,22 @@ export default function AdminDashboard() {
                   className="flex items-center justify-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5" />
-                  Hubungi via WhatsApp
+                  Connect on WhatsApp
                 </a>
 
                 {selectedLead.email ? (
                   <a
-                    href={`mailto:${selectedLead.email}?subject=Konsultasi%20Bisnis%20Inpartner%20-%20${encodeURIComponent(
+                    href={`mailto:${selectedLead.email}?subject=Inpartner%20Business%20Consultation%20-%20${encodeURIComponent(
                       selectedLead.name
                     )}`}
                     className="flex items-center justify-center gap-1.5 px-3 py-2 bg-[#005DAD] hover:bg-[#004785] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
                   >
                     <Mail className="w-3.5 h-3.5" />
-                    Kirim Email
+                    Send Email
                   </a>
                 ) : (
                   <div className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-400 rounded-xl text-xs">
-                    Email tidak dicantumkan
+                    Email not provided
                   </div>
                 )}
               </div>
@@ -532,20 +532,20 @@ export default function AdminDashboard() {
               {/* Contact Details */}
               <div className="bg-slate-50 rounded-xl p-4 space-y-2.5 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Nomor Telepon:</span>
+                  <span className="text-slate-500">Phone / WhatsApp:</span>
                   <span className="font-semibold text-slate-800">{selectedLead.phone}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Email:</span>
+                  <span className="text-slate-500">Email Address:</span>
                   <span className="font-semibold text-slate-800">{selectedLead.email || '-'}</span>
                 </div>
                 <div className="border-t border-slate-200/80 pt-2">
-                  <span className="text-slate-500 block mb-1">Kebutuhan Bisnis:</span>
+                  <span className="text-slate-500 block mb-1">Advisory Need:</span>
                   <span className="font-semibold text-[#005DAD]">{selectedLead.business_need}</span>
                 </div>
                 {selectedLead.notes && (
                   <div className="border-t border-slate-200/80 pt-2">
-                    <span className="text-slate-500 block mb-1">Catatan Klien:</span>
+                    <span className="text-slate-500 block mb-1">Client Notes:</span>
                     <p className="text-slate-700 italic bg-white p-2.5 rounded-lg border border-slate-200">
                       &quot;{selectedLead.notes}&quot;
                     </p>
@@ -556,7 +556,7 @@ export default function AdminDashboard() {
               {/* Status Update & Internal Notes */}
               <div className="space-y-3 pt-2 border-t border-slate-100">
                 <label className="block text-xs font-semibold text-slate-700">
-                  Update Status Follow-up:
+                  Update Follow-up Status:
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {(['new', 'contacted', 'in_progress', 'converted', 'closed'] as LeadStatus[]).map(
@@ -565,7 +565,7 @@ export default function AdminDashboard() {
                         key={st}
                         onClick={() => handleStatusChange(selectedLead.id, st)}
                         disabled={updatingStatus}
-                        className={`text-xs px-2.5 py-1 rounded-lg border capitalize transition-all ${
+                        className={`text-xs px-2.5 py-1 rounded-lg border capitalize transition-all cursor-pointer ${
                           selectedLead.status === st
                             ? 'bg-[#005DAD] text-white border-[#005DAD] font-semibold'
                             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -583,11 +583,11 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                     <MessageSquare className="w-3.5 h-3.5 text-[#005DAD]" />
-                    Transkrip Obrolan Chatbot:
+                    Chatbot Conversation Transcript:
                   </h4>
                   {selectedLeadConversation && (
                     <span className="text-[10px] text-slate-400">
-                      {selectedLeadConversation.messages.length} pesan
+                      {selectedLeadConversation.messages.length} messages
                     </span>
                   )}
                 </div>
@@ -611,7 +611,7 @@ export default function AdminDashboard() {
                     ))
                   ) : (
                     <div className="text-center py-4 text-slate-400 text-xs">
-                      Tidak ada log percakapan terhubung untuk lead ini (atau form diisi langsung).
+                      No chat conversation history linked to this inquiry (direct form submission).
                     </div>
                   )}
                 </div>
@@ -620,9 +620,9 @@ export default function AdminDashboard() {
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400">
               <Users className="w-12 h-12 text-slate-300 mb-3" />
-              <p className="font-medium text-sm text-slate-600">Pilih salah satu prospek</p>
+              <p className="font-medium text-sm text-slate-600">Select an inquiry to view details</p>
               <p className="text-xs text-slate-400 mt-1 max-w-xs">
-                Klik salah satu baris lead di tabel sebelah kiri untuk melihat detail kontak, status follow-up, dan transkrip chat.
+                Click on any lead record in the table on the left to inspect contact details, update status, and view the full chat transcript.
               </p>
             </div>
           )}

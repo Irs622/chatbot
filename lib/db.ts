@@ -108,7 +108,7 @@ function initDb(): DatabaseSchema {
             email: 'budi.santoso@sentosalogistik.co.id',
             phone: '081234567890',
             business_need: 'Profitability & Operational Process Optimization',
-            notes: 'Omzet naik 30% tahun ini tapi profit margin turun akibat OPEX logistik tinggi.',
+            notes: 'Revenue grew 30% YoY, but profit margin compressed due to elevated logistics OPEX.',
             created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
             status: 'new'
           },
@@ -119,7 +119,7 @@ function initDb(): DatabaseSchema {
             email: 'siti.r@biopharmaprima.com',
             phone: '081987654321',
             business_need: 'Funding & Investment Readiness',
-            notes: 'Mencari investor strategis untuk perluasan fasilitas laboratorium bioteknologi.',
+            notes: 'Seeking strategic growth capital for biotechnology laboratory expansion.',
             created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
             status: 'contacted'
           }

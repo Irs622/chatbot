@@ -100,22 +100,28 @@ export function retrieveKnowledge(query: string, topK: number = 4): RetrievedChu
 
   // Synonym expansion map for high domain accuracy
   const expansionMap: Record<string, string[]> = {
-    profit: ['margin', 'untung', 'laba', 'profitability', 'rugi', 'omzet', 'pendapatan', 'biaya', 'cogs', 'opex', 'operational'],
-    margin: ['profit', 'keuntungan', 'laba', 'profitability', 'biaya'],
-    omzet: ['penjualan', 'revenue', 'omset', 'growth', 'profitability'],
-    investasi: ['funding', 'modal', 'investor', 'pembiayaan', 'saham', 'capital', 'fund'],
-    funding: ['investasi', 'modal', 'investor', 'pembiayaan', 'dana', 'capital'],
-    modal: ['funding', 'investasi', 'pinjaman', 'ekuitas', 'pembiayaan'],
-    tumbuh: ['growth', 'ekspansi', 'pasar', 'market', 'scale'],
-    growth: ['pertumbuhan', 'ekspansi', 'penetrasi', 'pasar', 'market', 'strategi'],
-    ekspansi: ['growth', 'cabang', 'penetrasi', 'pasar'],
-    pelatihan: ['capacity', 'building', 'training', 'mentoring', 'coaching', 'sdm', 'program', 'executive'],
-    training: ['pelatihan', 'capacity', 'building', 'workshop', 'coaching'],
-    kontak: ['contact', 'hubungi', 'telepon', 'whatsapp', 'email', 'kantor', 'alamat'],
-    kantor: ['lokasi', 'alamat', 'jakarta', 'surabaya', 'pakuwon'],
-    alamat: ['kantor', 'lokasi', 'jakarta', 'surabaya', 'jalan', 'tower'],
-    sektor: ['industry', 'industri', 'bidang', 'esg', 'makanan', 'gas', 'ev', 'properti'],
-    proyek: ['project', 'pengalaman', 'studi', 'kasus', 'track', 'record', 'portofolio']
+    profit: ['margin', 'profitability', 'revenue', 'cost', 'cogs', 'opex', 'operational', 'margins', 'ebitda', 'loss'],
+    margin: ['profit', 'profitability', 'cost', 'cogs', 'opex', 'margin', 'margins'],
+    revenue: ['sales', 'topline', 'growth', 'omzet', 'turnover', 'income'],
+    profitability: ['profit', 'margin', 'cogs', 'opex', 'operational', 'excellence', 'efficiency', 'bottomline'],
+    investasi: ['funding', 'modal', 'investor', 'capital', 'fund', 'equity', 'valuation'],
+    funding: ['investment', 'investor', 'capital', 'equity', 'debt', 'mezzanine', 'financing', 'valuation', 'fund'],
+    investment: ['funding', 'investor', 'capital', 'equity', 'venture', 'private', 'advisory'],
+    investor: ['funding', 'investment', 'capital', 'vc', 'pe', 'equity'],
+    growth: ['expansion', 'scale', 'market', 'penetration', 'strategy', 'revenue', 'gtm'],
+    expansion: ['growth', 'market', 'penetration', 'scale', 'territory'],
+    market: ['growth', 'penetration', 'expansion', 'segment', 'customer'],
+    capacity: ['building', 'training', 'mentoring', 'coaching', 'executive', 'leadership', 'academy', 'program'],
+    training: ['capacity', 'building', 'executive', 'workshop', 'coaching', 'mentoring', 'leadership'],
+    leadership: ['capacity', 'building', 'coaching', 'executive', 'management', 'mentoring'],
+    contact: ['office', 'location', 'phone', 'whatsapp', 'email', 'address', 'jakarta', 'surabaya'],
+    office: ['contact', 'location', 'address', 'jakarta', 'surabaya', 'pakuwon', 'headquarters'],
+    location: ['office', 'address', 'jakarta', 'surabaya', 'pakuwon', 'contact'],
+    sector: ['sectors', 'industry', 'industries', 'coverage', 'esg', 'energy', 'ev', 'property'],
+    sectors: ['sector', 'industry', 'industries', 'coverage', 'esg', 'energy', 'ev', 'property'],
+    industry: ['sector', 'sectors', 'industries', 'coverage', 'f&b', 'gas', 'health'],
+    project: ['projects', 'case', 'study', 'track', 'record', 'portfolio', 'experience'],
+    projects: ['project', 'case', 'study', 'track', 'record', 'portfolio', 'experience']
   };
 
   const expandedQuery = new Set<string>(queryTokens);

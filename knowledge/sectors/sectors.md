@@ -1,32 +1,32 @@
-# Cakupan Sektor Industri Inpartner (Sectors & Themes Coverage)
+# Inpartner Industry Sectors & Coverage Themes
 
-## Pengantar Cakupan Sektor
-Inpartner melayani berbagai sektor industri dengan pemahaman mendalam atas regulasi lokal, dinamika rantai pasok nasional, dan standar institusi global. Cakupan industri Inpartner meliputi perusahaan swasta menengah, korporasi besar, BUMN/BUMD, serta lembaga investasi.
+## Sector Expertise Overview
+Inpartner advises enterprises across a wide spectrum of critical industries, uniting deep local regulatory mastery, domestic supply chain dynamics, and international institutional standards. Our client base includes mid-market growth firms, large conglomerates, state-owned enterprises (BUMN/BUMD), and institutional investment funds.
 
-## 13 Sektor & Tema Utama Inpartner
+## 13 Core Strategic Sectors & Themes
 1. **Environmental, Social, and Governance (ESG):**
-   - Penyusunan kerangka kerja keberlanjutan (*ESG policy framework*), audit kepatuhan, pelaporan keberlanjutan, dan integrasi ESG pada portofolio investasi/fund.
+   - ESG policy framework development, sustainability compliance audits, institutional ESG reporting, and ESG integration for investment fund portfolios.
 2. **Food and Beverage (F&B):**
-   - Konsultasi rantai pasok F&B, optimalisasi margin, penetrasi pasar retail dan FMCG, serta kepatuhan standar industri pangan.
+   - End-to-end supply chain optimization, margin defense, retail FMCG market penetration, and food manufacturing compliance standards.
 3. **Industrial Gas:**
-   - Strategi bisnis, efisiensi operasional pabrik dan distribusi gas industri, studi kelayakan investasi fasilitas produksi.
+   - Growth strategy, gas distribution efficiency, operational plant audits, and industrial facility investment feasibility studies.
 4. **Education & Training:**
-   - Transformasi lembaga pendidikan, pengembangan kurikulum eksekutif, pelatihan vokasi dan korporasi, serta peningkatan kapabilitas SDM.
+   - Institutional transformation, executive education curriculum design, corporate vocational development, and leadership talent acceleration.
 5. **Alternative Investment:**
-   - Penilaian proyek investasi alternatif, uji tuntas (*due diligence*), penataan struktur transaksi, dan penghubungan investor institusi.
+   - Alternative asset appraisals, commercial due diligence, structured transaction architecture, and institutional LP/GP investor matching.
 6. **Health and Pharmaceutical:**
-   - Konsultasi manajemen fasilitas kesehatan, farmasi, optimasi pengadaan obat dan alat kesehatan, serta ekspansi klinik/rumah sakit.
+   - Healthcare facility management advisory, clinical network expansion, pharmaceutical procurement optimization, and operational compliance.
 7. **Biotechnology:**
-   - Riset komersialisasi produk bioteknologi, evaluasi potensi pasar, dan permodalan riset terapan.
-8. **Renewable Energy (Energi Terbarukan):**
-   - Studi kelayakan proyek PLTS (solar), biomassa, hidroelektrik, transisi energi bersih, serta perizinan dan pendanaan hijau (*green financing*).
-9. **Waste Solution (Pengelolaan & Solusi Limbah):**
-   - Solusi ekonomi sirkular (*circular economy*), teknologi pengolahan limbah industri dan domestik, kemitraan pemerintah-swasta (KPBU).
+   - Commercialization strategies for biotechnology innovations, market viability appraisals, and translational research funding.
+8. **Renewable Energy:**
+   - Project feasibility studies (solar PV, biomass, hydroelectricity), energy transition frameworks, regulatory licensing, and green financing access.
+9. **Waste Solution:**
+   - Circular economy frameworks, industrial and municipal waste processing technologies, and public-private partnerships (PPP/KPBU).
 10. **Property Investment and Development:**
-    - Perencanaan masterplan properti, riset kelayakan pasar (*highest and best use analysis*), restrukturisasi pembiayaan proyek real estate.
-11. **Electric Vehicle (Kendaraan Listrik):**
-    - Ekosistem EV di Indonesia, infrastruktur charging station, analisis adopsi armada komersial, dan rantai pasok komponen terkait.
+    - Real estate master planning, Highest and Best Use (HBU) market feasibility analysis, and property capital restructuring.
+11. **Electric Vehicle (EV Ecosystem):**
+    - Indonesian EV market intelligence, charging infrastructure deployment, commercial fleet transition economics, and component supply chains.
 12. **Infrastructure:**
-    - Proyek infrastruktur transportasi, logistik, pelabuhan, jalan tol, dan fasilitas utilitas publik.
-13. **Information Technology (IT & Digital):**
-    - Transformasi digital korporat, arsitektur data bisnis, audit sistem manajemen, dan strategi adopsi kecerdasan buatan (AI).
+    - Transport, logistics hubs, seaports, toll roads, and public utility development advisory.
+13. **Information Technology (IT & Digital Enterprise):**
+    - Enterprise digital transformation, enterprise data architecture, management system audits, and responsible AI adoption roadmaps.

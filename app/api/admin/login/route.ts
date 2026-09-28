@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     if (!password || typeof password !== 'string') {
       return NextResponse.json(
-        { success: false, error: 'Password / PIN wajib diisi.' },
+        { success: false, error: 'Password or PIN is required.' },
         { status: 400 }
       );
     }
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       await new Promise((resolve) => setTimeout(resolve, 400));
 
       return NextResponse.json(
-        { success: false, error: 'Password / PIN yang Anda masukkan tidak sesuai.' },
+        { success: false, error: 'The password or PIN you entered is incorrect.' },
         { status: 401 }
       );
     }
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     const response = NextResponse.json({
       success: true,
-      message: 'Autentikasi admin berhasil.'
+      message: 'Admin authentication successful.'
     });
 
     // Set secure HTTP-only cookie
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Error in /api/admin/login:', error);
     return NextResponse.json(
-      { success: false, error: 'Terjadi kesalahan sistem saat verifikasi.' },
+      { success: false, error: 'A server error occurred during verification.' },
       { status: 500 }
     );
   }

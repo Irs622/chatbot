@@ -1481,7 +1481,7 @@
       "email": "budi.santoso@sentosalogistik.co.id",
       "phone": "081234567890",
       "business_need": "Profitability & Operational Process Optimization",
-      "notes": "Omzet naik 30% tahun ini tapi profit margin turun akibat OPEX logistik tinggi.",
+      "notes": "Revenue grew 30% YoY, but profit margin compressed due to elevated logistics OPEX.",
       "created_at": "2026-09-22T07:43:23.656Z",
       "status": "new"
     },
@@ -1492,7 +1492,7 @@
       "email": "siti.r@biopharmaprima.com",
       "phone": "081987654321",
       "business_need": "Funding & Investment Readiness",
-      "notes": "Mencari investor strategis untuk perluasan fasilitas laboratorium bioteknologi.",
+      "notes": "Seeking strategic growth capital for biotechnology laboratory expansion.",
       "created_at": "2026-09-21T07:43:23.659Z",
       "status": "contacted"
     },
@@ -1505,7 +1505,7 @@
       "email": "hendro@nusantaraagro.com",
       "phone": "081345678901",
       "business_need": "Business Growth & Market Expansion",
-      "notes": "Sudah dihubungi via WA, menjadwalkan Zoom meeting hari Jumat."
+      "notes": "Contacted via WhatsApp, scheduled follow-up discovery meeting for Friday."
     },
     {
       "id": "lead_1790177150769_2zdzx",
@@ -1516,7 +1516,7 @@
       "email": "budi@inovasimaju.com",
       "phone": "08123456789",
       "business_need": "Profitability & Cost Optimization",
-      "notes": "Tes notifikasi otomatis"
+      "notes": "Automated advisory consultation inquiry test."
     }
   ],
   "analytics_events": [

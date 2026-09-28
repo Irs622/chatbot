@@ -19,103 +19,108 @@ const INTENT_RULES: IntentRule[] = [
   {
     intent: 'funding',
     keywords: [
-      'funding', 'modal', 'investasi', 'investor', 'capital', 'pinjaman',
-      'pitch deck', 'teaser', 'dana', 'pembiayaan', 'equity', 'saham',
-      'venture capital', 'private equity', 'valuation', 'valuasi'
+      'funding', 'investment', 'investor', 'capital', 'loan', 'raise capital',
+      'pitch deck', 'teaser', 'financing', 'equity', 'shares',
+      'venture capital', 'private equity', 'valuation', 'fundraising', 'debt'
     ],
     patterns: [
-      /cari (investor|modal|dana)/i,
-      /butuh (pendanaan|investasi|investor)/i,
+      /(raise|find|secure|need).*(capital|funding|investment|investor)/i,
       /investment readiness/i,
-      /apakah inpartner (memberikan|menyediakan) pinjaman/i
+      /financial.*model/i,
+      /pitch.*deck/i,
+      /does inpartner (provide|lend|offer) (loans|money)/i
     ]
   },
   {
     intent: 'profitability',
     keywords: [
-      'profit', 'laba', 'margin', 'profitability', 'rugi', 'omzet', 'cogs',
-      'hpp', 'opex', 'efisiensi', 'biaya operasional', 'kebocoran', 'lean',
-      'cost', 'boros', 'arus kas', 'cash flow', 'menurun', 'tekor'
+      'profit', 'margin', 'profitability', 'loss', 'revenue', 'cogs',
+      'opex', 'efficiency', 'operating cost', 'leakage', 'lean',
+      'cost', 'waste', 'cash flow', 'declining', 'drop', 'margin compression'
     ],
     patterns: [
-      /profit.*menurun/i,
-      /margin.*turun/i,
-      /omzet.*naik.*laba.*turun/i,
-      /biaya.*operasional.*membengkak/i,
-      /efisiensi.*proses/i,
-      /operational.*excellence/i
+      /profit.*(margin|dropping|declining|falling|down)/i,
+      /revenue.*up.*profit.*down/i,
+      /operational.*(cost|expenses|efficiency|waste)/i,
+      /cost.*reduction/i,
+      /operational.*excellence/i,
+      /bottleneck.*process/i
     ]
   },
   {
     intent: 'growth',
     keywords: [
-      'growth', 'tumbuh', 'pertumbuhan', 'ekspansi', 'pasar', 'market',
-      'strategi', 'cabang', 'penetrasi', 'kompetitor', 'go to market',
-      'rencana bisnis', 'strategic planning', 'mitra strategis', 'omset'
+      'growth', 'grow', 'expansion', 'expand', 'market', 'scale',
+      'strategy', 'branch', 'penetration', 'competitor', 'go to market',
+      'business plan', 'strategic planning', 'strategic partnership', 'sales'
     ],
     patterns: [
-      /ekspansi.*pasar/i,
-      /meningkatkan.*penjualan/i,
-      /rencana.*strategis/i,
-      /strategi.*pertumbuhan/i,
-      /buka.*cabang/i
+      /market.*expansion/i,
+      /increase.*sales/i,
+      /strategic.*plan/i,
+      /growth.*strategy/i,
+      /open.*new.*branch/i,
+      /go-to-market/i
     ]
   },
   {
     intent: 'capacity_building',
     keywords: [
-      'capacity', 'building', 'pelatihan', 'training', 'mentoring', 'coaching',
-      'workshop', 'executive', 'leadership', 'sdm', 'karyawan', 'manajer',
-      'direksi', 'inpartner academy', 'budaya kerja', 'keterampilan'
+      'capacity', 'building', 'training', 'mentoring', 'coaching',
+      'workshop', 'executive', 'leadership', 'talent', 'employee', 'manager',
+      'board', 'inpartner academy', 'corporate culture', 'skills', 'c-level'
     ],
     patterns: [
       /executive.*business.*program/i,
-      /program.*pelatihan/i,
-      /training.*karyawan/i,
+      /training.*program/i,
+      /employee.*training/i,
       /leadership.*coaching/i,
-      /capacity.*building/i
+      /capacity.*building/i,
+      /corporate.*academy/i
     ]
   },
   {
     intent: 'contact',
     keywords: [
-      'kontak', 'hubungi', 'telepon', 'whatsapp', 'wa', 'email', 'kantor',
-      'alamat', 'lokasi', 'meeting', 'jadwal', 'konsultasi langsung',
-      'pakuwon', 'surabaya', 'jakarta', 'jam buka', 'nomor'
+      'contact', 'call', 'phone', 'whatsapp', 'email', 'office',
+      'address', 'location', 'meeting', 'schedule', 'book appointment',
+      'pakuwon', 'surabaya', 'jakarta', 'office hours', 'inquiry'
     ],
     patterns: [
-      /cara.*menghubungi/i,
-      /nomor.*whatsapp/i,
-      /alamat.*kantor/i,
-      /mau.*ketemu/i,
-      /jadwal.*konsultasi/i
+      /how.*to.*(contact|reach)/i,
+      /phone.*number|whatsapp.*number/i,
+      /office.*address|where.*located/i,
+      /meet.*consultant/i,
+      /schedule.*consultation/i,
+      /book.*meeting/i
     ]
   },
   {
     intent: 'company_information',
     keywords: [
-      'siapa inpartner', 'tentang inpartner', 'profil', 'sejarah', 'visi',
-      'misi', 'values', 'direksi', 'kapan berdiri', 'berdiri', 'klien',
-      'pengalaman', 'proyek', 'sektor', 'industri'
+      'who is inpartner', 'about inpartner', 'profile', 'history', 'vision',
+      'mission', 'values', 'directors', 'founded', 'track record', 'clients',
+      'experience', 'projects', 'sectors', 'industry'
     ],
     patterns: [
-      /siapa.*inpartner/i,
-      /profil.*perusahaan/i,
-      /visi.*misi/i,
-      /tentang.*inpartner/i,
-      /kapan.*berdiri/i
+      /who.*is.*inpartner/i,
+      /company.*profile/i,
+      /vision.*mission/i,
+      /about.*inpartner/i,
+      /when.*founded/i
     ]
   },
   {
     intent: 'service_information',
     keywords: [
-      'layanan', 'service', 'jasa', 'scope', 'apa saja layanan',
-      'bantuan bisnis', 'konsultan apa', 'pilar'
+      'services', 'service', 'advisory', 'scope', 'what do you do',
+      'offerings', 'consulting pillars', 'solutions'
     ],
     patterns: [
-      /apa.*saja.*layanan/i,
-      /layanan.*inpartner/i,
-      /scope.*pekerjaan/i
+      /what.*services/i,
+      /inpartner.*services/i,
+      /scope.*of.*work/i,
+      /advisory.*areas/i
     ]
   }
 ];

@@ -73,26 +73,26 @@ export default function ChatWidget({
   // Inpartner Agent Configuration
   const agentConfig = {
     name: 'Inpartner Agent',
-    title: 'Solusi Bisnis Apa yang Anda Butuhkan?',
-    subtitle: 'Inpartner AI siap membantu menganalisis tantangan perusahaan dan merekomendasikan solusi konsultan terbaik.',
+    title: 'What Business Solutions Do You Need?',
+    subtitle: 'Inpartner AI is ready to analyze your corporate challenges and recommend tailored strategic advisory solutions.',
     featured: {
       title: 'Business Growth & Market Expansion',
-      desc: 'Riset penetrasi pasar, sales roadmap, & strategi ekspansi bisnis',
-      query: 'Bagaimana Inpartner membantu Business Growth & strategi ekspansi pasar untuk perusahaan saya?',
+      desc: 'Market penetration research, sales roadmap, & business expansion strategy',
+      query: 'How does Inpartner assist with Business Growth & market expansion strategies for my company?',
       intent: 'Growth'
     },
-    dividerText: 'PILIHAN LAYANAN LAINNYA',
+    dividerText: 'EXPLORE OTHER CORE ADVISORY AREAS',
     secondary1: {
       title: 'Funding & Profitability',
-      query: 'Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.',
+      query: 'I need assistance regarding institutional funding schemes and operational profit margin optimization.',
       intent: 'Funding'
     },
     secondary2: {
-      title: 'Diagnosis Kebutuhan Bisnis',
-      query: 'Saya belum yakin solusi apa yang paling dibutuhkan perusahaan saya saat ini. Mohon panduan diagnosis kebutuhan bisnis dari Inpartner.',
+      title: 'Business Needs Diagnosis',
+      query: 'I am not sure which solution my company needs most. Please guide me through a business needs diagnosis.',
       intent: 'other'
     },
-    inputPlaceholder: 'Tanyakan solusi bisnis atau tantangan perusahaan Anda...'
+    inputPlaceholder: 'Ask about business solutions or your company’s challenges...'
   };
 
   // Lead Form State
@@ -437,7 +437,7 @@ export default function ChatWidget({
         const errorMsg: ChatMessage = {
           id: `err_${Date.now()}`,
           sender: 'bot',
-          text: 'Mohon maaf, terjadi kendala koneksi ke server. Silakan coba kembali atau hubungi via WhatsApp di [0896 2831 0192](https://wa.me/6289628310192).',
+          text: 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 896 2831 0192](https://wa.me/6289628310192).',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isFallback: true,
           isStreaming: false
@@ -482,35 +482,35 @@ export default function ChatWidget({
     setLeadError('');
 
     if (!leadForm.name || leadForm.name.trim().length < 2) {
-      setLeadError('Nama lengkap wajib diisi minimal 2 karakter.');
+      setLeadError('Full name is required (minimum 2 characters).');
       return;
     }
 
     if (!leadForm.businessNeed) {
-      setLeadError('Kebutuhan Layanan Bisnis wajib dipilih.');
+      setLeadError('Primary advisory need must be selected.');
       return;
     }
 
     if (!leadForm.email && !leadForm.phone) {
-      setLeadError('Harap cantumkan Nomor WhatsApp atau Email untuk follow-up.');
+      setLeadError('Please provide a WhatsApp phone number or business email for consultation follow-up.');
       return;
     }
 
     if (leadForm.phone) {
       const pValidation = validatePhoneNumber(leadForm.phone);
       if (!pValidation.isValid) {
-        setLeadError(pValidation.error || 'Format nomor WhatsApp tidak valid.');
+        setLeadError(pValidation.error || 'Invalid phone or WhatsApp number format.');
         return;
       }
     }
 
     if (leadForm.email && !validateEmail(leadForm.email)) {
-      setLeadError('Format alamat email tidak valid (contoh: nama@perusahaan.com).');
+      setLeadError('Invalid email address format (e.g. name@company.com).');
       return;
     }
 
     if (!leadForm.consent) {
-      setLeadError('Harap setujui persetujuan komunikasi agar tim kami dapat menghubungi Anda.');
+      setLeadError('Please agree to communication consent so our team can reach out to you.');
       return;
     }
 
@@ -532,7 +532,7 @@ export default function ChatWidget({
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'Gagal mengirim data');
+        throw new Error(data.error || 'Failed to submit consultation inquiry');
       }
 
       setLeadSubmitted(true);
@@ -541,12 +541,12 @@ export default function ChatWidget({
       const confirmMsg: ChatMessage = {
         id: `sys_lead_${Date.now()}`,
         sender: 'bot',
-        text: `✅ **Terima kasih, Bapak/Ibu ${leadForm.name}!**\n\nInformasi Anda telah kami terima. Tim kami akan meninjau kebutuhan bisnis Anda (**${leadForm.company || 'Perusahaan Anda'}**) dan segera menghubungi Anda.\n\nJika membutuhkan respons cepat, Anda dapat menghubungi via WhatsApp di **[0896 2831 0192](https://wa.me/6289628310192)**.`,
+        text: `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, confirmMsg]);
     } catch (err: any) {
-      setLeadError(err.message || 'Terjadi kesalahan sistem.');
+      setLeadError(err.message || 'A system error occurred while submitting.');
     } finally {
       setLeadSubmitting(false);
     }
@@ -595,24 +595,24 @@ export default function ChatWidget({
                     } catch {}
                   }}
                   className="text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition-colors"
-                  aria-label="Tutup sapaan"
+                  aria-label="Close teaser"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
 
               <h4 className="font-bold text-xs text-slate-900 leading-snug group-hover:text-[#005DAD] transition-colors">
-                Butuh Konsultasi Strategi Bisnis atau Optimasi Laba?
+                Looking for Strategic Business Advisory or Profit Optimization?
               </h4>
               <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                Dapatkan analisis ringkas & solusi 4 pilar Inpartner dalam 2 menit.
+                Receive an executive diagnostic & 4-pillar advisory roadmap in under 2 minutes.
               </p>
 
               <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
                 <span className="font-bold text-[#005DAD] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                  Mulai Diskusi &rarr;
+                  Start Consultation &rarr;
                 </span>
-                <span className="text-slate-400">Online 24/7 • Gratis</span>
+                <span className="text-slate-400">Online 24/7 • Complimentary</span>
               </div>
             </div>
           )}
@@ -628,10 +628,10 @@ export default function ChatWidget({
                   } catch {}
                   setIsOpen(true);
                 }}
-                className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all"
+                className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all cursor-pointer"
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Konsultasi {agentConfig.name}
+                Consult {agentConfig.name}
               </button>
             )}
             <button
@@ -642,8 +642,8 @@ export default function ChatWidget({
                 } catch {}
                 setIsOpen(!isOpen);
               }}
-              aria-label={isOpen ? 'Tutup Chatbot' : `Buka ${agentConfig.name}`}
-              className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#005DAD] hover:bg-[#004785] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200"
+              aria-label={isOpen ? 'Close Chatbot' : `Open ${agentConfig.name}`}
+              className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#005DAD] hover:bg-[#004785] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-sky-200 cursor-pointer"
             >
               {isOpen ? (
                 <ChevronDown className="w-6 h-6 transition-transform group-hover:translate-y-0.5 duration-200" />
@@ -680,7 +680,7 @@ export default function ChatWidget({
                 </h2>
                 <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold tracking-normal">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Online • Siap membantu
+                  Online • Ready to assist
                 </div>
               </div>
             </div>
@@ -692,9 +692,9 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={() => setShowMenu(!showMenu)}
-                  className="p-1.5 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none"
+                  className="p-1.5 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer"
                   aria-label="Options"
-                  title="Menu Opsi"
+                  title="Options Menu"
                 >
                   <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showMenu ? 'rotate-180' : ''}`} />
                 </button>
@@ -704,7 +704,7 @@ export default function ChatWidget({
                   <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150 text-xs">
                     <button
                       onClick={handleResetConversation}
-                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium cursor-pointer"
                     >
                       <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
                       <span>New conversation</span>
@@ -715,10 +715,10 @@ export default function ChatWidget({
                         setShowLeadModal(true);
                         setShowMenu(false);
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-[#005DAD]/10 hover:text-[#005DAD] flex items-center gap-2 font-medium transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-[#005DAD]/10 hover:text-[#005DAD] flex items-center gap-2 font-medium transition-colors cursor-pointer"
                     >
                       <Building2 className="w-3.5 h-3.5 text-[#005DAD]" />
-                      <span>Jadwalkan Konsultasi</span>
+                      <span>Schedule Consultation</span>
                     </button>
 
                     <a
@@ -744,10 +744,10 @@ export default function ChatWidget({
                     <div className="border-t border-slate-100 mt-1 pt-1">
                       <button
                         onClick={handleCloseWidget}
-                        className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium"
+                        className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
-                        <span>Tutup Percakapan</span>
+                        <span>Close Chat</span>
                       </button>
                     </div>
                   </div>
@@ -758,9 +758,9 @@ export default function ChatWidget({
               <button
                 type="button"
                 onClick={handleCloseWidget}
-                className="p-1.5 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none"
-                aria-label="Tutup Percakapan"
-                title="Tutup Chat"
+                className="p-1.5 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer"
+                aria-label="Close Chat"
+                title="Close Chat"
               >
                 <X className="w-4 h-4 stroke-[2.2]" />
               </button>
@@ -836,7 +836,7 @@ export default function ChatWidget({
                     </span>
                   </button>
 
-                  {/* Card 2: Diagnosis Kebutuhan Bisnis */}
+                  {/* Card 2: Business Diagnostic & Advisory Routing */}
                   <button
                     type="button"
                     onClick={() => handleSendMessage(agentConfig.secondary2.query, agentConfig.secondary2.intent)}
@@ -890,14 +890,14 @@ export default function ChatWidget({
                       {msg.recommendedService && !msg.isStreaming && (
                         <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-[11px] font-bold tracking-tight">
                           <Sparkles className="w-3.5 h-3.5 text-[#005DAD]" />
-                          <span>Layanan: {msg.recommendedService}</span>
+                          <span>Service: {msg.recommendedService}</span>
                         </div>
                       )}
 
                       {/* Official Sources */}
                       {msg.sources && msg.sources.length > 0 && !msg.isStreaming && (
                         <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
-                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">Sumber:</span>
+                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">Sources:</span>
                           {msg.sources.map((s, idx) => (
                             <span key={idx} className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono text-[10px] text-slate-600 font-medium">
                               {s}
@@ -915,7 +915,7 @@ export default function ChatWidget({
                         {msg.sender === 'bot' && msg.isStreaming ? (
                           <span className="inline-flex items-center gap-1 text-[#005DAD] font-medium not-italic animate-pulse">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#005DAD]" />
-                            Mengetik respons...
+                            Generating response...
                           </span>
                         ) : (
                           <span></span>
@@ -931,7 +931,7 @@ export default function ChatWidget({
                           <button
                             key={idx}
                             onClick={() => handleSendMessage(q)}
-                            className="text-left text-[11.5px] font-medium bg-white hover:bg-[#005DAD]/5 text-slate-700 hover:text-[#005DAD] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#005DAD]/40 transition-all shadow-2xs flex items-center gap-1.5 group"
+                            className="text-left text-[11.5px] font-medium bg-white hover:bg-[#005DAD]/5 text-slate-700 hover:text-[#005DAD] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#005DAD]/40 transition-all shadow-2xs flex items-center gap-1.5 group cursor-pointer"
                           >
                             <span>{q}</span>
                             <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-[#005DAD] shrink-0" />
@@ -949,21 +949,21 @@ export default function ChatWidget({
                           </div>
                           <div className="flex-1 min-w-0">
                             <h4 className="text-[13px] font-bold text-slate-900 tracking-tight leading-snug">
-                              Ingin Konsultasi Bisnis Lebih Lanjut?
+                              Interested in Further Corporate Advisory?
                             </h4>
                             <p className="text-[11.5px] text-slate-600 mt-1 leading-relaxed font-normal">
-                              Tinggalkan kontak bisnis Anda, konsultan Inpartner akan menghubungi Anda untuk analisis kebutuhan mendalam.
+                              Leave your business contact details, and an Inpartner senior consultant will connect with you for an in-depth needs analysis.
                             </p>
                             <div className="mt-3 flex flex-wrap items-center gap-2">
                               <button
                                 onClick={() => setShowLeadModal(true)}
-                                className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold tracking-tight px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                                className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold tracking-tight px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
                               >
                                 <Building2 className="w-3.5 h-3.5" />
-                                <span>Isi Form Konsultasi</span>
+                                <span>Schedule Consultation</span>
                               </button>
                               <a
-                                href={getWhatsAppUrl('Halo tim Inpartner, saya ingin konsultasi lebih lanjut terkait solusi bisnis.')}
+                                href={getWhatsAppUrl('Hello Inpartner team, I would like to inquire about business advisory services.')}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1 shadow-2xs hover:shadow-xs transition-all"
@@ -991,7 +991,7 @@ export default function ChatWidget({
                         <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.2s]"></div>
                         <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.4s]"></div>
                         <span className="text-xs text-slate-500 font-medium ml-1.5">
-                          Inpartner AI sedang berpikir...
+                          Inpartner AI is thinking...
                         </span>
                       </div>
                     </div>
@@ -1069,18 +1069,18 @@ export default function ChatWidget({
                 </div>
                 <div className="min-w-0">
                   <h3 className="font-extrabold text-[15px] sm:text-base text-white tracking-tight leading-snug truncate">
-                    Jadwalkan Konsultasi Bisnis
+                    Schedule a Business Consultation
                   </h3>
                   <p className="text-[11.5px] text-sky-100/90 leading-tight font-normal truncate mt-0.5">
-                    Tim konsultan Inpartner akan segera menghubungi Anda.
+                    Our corporate advisory team will reach out within 1 business day.
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowLeadModal(false)}
-                className="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/15 transition-colors focus:outline-none shrink-0"
-                aria-label="Tutup form"
+                className="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/15 transition-colors focus:outline-none shrink-0 cursor-pointer"
+                aria-label="Close form"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1098,26 +1098,26 @@ export default function ChatWidget({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
                   <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Nama Lengkap <span className="text-rose-500">*</span>
+                    Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
-                    placeholder="Contoh: Budi Santoso"
+                    placeholder="e.g. John Doe / Budi Santoso"
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
                 <div>
                   <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Nama Perusahaan
+                    Company Name
                   </label>
                   <input
                     type="text"
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
-                    placeholder="PT / CV / Lembaga"
+                    placeholder="e.g. Acme Corp / Enterprise Ltd"
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
@@ -1127,11 +1127,11 @@ export default function ChatWidget({
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600">
-                      Nomor WhatsApp <span className="text-rose-500">*</span>
+                      WhatsApp / Phone <span className="text-rose-500">*</span>
                     </label>
                     {leadForm.phone && (
                       <span className={`text-[10px] font-semibold ${phoneValidation.isValid ? 'text-emerald-600' : 'text-slate-400'}`}>
-                        {phoneValidation.isValid ? '✓ Valid' : `${leadForm.phone.replace(/[^0-9]/g, '').length} digit`}
+                        {phoneValidation.isValid ? '✓ Valid' : `${leadForm.phone.replace(/[^0-9]/g, '').length} digits`}
                       </span>
                     )}
                   </div>
@@ -1140,7 +1140,7 @@ export default function ChatWidget({
                     required
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
-                    placeholder="0812xxxxxxxx"
+                    placeholder="0812xxxxxxxx / +62..."
                     className={`w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border bg-slate-50/50 hover:bg-white focus:bg-white focus:outline-none transition-all placeholder:text-slate-400 text-slate-900 ${
                       leadForm.phone && !phoneValidation.isValid && leadForm.phone.length >= 4
                         ? 'border-amber-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200'
@@ -1150,54 +1150,54 @@ export default function ChatWidget({
                     }`}
                   />
                   <span className="block text-[10px] text-slate-400 mt-1">
-                    Format: 08xx atau +628xx (10-14 digit)
+                    Format: 08xx or international format with + (10-14 digits)
                   </span>
                 </div>
                 <div>
                   <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Alamat Email
+                    Business Email
                   </label>
                   <input
                     type="email"
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
-                    placeholder="nama@perusahaan.com"
+                    placeholder="name@company.com"
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                   <span className="block text-[10px] text-slate-400 mt-1">
-                    Opsional untuk dokumen proposal
+                    Optional for proposals and executive teasers
                   </span>
                 </div>
               </div>
 
               <div>
                 <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Kebutuhan Utama Layanan <span className="text-rose-500">*</span>
+                  Primary Advisory Need <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={leadForm.businessNeed}
                   onChange={(e) => setLeadForm({ ...leadForm, businessNeed: e.target.value })}
-                  className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900"
+                  className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
                   required
                 >
-                  <option value="">-- Pilih Kebutuhan Layanan Inpartner --</option>
+                  <option value="">-- Select Primary Advisory Pillar --</option>
                   <option value="Business Growth & Market Expansion">Business Growth & Market Expansion</option>
                   <option value="Funding & Investment Advisory">Funding & Investment Advisory</option>
                   <option value="Profitability & Cost Optimization">Profitability & Margin Optimization</option>
                   <option value="Capacity Building">Capacity Building / Executive Program</option>
-                  <option value="Other Consulting Service">Layanan Konsultasi Lainnya</option>
+                  <option value="Other Consulting Service">Other Corporate Advisory Services</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Catatan / Kebutuhan Tambahan
+                  Project Scope / Additional Notes
                 </label>
                 <textarea
                   rows={2}
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
-                  placeholder="Ceritakan gambaran singkat kebutuhan atau tantangan bisnis Anda..."
+                  placeholder="Share a brief overview of your business challenges or goals..."
                   className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900 resize-none"
                 />
               </div>
@@ -1211,7 +1211,7 @@ export default function ChatWidget({
                   className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD] w-3.5 h-3.5 cursor-pointer accent-[#005DAD]"
                 />
                 <label htmlFor="lead-consent" className="text-[11px] font-medium text-slate-700 leading-snug cursor-pointer select-none">
-                  Saya bersedia dihubungi oleh tim konsultan Inpartner untuk tindak lanjut dan memahami data saya disimpan secara aman sesuai kebijakan privasi.
+                  I agree to be contacted by the Inpartner corporate advisory team for consultation follow-up and understand my data is stored securely in accordance with the privacy policy.
                 </label>
               </div>
 
@@ -1219,22 +1219,22 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={() => setShowLeadModal(false)}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={leadSubmitting}
-                  className="px-5 py-2 text-xs font-bold uppercase tracking-wider text-white bg-[#005DAD] hover:bg-[#004785] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-1.5"
+                  className="px-5 py-2 text-xs font-bold uppercase tracking-wider text-white bg-[#005DAD] hover:bg-[#004785] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
                 >
                   {leadSubmitting ? (
                     <>
                       <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Mengirim Data...</span>
+                      <span>Submitting Inquiry...</span>
                     </>
                   ) : (
-                    <span>Kirim Informasi Konsultasi</span>
+                    <span>Submit Consultation Request</span>
                   )}
                 </button>
               </div>

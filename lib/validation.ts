@@ -6,9 +6,8 @@ export interface PhoneValidationResult {
 }
 
 /**
- * Validates Indonesian WhatsApp / Mobile Phone Numbers.
- * Supports: 08xx, 628xx, +628xx with 10 to 14 digits.
- * Also supports valid international numbers starting with '+' (8-15 digits).
+ * Validates WhatsApp / Mobile Phone Numbers.
+ * Supports: 08xx, 628xx, +628xx (10 to 14 digits) as well as valid international numbers with '+' prefix (8-15 digits).
  */
 export function validatePhoneNumber(phone?: string | null): PhoneValidationResult {
   if (!phone || typeof phone !== 'string') {
@@ -16,7 +15,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
       isValid: false,
       cleanPhone: '',
       formattedDisplay: '',
-      error: 'Nomor WhatsApp wajib diisi.'
+      error: 'WhatsApp / Phone number is required.'
     };
   }
 
@@ -28,7 +27,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
       isValid: false,
       cleanPhone: '',
       formattedDisplay: '',
-      error: 'Nomor WhatsApp tidak boleh kosong.'
+      error: 'Phone number cannot be empty.'
     };
   }
 
@@ -38,11 +37,11 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
       isValid: false,
       cleanPhone: cleaned,
       formattedDisplay: cleaned,
-      error: 'Nomor telepon hanya boleh berisi angka dan tanda +.'
+      error: 'Phone number can only contain digits and a leading + sign.'
     };
   }
 
-  // Check if Indonesian format
+  // Check if Indonesian cellular format
   const isIndonesian =
     cleaned.startsWith('08') ||
     cleaned.startsWith('+628') ||
@@ -63,7 +62,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
         isValid: false,
         cleanPhone: cleaned,
         formattedDisplay: cleaned,
-        error: 'Nomor WhatsApp Indonesia harus diawali 08... atau +628...'
+        error: 'Indonesian WhatsApp numbers must start with 08... or +628...'
       };
     }
 
@@ -73,7 +72,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
         isValid: false,
         cleanPhone: cleaned,
         formattedDisplay: cleaned,
-        error: `Nomor terlalu pendek (${standardLocal.length} digit). Nomor WhatsApp minimal 10 digit.`
+        error: `Number is too short (${standardLocal.length} digits). Minimum 10 digits required.`
       };
     }
 
@@ -82,7 +81,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
         isValid: false,
         cleanPhone: cleaned,
         formattedDisplay: cleaned,
-        error: `Nomor terlalu panjang (${standardLocal.length} digit). Nomor WhatsApp maksimal 14 digit.`
+        error: `Number is too long (${standardLocal.length} digits). Maximum 14 digits allowed.`
       };
     }
 
@@ -93,17 +92,17 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
         isValid: false,
         cleanPhone: cleaned,
         formattedDisplay: standardLocal,
-        error: 'Nomor WhatsApp tidak valid (terlalu banyak angka berulang).'
+        error: 'Invalid phone number pattern (too many repeating digits).'
       };
     }
 
-    // Check sequential numbers like 08123456789
+    // Check sequential dummy numbers
     if (standardLocal === '08123456789' || standardLocal === '081234567890') {
       return {
         isValid: false,
         cleanPhone: cleaned,
         formattedDisplay: standardLocal,
-        error: 'Harap masukkan nomor WhatsApp aktif yang sesungguhnya.'
+        error: 'Please enter a genuine, active mobile phone number.'
       };
     }
 
@@ -128,7 +127,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
       isValid: false,
       cleanPhone: cleaned,
       formattedDisplay: cleaned,
-      error: 'Nomor internasional harus terdiri dari 8 hingga 15 digit angka.'
+      error: 'International phone numbers must contain 8 to 15 digits.'
     };
   }
 
@@ -136,7 +135,7 @@ export function validatePhoneNumber(phone?: string | null): PhoneValidationResul
     isValid: false,
     cleanPhone: cleaned,
     formattedDisplay: cleaned,
-    error: 'Format nomor WhatsApp tidak valid. Gunakan format diawali 08... atau +628...'
+    error: 'Invalid phone format. Please use 08xx or international format with country code (e.g., +62...)'
   };
 }
 

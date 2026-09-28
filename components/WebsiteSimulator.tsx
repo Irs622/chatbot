@@ -32,11 +32,11 @@ export default function WebsiteSimulator() {
             <a href="mailto:corporatesecretary@inpartner.id" className="hover:text-white">corporatesecretary@inpartner.id</a>
           </span>
         </div>
-        <div className="flex items-center gap-3 text-[11px]">
+          <div className="flex items-center gap-3 text-[11px]">
           <span className="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">
             Jakarta & Surabaya
           </span>
-          <span className="text-slate-400">EN | ID</span>
+          <span className="text-slate-400">English (Global)</span>
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export default function WebsiteSimulator() {
               href="#pillars"
               className="px-6 py-3 bg-[#005DAD] hover:bg-[#004785] text-white font-semibold text-xs rounded-xl shadow-lg transition-all"
             >
-              Jelajahi 4 Pilar Layanan
+              Explore 4 Advisory Pillars
             </a>
             <a
               href="https://wa.me/6289628310192"
@@ -115,7 +115,7 @@ export default function WebsiteSimulator() {
               className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-xl border border-white/20 backdrop-blur-sm transition-all flex items-center gap-2"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              Konsultasi WhatsApp Langsung
+              Direct WhatsApp Consultation
             </a>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function WebsiteSimulator() {
             We Have Four Pillars To Work On
           </h2>
           <p className="text-sm text-slate-500 max-w-2xl mx-auto">
-            Struktur konsultasi Inpartner dirancang untuk menjawab 4 kebutuhan bisnis paling fundamental:
+            Inpartner's advisory architecture is designed to address four fundamental corporate growth imperatives:
           </p>
         </div>
 
@@ -144,7 +144,7 @@ export default function WebsiteSimulator() {
               </div>
               <h3 className="font-bold text-lg text-slate-900 mb-2">Funding & Investment</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Pendampingan kesiapan investasi (investment readiness), penataan valuasi, financial model, dan penghubungan ke jaringan investor institusi (VC, PE, Family Offices).
+                Institutional investment readiness, rigorous financial valuation modeling, capital structuring, and curated introductions to top-tier institutional investor networks (VC, PE, Family Offices).
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
@@ -161,7 +161,7 @@ export default function WebsiteSimulator() {
               </div>
               <h3 className="font-bold text-lg text-slate-900 mb-2">Business Growth</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Riset pertumbuhan pasar potensial, penetrasi segmen konsumen baru, ekspansi wilayah/kota, model go-to-market, dan perumusan kemitraan strategis bernilai tinggi.
+                Strategic market expansion research, high-value consumer segment penetration, geographic scale, go-to-market modeling, and high-impact strategic joint ventures.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
@@ -178,7 +178,7 @@ export default function WebsiteSimulator() {
               </div>
               <h3 className="font-bold text-lg text-slate-900 mb-2">Profitability</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Optimalisasi efisiensi alur kerja operasional, audit kebocoran beban biaya (OPEX/COGS), penyelarasan people & tech, dan restrukturisasi margin agar omzet berbuah laba nyata.
+                Operational workflow optimization, comprehensive OPEX/COGS leak audits, people & technology alignment, and margin restructuring to convert revenue growth into sustainable bottom-line net profit.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
@@ -195,7 +195,7 @@ export default function WebsiteSimulator() {
               </div>
               <h3 className="font-bold text-lg text-slate-900 mb-2">Capacity Building</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                The Executive Business Program (Inpartner Academy): pelatihan eksekutif, leadership coaching, mentoring, dan penyediaan kerangka kerja implementasi rencana bisnis terukur.
+                The Executive Business Program (Inpartner Academy): C-level executive education, leadership coaching, strategic mentoring, and structured execution frameworks for measurable business results.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#005DAD] flex items-center gap-1">
@@ -210,8 +210,8 @@ export default function WebsiteSimulator() {
       <section className="bg-slate-100/70 py-14 px-4 sm:px-8 border-y border-slate-200">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h3 className="text-xl font-bold text-slate-800">Cakupan Sektor & Tema Industri (Sectors Coverage)</h3>
-            <p className="text-xs text-slate-500 mt-1">Inpartner mendampingi ragam sektor strategis nasional:</p>
+            <h3 className="text-xl font-bold text-slate-800">Industry Sectors & Advisory Coverage</h3>
+            <p className="text-xs text-slate-500 mt-1">Inpartner advises leading enterprises across key strategic sectors:</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
@@ -260,23 +260,23 @@ export default function WebsiteSimulator() {
           </div>
 
           <div className="space-y-2">
-            <h4 className="font-bold text-sm text-white mb-2">Lokasi Kantor Resmi:</h4>
+            <h4 className="font-bold text-sm text-white mb-2">Official Office Locations:</h4>
             <div>
-              <p className="font-semibold text-amber-300">Kantor Pusat Jakarta:</p>
+              <p className="font-semibold text-amber-300">Jakarta Head Office:</p>
               <p className="text-sky-100">
-                Pakuwon Tower Lantai 10, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, Jakarta Selatan.
+                Pakuwon Tower 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta 12870.
               </p>
             </div>
             <div className="pt-2">
-              <p className="font-semibold text-amber-300">Kantor Surabaya:</p>
-              <p className="text-sky-100">Jemur Sari Street V No. 10, Surabaya, Jawa Timur.</p>
+              <p className="font-semibold text-amber-300">Surabaya Office:</p>
+              <p className="text-sky-100">Jemur Sari Street V No. 10, Surabaya, East Java.</p>
             </div>
           </div>
 
           <div className="space-y-2">
-            <h4 className="font-bold text-sm text-white mb-2">Hubungi Kami:</h4>
+            <h4 className="font-bold text-sm text-white mb-2">Contact Us:</h4>
             <p className="text-sky-100">
-              <span className="text-slate-200">Telepon / WhatsApp:</span> 0896 2831 0192
+              <span className="text-slate-200">Phone / WhatsApp:</span> +62 896 2831 0192
             </p>
             <p className="text-sky-100">
               <span className="text-slate-200">Email:</span> corporatesecretary@inpartner.id

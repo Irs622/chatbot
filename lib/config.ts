@@ -16,11 +16,11 @@ export const INPARTNER_CONFIG = {
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'corporatesecretary@inpartner.id',
   
   // Office Addresses
-  addressJakarta: 'Pakuwon Tower Lantai 10, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, Jakarta Selatan 12870, DKI Jakarta',
-  addressSurabaya: 'Jemur Sari Street V No. 10, Surabaya, Jawa Timur',
+  addressJakarta: 'Pakuwon Tower 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta 12870, Indonesia',
+  addressSurabaya: 'Jemur Sari Street V No. 10, Surabaya, East Java, Indonesia',
   
   // Operating Hours
-  operatingHours: 'Senin - Jumat: 08:30 - 17:30 WIB'
+  operatingHours: 'Monday – Friday: 08:30 – 17:30 WIB'
 };
 
 /**

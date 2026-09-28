@@ -1,30 +1,31 @@
-# Layanan Inpartner: Capacity Building (The Executive Business Program)
+# Inpartner Advisory Pillar: Capacity Building (The Executive Business Program)
 
-## Deskripsi Layanan
-Layanan Capacity Building Inpartner (dikenal juga sebagai Inpartner Academy / The Executive Business Program) adalah program pengembangan kapasitas kepemimpinan, kapabilitas manajerial, dan keahlian tim bisnis secara terstruktur untuk menjawab dinamika pasar yang kompetitif.
+## Pillar Overview
+Inpartner's Capacity Building pillar (also known as Inpartner Academy / The Executive Business Program) provides structured leadership acceleration, managerial capability enhancement, and high-performance team frameworks designed to thrive in competitive markets.
 
-Pengembangan kapasitas Inpartner mencakup berbagai metode interaktif: pelatihan intensif (*training*), pendidikan eksekutif (*executive education*), bimbingan berkala (*mentoring*), pelatihan kepemimpinan (*coaching*), serta penyediaan perangkat kerja praktis (*practical tools & frameworks*) yang langsung dapat diterapkan dalam rutinitas kerja organisasi.
+Our capacity development engagements deploy proven interactive methodologies: intensive executive training, structured leadership coaching, ongoing mentoring, and the delivery of proprietary practical frameworks and scorecards ready for immediate operational deployment.
 
-## Tujuan Utama Program
-- Meningkatkan efisiensi, produktivitas, dan efektivitas tim kerja agar tetap unggul di pasar yang kompetitif.
-- Menciptakan dampak positif dan terukur (*positive and enduring impacts*) bagi kinerja perusahaan.
-- Membantu pimpinan bisnis menyusun rencana bisnis (*business plans*) yang realistis dan mengawasi implementasinya secara efektif.
-- Membekali manajemen agar sigap mengambil tantangan baru (*swiftly taking new challenges*), memperluas relasi bisnis, dan membangun kemitraan strategis bernilai tinggi.
+## Primary Program Objectives
+- Accelerate operational productivity, cross-functional efficiency, and organizational agility.
+- Deliver measurable, enduring bottom-line impacts for the enterprise.
+- Guide business leaders in constructing rigorous business plans and tracking milestone execution with high accountability.
+- Equip management to swiftly conquer new market challenges, expand high-value commercial relationships, and negotiate institutional partnerships.
 
-## Ruang Lingkup & Format Program
+## Scope of Offerings & Program Formats
 1. **The Executive Business Program:**
-   - Program kurikulum komprehensif bagi C-level, Board of Directors, General Managers, dan pemilik bisnis (*business owners*).
-   - Modul mencakup: Strategic Thinking, Financial Acumen for Leaders, Organizational Agility, ESG Governance, and Digital Transformation.
-2. **Corporate In-House Workshops & Training:**
-   - Pelatihan yang disesuaikan secara spesifik (*customized syllabus*) dengan kebutuhan industri dan tantangan internal perusahaan klien.
-   - Simulasi kasus nyata (*real-world case studies*), diskusi kelompok terarah, dan rencana aksi konkret.
-3. **Leadership Coaching & Mentoring:**
-   - Pendampingan one-on-one atau grup kecil untuk suksesi kepemimpinan dan penguatan fungsi manajemen menengah.
-4. **Implementation Toolkits & Frameworks:**
-   - Pembagian template, KPI scorecard, SOP toolkit, dan sistem monitoring kinerja yang aplikatif.
+   - Comprehensive curriculum designed for C-level executives, Board Members, General Managers, and Enterprise Business Owners.
+   - Core modules: Strategic Decision Making, Executive Financial Acumen, Agile Operating Models, ESG Corporate Governance, and Responsible Digital Adoption.
+2. **Customized Corporate In-House Masterclasses:**
+   - Tailored syllabi addressing specific industry challenges and proprietary operating roadblocks.
+   - Real-world case study simulations, red-team strategy sessions, and concrete 90-day implementation blueprints.
+3. **Executive Leadership Coaching & Mentorship:**
+   - High-impact 1-on-1 and small-cohort coaching supporting executive succession and middle-management leadership transition.
+   - Alignment of personal leadership KPIs with enterprise strategic goals.
+4. **Execution Toolkits & Governance Frameworks:**
+   - Turnkey operational scorecards, Balanced Scorecard OKRs, SOP toolkits, and dynamic performance review dashboards.
 
-## Kapan Perusahaan Membutuhkan Capacity Building?
-- Perusahaan bertumbuh cepat, namun kapasitas manajerial tim belum mengimbangi skala bisnis yang makin besar.
-- Terjadi kesenjangan eksekusi (*execution gap*) antara rencana strategis direksi dengan implementasi di tingkat operasional.
-- Perusahaan hendak melakukan suksesi generasi kepemimpinan atau pembentukan unit bisnis baru.
-- Perusahaan ingin membangun budaya kerja berbasis kinerja tinggi (*high-performance culture*) dan integritas profesional.
+## Indicators That Your Organization Needs Capacity Building
+- Rapid business growth has outpaced internal managerial capabilities, creating execution bottlenecks.
+- A widening execution gap exists between board-level strategic intent and front-line operational delivery.
+- Enterprise is executing leadership succession or launching new business units.
+- Organizational ambition to embed a high-performance, metrics-driven corporate culture.

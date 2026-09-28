@@ -65,13 +65,13 @@ export default function KnowledgeView() {
     : chunks.filter((c) => c.category === activeCategory);
 
   const categories = [
-    { id: 'all', label: 'Semua Dokumen' },
+    { id: 'all', label: 'All Documents' },
     { id: 'company', label: 'Company Profile' },
-    { id: 'services', label: '4 Pilar Services' },
-    { id: 'sectors', label: '13 Sektor Industri' },
-    { id: 'projects', label: 'Proyek & Studi Kasus' },
+    { id: 'services', label: '4 Pillars Services' },
+    { id: 'sectors', label: '13 Industry Sectors' },
+    { id: 'projects', label: 'Projects & Case Studies' },
     { id: 'faq', label: 'FAQ' },
-    { id: 'contact', label: 'Kontak & Lokasi' }
+    { id: 'contact', label: 'Contact & Locations' }
   ];
 
   return (
@@ -86,13 +86,13 @@ export default function KnowledgeView() {
             </span>
           </div>
           <p className="text-sm text-slate-500 mt-1">
-            Seluruh jawaban AI Inpartner dijamin merujuk pada dokumen resmi terverifikasi berikut (PRD Section 10 & 11).
+            All Inpartner AI responses are strictly grounded in the verified corporate documents below (PRD Section 10 & 11).
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200">
           <Database className="w-4 h-4 text-[#005DAD]" />
-          <span>{chunks.length} Semantic Chunks Terindeks</span>
+          <span>{chunks.length} Indexed Semantic Chunks</span>
         </div>
       </div>
 
@@ -105,7 +105,7 @@ export default function KnowledgeView() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Uji RAG Search (misal: 'omzet naik tapi profit turun', 'apakah menyediakan pinjaman modal', 'kantor pakuwon')..."
+              placeholder="Test RAG search (e.g., 'revenue growing but margins dropping', 'direct loan capital', 'pakuwon office')..."
               className="w-full text-xs sm:text-sm pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#005DAD] bg-slate-50 focus:bg-white transition-all"
             />
           </div>
@@ -115,7 +115,7 @@ export default function KnowledgeView() {
             className="px-5 py-2.5 bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-semibold rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            {isSearching ? 'Mencari...' : 'Uji Retrieval RAG'}
+            {isSearching ? 'Searching...' : 'Test RAG Retrieval'}
           </button>
           {searchResults && (
             <button
@@ -134,7 +134,7 @@ export default function KnowledgeView() {
         {searchResults && (
           <div className="mt-3 text-xs text-[#005DAD] font-semibold flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            Ditemukan {searchResults.length} dokumen relevan untuk kata kunci &quot;{searchQuery}&quot;
+            Found {searchResults.length} relevant documents for keyword &quot;{searchQuery}&quot;
           </div>
         )}
       </div>
@@ -163,7 +163,7 @@ export default function KnowledgeView() {
         {/* Document List (Left) */}
         <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col max-h-[580px]">
           <div className="p-3 bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-700">
-            Daftar Modul Knowledge Base ({displayedChunks.length})
+            Knowledge Base Index ({displayedChunks.length})
           </div>
           <div className="divide-y divide-slate-100 overflow-y-auto flex-1">
             {displayedChunks.map((chunk) => {
@@ -225,7 +225,7 @@ export default function KnowledgeView() {
               {/* Keywords Tagging */}
               {selectedChunk.keywords && (
                 <div className="flex flex-wrap gap-1 items-center">
-                  <span className="text-[11px] font-semibold text-slate-500 mr-1">Kata Kunci:</span>
+                  <span className="text-[11px] font-semibold text-slate-500 mr-1">Keywords:</span>
                   {selectedChunk.keywords.slice(0, 10).map((kw: string, i: number) => (
                     <span key={i} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
                       #{kw}
@@ -241,7 +241,7 @@ export default function KnowledgeView() {
             </div>
           ) : (
             <div className="h-full flex items-center justify-center text-slate-400 text-xs">
-              Pilih salah satu dokumen untuk membaca konten lengkapnya.
+              Select any document chunk on the left to inspect its full verified content.
             </div>
           )}
         </div>
