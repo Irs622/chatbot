@@ -4,9 +4,27 @@ import {
   generateAdminSessionToken,
   setAdminCookie
 } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   try {
+    // Admin Login Brute-Force Limiter (Max 5 attempts per 15 minutes per IP)
+    const rateLimit = checkRateLimit(req, {
+      identifier: 'admin_login',
+      limit: 5,
+      windowMs: 15 * 60 * 1000
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Too many login attempts. Administrative access locked. Please retry in ${Math.ceil(rateLimit.resetInSeconds / 60)} minute(s).`
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const { password } = body;
 

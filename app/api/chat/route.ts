@@ -11,10 +11,35 @@ import {
   AIStreamEvent
 } from '@/lib/ai';
 
+import { checkRateLimit } from '@/lib/rateLimit';
+
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    // 1. Rate Limiting Protection (Max 30 inquiries per minute per IP)
+    const rateLimit = checkRateLimit(req, {
+      identifier: 'chat_api',
+      limit: 30,
+      windowMs: 60 * 1000
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        {
+          error: `Too many requests. Please wait ${rateLimit.resetInSeconds} seconds before sending another inquiry.`
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetInSeconds),
+            'X-RateLimit-Limit': '30',
+            'X-RateLimit-Remaining': '0'
+          }
+        }
+      );
+    }
+
     const body = await req.json();
     const {
       sessionId,

@@ -3,6 +3,7 @@ import { getAllLeads, createLead } from '@/lib/db';
 import { sendLeadNotification } from '@/lib/notifications';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,6 +23,22 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // Lead Submission Rate Limiter (Max 5 submissions per 10 minutes per IP)
+    const rateLimit = checkRateLimit(req, {
+      identifier: 'leads_submit',
+      limit: 5,
+      windowMs: 10 * 60 * 1000
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        {
+          error: `Submission limit reached. Please wait ${Math.ceil(rateLimit.resetInSeconds / 60)} minute(s) before submitting another inquiry.`
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const {
       conversation_id,
