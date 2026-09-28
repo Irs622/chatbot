@@ -18,7 +18,9 @@ import {
   ExternalLink,
   Save,
   CheckCircle2,
-  RefreshCw
+  RefreshCw,
+  Download,
+  FileSpreadsheet
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 
@@ -32,6 +34,7 @@ export default function AdminDashboard() {
   const [selectedLeadConversation, setSelectedLeadConversation] = useState<any | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [internalNote, setInternalNote] = useState('');
+  const [exportSuccess, setExportSuccess] = useState<string | null>(null);
 
   const fetchLeadsAndConversations = async () => {
     setIsLoading(true);
@@ -89,6 +92,92 @@ export default function AdminDashboard() {
     } else {
       setSelectedLeadConversation(null);
     }
+  };
+
+  const handleExportCSV = (exportAll: boolean = false) => {
+    const listToExport = exportAll ? leads : filteredLeads;
+
+    if (listToExport.length === 0) {
+      alert('Tidak ada data prospek yang dapat diekspor.');
+      return;
+    }
+
+    const headers = [
+      'ID Prospek',
+      'Tanggal & Waktu Masuk (WIB)',
+      'Nama Calon Klien',
+      'Perusahaan',
+      'Nomor WhatsApp',
+      'Alamat Email',
+      'Kebutuhan Bisnis',
+      'Status Prospek',
+      'Catatan Tambahan',
+      'Tautan Chat WhatsApp'
+    ];
+
+    const escapeCsv = (val?: string | null) => {
+      if (val === undefined || val === null) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const rows = listToExport.map((lead) => {
+      const cleanPhone = lead.phone ? lead.phone.replace(/[^0-9]/g, '') : '';
+      const waLink = cleanPhone.startsWith('0')
+        ? `https://wa.me/62${cleanPhone.slice(1)}`
+        : cleanPhone.startsWith('62')
+        ? `https://wa.me/${cleanPhone}`
+        : cleanPhone
+        ? `https://wa.me/62${cleanPhone}`
+        : '';
+
+      const formattedDate = lead.created_at
+        ? new Date(lead.created_at).toLocaleString('id-ID', {
+            timeZone: 'Asia/Jakarta',
+            dateStyle: 'medium',
+            timeStyle: 'short'
+          })
+        : '-';
+
+      // Excel formula syntax ="08..." to prevent truncating leading zeros
+      const excelPhone = lead.phone ? `="${lead.phone}"` : '""';
+
+      return [
+        escapeCsv(lead.id),
+        escapeCsv(formattedDate),
+        escapeCsv(lead.name),
+        escapeCsv(lead.company || '-'),
+        excelPhone,
+        escapeCsv(lead.email || '-'),
+        escapeCsv(lead.business_need),
+        escapeCsv(lead.status),
+        escapeCsv(lead.notes || '-'),
+        escapeCsv(waLink)
+      ].join(',');
+    });
+
+    // Add UTF-8 BOM (\uFEFF) so Excel opens UTF-8 characters without corruption
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const now = new Date();
+    const dateStamp = now.toISOString().slice(0, 10);
+    const timeStamp = now.toTimeString().slice(0, 5).replace(':', '');
+    const filename = `inpartner-leads-${dateStamp}-${timeStamp}.csv`;
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setExportSuccess(`Berhasil mengunduh ${listToExport.length} data prospek ke berkas CSV (${filename})`);
+    setTimeout(() => {
+      setExportSuccess(null);
+    }, 5000);
   };
 
   const filteredLeads = leads.filter((l) => {
@@ -162,14 +251,58 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <button
-          onClick={fetchLeadsAndConversations}
-          className="self-start md:self-auto flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-          Segarkan Data
-        </button>
+        <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
+          <button
+            onClick={fetchLeadsAndConversations}
+            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors"
+            title="Muat ulang data prospek terbaru"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+            <span>Segarkan</span>
+          </button>
+
+          <button
+            onClick={() => handleExportCSV(false)}
+            disabled={filteredLeads.length === 0}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs font-bold transition-all shadow-xs disabled:bg-slate-300 disabled:cursor-not-allowed"
+            title="Unduh data prospek dalam format Excel / CSV"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>
+              {filterStatus !== 'all' || searchQuery.trim().length > 0
+                ? `Export Filtered (${filteredLeads.length})`
+                : `Export CSV (${leads.length})`}
+            </span>
+          </button>
+
+          {(filterStatus !== 'all' || searchQuery.trim().length > 0) && (
+            <button
+              onClick={() => handleExportCSV(true)}
+              className="px-3 py-2 text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-100 rounded-xl transition-colors border border-slate-200"
+              title="Unduh seluruh data prospek tanpa filter"
+            >
+              Export Semua ({leads.length})
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Export Success Notification Banner */}
+      {exportSuccess && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs px-4 py-3 rounded-2xl flex items-center justify-between shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="font-medium">{exportSuccess}</span>
+          </div>
+          <button
+            onClick={() => setExportSuccess(null)}
+            className="text-emerald-700 hover:text-emerald-900 text-xs font-bold p-1 hover:bg-emerald-100/60 rounded-lg transition-colors"
+            aria-label="Tutup notifikasi"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Metric Counters */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -273,6 +406,16 @@ export default function AdminDashboard() {
                 <option value="converted">Converted</option>
                 <option value="closed">Closed</option>
               </select>
+
+              <button
+                type="button"
+                onClick={() => handleExportCSV(false)}
+                disabled={filteredLeads.length === 0}
+                className="p-2 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl border border-slate-200 transition-colors disabled:opacity-50"
+                title="Download CSV dari daftar yang tampil"
+              >
+                <Download className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
