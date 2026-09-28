@@ -111,7 +111,7 @@ export default function ChatWidget({
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Initialize session
+  // Initialize session and restore persisted conversation
   useEffect(() => {
     setMounted(true);
     let sess = localStorage.getItem('inpartner_chat_session');
@@ -120,7 +120,79 @@ export default function ChatWidget({
       localStorage.setItem('inpartner_chat_session', sess);
     }
     setSessionId(sess);
+
+    // Restore previously saved conversation state
+    try {
+      const savedMessagesStr = localStorage.getItem(`inpartner_chat_messages_${sess}`);
+      if (savedMessagesStr) {
+        const savedMessages = JSON.parse(savedMessagesStr);
+        if (Array.isArray(savedMessages) && savedMessages.length > 0) {
+          setMessages(savedMessages);
+        }
+      }
+
+      const savedConvId = localStorage.getItem(`inpartner_conv_id_${sess}`);
+      if (savedConvId) {
+        setConversationId(savedConvId);
+      }
+
+      const savedNeed = localStorage.getItem(`inpartner_selected_need_${sess}`);
+      if (savedNeed) {
+        setSelectedNeed(savedNeed);
+      }
+
+      const savedLeadSubmitted = localStorage.getItem(`inpartner_lead_submitted_${sess}`);
+      if (savedLeadSubmitted === 'true') {
+        setLeadSubmitted(true);
+      }
+    } catch (err) {
+      console.warn('Could not restore chat state from localStorage:', err);
+    }
   }, []);
+
+  // Auto-save messages to localStorage
+  useEffect(() => {
+    if (!mounted || !sessionId) return;
+    try {
+      if (messages.length > 0) {
+        localStorage.setItem(`inpartner_chat_messages_${sessionId}`, JSON.stringify(messages.slice(-60)));
+      } else {
+        localStorage.removeItem(`inpartner_chat_messages_${sessionId}`);
+      }
+    } catch (err) {
+      console.warn('Failed to save chat messages to localStorage:', err);
+    }
+  }, [messages, sessionId, mounted]);
+
+  // Auto-save conversationId
+  useEffect(() => {
+    if (!mounted || !sessionId) return;
+    try {
+      if (conversationId) {
+        localStorage.setItem(`inpartner_conv_id_${sessionId}`, conversationId);
+      }
+    } catch {}
+  }, [conversationId, sessionId, mounted]);
+
+  // Auto-save selectedNeed
+  useEffect(() => {
+    if (!mounted || !sessionId) return;
+    try {
+      if (selectedNeed) {
+        localStorage.setItem(`inpartner_selected_need_${sessionId}`, selectedNeed);
+      }
+    } catch {}
+  }, [selectedNeed, sessionId, mounted]);
+
+  // Auto-save leadSubmitted
+  useEffect(() => {
+    if (!mounted || !sessionId) return;
+    try {
+      if (leadSubmitted) {
+        localStorage.setItem(`inpartner_lead_submitted_${sessionId}`, 'true');
+      }
+    } catch {}
+  }, [leadSubmitted, sessionId, mounted]);
 
   // Close dropdown menu when clicking outside
   useEffect(() => {
@@ -226,6 +298,17 @@ export default function ChatWidget({
   };
 
   const handleResetConversation = () => {
+    if (sessionId) {
+      try {
+        localStorage.removeItem(`inpartner_chat_messages_${sessionId}`);
+        localStorage.removeItem(`inpartner_conv_id_${sessionId}`);
+        localStorage.removeItem(`inpartner_selected_need_${sessionId}`);
+        localStorage.removeItem(`inpartner_lead_submitted_${sessionId}`);
+      } catch (err) {
+        console.warn('Could not clear session storage:', err);
+      }
+    }
+
     const newSess = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     localStorage.setItem('inpartner_chat_session', newSess);
     setSessionId(newSess);
