@@ -16,8 +16,19 @@ import {
   LogOut,
   AlertCircle,
   KeyRound,
-  Sparkles,
-  CheckCircle2,
+  Search,
+  Bell,
+  MessageSquare,
+  Settings,
+  Plus,
+  Home,
+  Briefcase,
+  GraduationCap,
+  DollarSign,
+  PiggyBank,
+  Gift,
+  Plane,
+  Receipt,
   Clock
 } from 'lucide-react';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -112,13 +123,13 @@ export default function AdminPage() {
   // State 1: Verifying authentication session
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[#EAEAEA] flex flex-col items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-lg">
-            <Lock className="w-5 h-5 text-[#005DAD] animate-pulse" />
+          <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] border border-[#E3E3E3] flex items-center justify-center shadow-sm">
+            <Lock className="w-5 h-5 text-[#5FA0BE] animate-pulse" />
           </div>
-          <span className="text-slate-400 text-xs font-mono tracking-wider">
-            VERIFYING ENCRYPTED SESSION...
+          <span className="text-[#8B8B8B] text-xs font-mono tracking-wider">
+            VERIFYING SESSION...
           </span>
         </div>
       </div>
@@ -128,44 +139,33 @@ export default function AdminPage() {
   // State 2: Executive Security Login Gate
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 font-sans relative overflow-hidden bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px]">
-        {/* Subtle Ambient Vignette */}
-        <div className="absolute inset-0 bg-radial from-transparent via-slate-950/80 to-slate-950 pointer-events-none" />
-
-        <div className="relative w-full max-w-[420px] bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800 p-7 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
-          {/* Official Security Header */}
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-5 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#005DAD] flex items-center justify-center font-extrabold text-white text-sm shadow-md ring-1 ring-white/20">
-                IN
-              </div>
-              <div>
-                <h1 className="font-bold text-sm tracking-tight text-white leading-tight">
-                  INPARTNER OPTIMA INTEGRA
-                </h1>
-                <p className="text-[11px] text-slate-400 font-mono tracking-tight mt-0.5">
-                  Corporate Advisory Deal Desk
-                </p>
-              </div>
+      <div className="min-h-screen bg-[#EAEAEA] flex flex-col items-center justify-center p-4 sm:p-6 font-sans">
+        <div className="w-full max-w-[420px] bg-[#F5F5F5] rounded-[20px] shadow-[0px_4px_16px_rgba(0,0,0,0.08)] border border-[#E3E3E3] p-7 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-[#E3E3E3] pb-4 mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-[#5FA0BE] font-bold text-xl tracking-[2.4px]">DASHB</span>
+              <span className="w-4 h-4 bg-[#5CA65F] rounded inline-block"></span>
+              <span className="text-[#5FA0BE] font-bold text-xl tracking-[2.4px]">ARD</span>
             </div>
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              SECURE
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#DCF1DD] text-[#3E7A41] text-[10px] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5CA65F] animate-pulse" />
+              PORTAL
             </div>
           </div>
 
           <div className="mb-6">
-            <h2 className="text-base font-semibold text-slate-100 tracking-tight">
-              Administrative Access
+            <h2 className="text-base font-semibold text-[#747374] tracking-tight">
+              Inpartner Admin & Deal Desk
             </h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Enter your corporate security PIN to inspect incoming advisory inquiries, engagement analytics, and CRM records.
+            <p className="text-xs text-[#8B8B8B] mt-1 leading-relaxed">
+              Enter your access PIN to inspect client consultation inquiries, RAG knowledge documents, and analytics.
             </p>
           </div>
 
           {loginError && (
-            <div className="mb-5 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs rounded-xl flex items-center gap-2 animate-in fade-in">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <div className="mb-4 p-3 bg-[#F8E0E0] border border-[#DE7E7E]/40 text-[#BE5F5F] text-xs rounded-[10px] flex items-center gap-2 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 text-[#BE5F5F] shrink-0" />
               <span>{loginError}</span>
             </div>
           )}
@@ -175,11 +175,11 @@ export default function AdminPage() {
               <div className="flex items-center justify-between mb-1.5">
                 <label
                   htmlFor="admin-access-password"
-                  className="block text-[11px] font-mono uppercase tracking-wider text-slate-400"
+                  className="block text-[11px] font-medium uppercase tracking-wider text-[#747374]"
                 >
                   Access PIN / Password
                 </label>
-                <span className="text-[10px] text-slate-500 font-mono">Default: inpartner2026</span>
+                <span className="text-[10px] text-[#8B8B8B] font-mono">Default: inpartner2026</span>
               </div>
               <div className="relative">
                 <input
@@ -192,12 +192,12 @@ export default function AdminPage() {
                   placeholder="Enter administrator PIN..."
                   required
                   autoFocus
-                  className="w-full text-sm px-3.5 py-2.5 pr-10 rounded-xl border border-slate-700 bg-slate-950/80 text-white placeholder:text-slate-500 focus:outline-none focus:border-[#005DAD] focus:ring-1 focus:ring-[#005DAD] transition-all font-mono"
+                  className="w-full text-sm px-3.5 py-2.5 pr-10 rounded-[8px] border border-[#E3E3E3] bg-white text-[#747374] placeholder:text-[#B3AEAE] focus:outline-none focus:border-[#5FA0BE] transition-all font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B8B8B] hover:text-[#747374] transition-colors p-1"
                   aria-label={showPassword ? 'Hide PIN' : 'Show PIN'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -208,33 +208,33 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={isSubmitting || !password.trim()}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#005DAD] hover:bg-[#004785] active:scale-[0.99] text-white text-xs font-semibold tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-sm shadow-[#005DAD]/30"
+              className="w-full py-2.5 px-4 rounded-[8px] bg-[#5FA0BE] hover:bg-[#558BA4] active:scale-[0.99] text-white text-xs font-semibold tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-[0px_2px_4px_rgba(0,0,0,0.08)]"
             >
               {isSubmitting ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Authenticating...</span>
+                  <span>Verifying...</span>
                 </>
               ) : (
                 <>
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Authenticate Session</span>
+                  <span>Unlock Admin Portal</span>
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500">
+          <div className="mt-6 pt-4 border-t border-[#E3E3E3] flex items-center justify-between text-xs text-[#8B8B8B]">
             <Link
               href="/"
-              className="flex items-center gap-1.5 text-slate-400 hover:text-slate-200 transition-colors"
+              className="flex items-center gap-1.5 text-[#747374] hover:text-[#5FA0BE] transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Portal</span>
+              <span>Back to Chatbot</span>
             </Link>
 
-            <span className="font-mono text-[10px] text-slate-500">
-              HMAC-SHA256 • 7d TTL
+            <span className="font-mono text-[10px] text-[#8B8B8B]">
+              inpartner.id
             </span>
           </div>
         </div>
@@ -242,89 +242,184 @@ export default function AdminPage() {
     );
   }
 
-  // State 3: Authenticated Sovereign Executive CRM Portal
+  // State 3: Authenticated Dashboard (Exact Figma Layout Structure)
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
-      {/* Top Application Header */}
-      <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-          {/* Left Brand Identity */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#005DAD] flex items-center justify-center font-bold text-white text-xs shadow-inner">
-              IN
+    <div className="min-h-screen bg-[#EAEAEA] text-[#747374] font-sans p-3 sm:p-5 lg:p-6 flex flex-col lg:flex-row gap-5 items-start">
+      {/* ============================================================== */}
+      {/* LEFT SIDEBAR (Matching width: 243px, background: #F5F5F5, radius: 20px) */}
+      {/* ============================================================== */}
+      <aside className="w-full lg:w-[245px] shrink-0 bg-[#F5F5F5] rounded-[20px] shadow-[0px_-2px_4px_rgba(0,0,0,0.08),0px_0px_6px_rgba(0,0,0,0.02)] border border-[#E3E3E3] p-5 flex flex-col justify-between self-stretch lg:min-h-[960px]">
+        <div>
+          {/* Brand Title: DASHBOARD with green square accent */}
+          <div className="pb-6 border-b border-[#CFCFCF] flex items-center justify-between">
+            <div className="flex items-center">
+              <span className="text-[#5FA0BE] font-bold text-xl tracking-[2.4px]">DASHB</span>
+              <span className="w-4 h-4 bg-[#5CA65F] rounded inline-block mx-0.5"></span>
+              <span className="text-[#5FA0BE] font-bold text-xl tracking-[2.4px]">ARD</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="lg:hidden text-xs text-rose-500 font-semibold p-1"
+            >
+              Logout
+            </button>
+          </div>
+
+          {/* Navigation Menu List */}
+          <nav className="mt-6 space-y-2 text-sm">
+            {/* Home / Overview */}
+            <button
+              onClick={() => setActiveTab('leads')}
+              className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
+                activeTab === 'leads'
+                  ? 'text-[#5FA0BE] font-semibold bg-[#EAEAEA]/70'
+                  : 'text-[#747374] hover:bg-[#EAEAEA]/50'
+              }`}
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <Home className="w-4 h-4" />
+              </div>
+              <span className="tracking-[0.8px]">Home</span>
+            </button>
+
+            {/* Logistics / Advisory Leads (Active tab in snippet) */}
+            <button
+              onClick={() => setActiveTab('leads')}
+              className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-semibold transition-all text-left cursor-pointer ${
+                activeTab === 'leads'
+                  ? 'text-[#5FA0BE] bg-[#EAEAEA]'
+                  : 'text-[#747374] hover:bg-[#EAEAEA]/50'
+              }`}
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <Briefcase className="w-4 h-4 text-[#5FA0BE]" />
+              </div>
+              <span className="tracking-[0.8px] text-[#5FA0BE]">Logistics & CRM</span>
+            </button>
+
+            {/* Education / Knowledge Base */}
+            <button
+              onClick={() => setActiveTab('knowledge')}
+              className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
+                activeTab === 'knowledge'
+                  ? 'text-[#5FA0BE] font-semibold bg-[#EAEAEA]'
+                  : 'text-[#747374] hover:bg-[#EAEAEA]/50'
+              }`}
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <GraduationCap className="w-4 h-4" />
+              </div>
+              <span className="tracking-[0.8px]">Education / RAG</span>
+            </button>
+
+            {/* Finance / Analytics */}
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
+                activeTab === 'analytics'
+                  ? 'text-[#5FA0BE] font-semibold bg-[#EAEAEA]'
+                  : 'text-[#747374] hover:bg-[#EAEAEA]/50'
+              }`}
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <DollarSign className="w-4 h-4" />
+              </div>
+              <span className="tracking-[0.8px]">Finance & Stats</span>
+            </button>
+
+            {/* Embed / Integrations */}
+            <button
+              onClick={() => setActiveTab('embed')}
+              className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-[10px] text-xs font-medium transition-all text-left cursor-pointer ${
+                activeTab === 'embed'
+                  ? 'text-[#5FA0BE] font-semibold bg-[#EAEAEA]'
+                  : 'text-[#747374] hover:bg-[#EAEAEA]/50'
+              }`}
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <span className="tracking-[0.8px]">Embed Script</span>
+            </button>
+
+            {/* Supplementary Nav Placeholders from Figma */}
+            <div className="pt-2">
+              <div className="flex items-center gap-3.5 px-3.5 py-2 text-xs text-[#98939A] opacity-75">
+                <PiggyBank className="w-4 h-4" />
+                <span className="tracking-[0.8px]">Savings</span>
+              </div>
+              <div className="flex items-center gap-3.5 px-3.5 py-2 text-xs text-[#98939A] opacity-75">
+                <Gift className="w-4 h-4" />
+                <span className="tracking-[0.8px]">Campaigns</span>
+              </div>
+              <div className="flex items-center gap-3.5 px-3.5 py-2 text-xs text-[#98939A] opacity-75">
+                <Plane className="w-4 h-4" />
+                <span className="tracking-[0.8px]">Advisory Trips</span>
+              </div>
+              <div className="flex items-center gap-3.5 px-3.5 py-2 text-xs text-[#98939A] opacity-75">
+                <Receipt className="w-4 h-4" />
+                <span className="tracking-[0.8px]">Invoices</span>
+              </div>
+            </div>
+
+            {/* + New Button */}
+            <div className="pt-3">
+              <button
+                onClick={() => setActiveTab('leads')}
+                className="w-full flex items-center gap-2 px-3.5 py-2 rounded-[5px] bg-[#EAEAEA] hover:bg-[#DFDFDF] text-[#747374] text-xs font-medium transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>New Inquiry</span>
+              </button>
+            </div>
+          </nav>
+        </div>
+
+        {/* Bottom User Profile Section */}
+        <div className="pt-4 border-t border-[#E3E3E3] flex items-center justify-between mt-8">
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <div className="w-8 h-8 rounded-[5px] bg-[#DFDFDF] border border-[#D5D5D5] flex items-center justify-center text-[#747374] font-bold text-xs">
+                IN
+              </div>
+              <span className="w-2 h-2 rounded-full bg-[#5CA65F] border border-[#95CB97] absolute -top-0.5 -right-0.5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-white tracking-tight leading-none">
-                  INPARTNER
-                </span>
-                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                  Advisory CRM
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-tight mt-0.5 hidden sm:block">
-                PT Inpartner Optima Integra • Deal Desk & Intelligence
-              </p>
+              <div className="text-xs font-semibold text-[#747374]">Admin</div>
+              <div className="text-[10px] text-[#8B8B8B]">inpartner.id</div>
             </div>
           </div>
 
-          {/* Center / Navigation Segmented Control */}
-          <nav className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
-            <button
-              onClick={() => setActiveTab('leads')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
-                activeTab === 'leads'
-                  ? 'bg-[#005DAD] text-white shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <Users className="w-3.5 h-3.5" />
-              <span>Leads</span>
-            </button>
+          <button
+            onClick={handleLogout}
+            className="text-[#8B8B8B] hover:text-[#BE5F5F] p-1.5 rounded-[5px] transition-colors cursor-pointer"
+            title="Sign out"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </aside>
 
-            <button
-              onClick={() => setActiveTab('analytics')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
-                activeTab === 'analytics'
-                  ? 'bg-[#005DAD] text-white shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5" />
-              <span>Analytics</span>
-            </button>
+      {/* ============================================================== */}
+      {/* RIGHT MAIN WORKSPACE */}
+      {/* ============================================================== */}
+      <div className="flex-1 w-full space-y-6 overflow-hidden">
+        {/* Top Header Capsule Bar (Matching Figma top bar) */}
+        <header className="w-full bg-[#F5F5F5] h-[63px] rounded-[10px] shadow-[0px_2px_4px_rgba(0,0,0,0.08),0px_0px_6px_rgba(0,0,0,0.02)] border border-[#E3E3E3] px-5 sm:px-6 flex items-center justify-between gap-4">
+          {/* Search Input */}
+          <div className="flex items-center gap-3 flex-1 max-w-md">
+            <Search className="w-4 h-4 text-[#747374]" />
+            <input
+              type="text"
+              placeholder="Search here...."
+              className="bg-transparent text-sm text-[#747374] placeholder:text-[#9E9E9E] focus:outline-none w-full tracking-[0.7px]"
+            />
+          </div>
 
-            <button
-              onClick={() => setActiveTab('knowledge')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
-                activeTab === 'knowledge'
-                  ? 'bg-[#005DAD] text-white shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Knowledge RAG</span>
-              <span className="sm:hidden">RAG</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('embed')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
-                activeTab === 'embed'
-                  ? 'bg-[#005DAD] text-white shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <Code2 className="w-3.5 h-3.5" />
-              <span>Embed</span>
-            </button>
-          </nav>
-
-          {/* Right Action Tools */}
-          <div className="flex items-center gap-2 text-xs">
+          {/* Right Action Icons & Controls */}
+          <div className="flex items-center gap-3 sm:gap-4 text-[#747374]">
             {currentTime && (
-              <span className="hidden lg:flex items-center gap-1.5 text-slate-400 font-mono text-[11px] px-2 py-1 rounded bg-slate-800/60 border border-slate-700/60">
-                <Clock className="w-3 h-3 text-slate-400" />
+              <span className="hidden sm:inline-block text-xs font-mono text-[#8B8B8B] border-r border-[#747374]/30 pr-3">
                 {currentTime}
               </span>
             )}
@@ -332,32 +427,63 @@ export default function AdminPage() {
             <Link
               href="/"
               target="_blank"
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700/80 font-medium"
-              title="Open public consultation chatbot in new tab"
+              className="w-8 h-8 rounded-[5px] bg-[#F5F5F5] hover:bg-[#EAEAEA] flex items-center justify-center text-[#747374] transition-colors"
+              title="Open Public Chatbot"
             >
-              <span>Chatbot View</span>
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-4 h-4" />
             </Link>
+
+            <a
+              href={getWhatsAppUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-[5px] bg-[#F5F5F5] hover:bg-[#EAEAEA] flex items-center justify-center text-[#747374] transition-colors"
+              title="Official WhatsApp"
+            >
+              <Phone className="w-4 h-4" />
+            </a>
+
+            <div className="w-[1px] h-5 bg-[#747374]/30 hidden sm:block" />
 
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/30 transition-all font-medium cursor-pointer"
-              title="Sign out of administrative session"
+              className="w-8 h-8 rounded-[5px] bg-[#F5F5F5] hover:bg-[#F8E0E0] text-[#747374] hover:text-[#BE5F5F] flex items-center justify-center transition-colors cursor-pointer"
+              title="Sign Out"
             >
-              <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Logout</span>
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-        {activeTab === 'leads' && <AdminDashboard />}
-        {activeTab === 'analytics' && <AnalyticsView />}
-        {activeTab === 'knowledge' && <KnowledgeView />}
-        {activeTab === 'embed' && <EmbedGuide />}
-      </main>
+        {/* Section Heading Title matching Figma "Logistics" */}
+        <div className="flex items-center justify-between px-1">
+          <div>
+            <h1 className="text-2xl font-normal text-[#8B8B8B] tracking-[1.44px] leading-none">
+              {activeTab === 'leads' && 'Logistics & Advisory CRM'}
+              {activeTab === 'analytics' && 'Performance & Analytics'}
+              {activeTab === 'knowledge' && 'Education & Knowledge Base'}
+              {activeTab === 'embed' && 'Integration & Embed SDK'}
+            </h1>
+            <p className="text-xs text-[#8B8B8B] mt-1.5">
+              PT Inpartner Optima Integra • Corporate Advisory Consultation Records
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[#8B8B8B] font-mono">
+              STATUS: <strong className="text-[#3E7A41]">LIVE</strong>
+            </span>
+          </div>
+        </div>
+
+        {/* Active Tab View */}
+        <section>
+          {activeTab === 'leads' && <AdminDashboard />}
+          {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'knowledge' && <KnowledgeView />}
+          {activeTab === 'embed' && <EmbedGuide />}
+        </section>
+      </div>
     </div>
   );
 }
