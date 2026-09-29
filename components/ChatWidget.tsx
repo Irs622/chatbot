@@ -826,7 +826,7 @@ export default function ChatWidget({
           } flex flex-col bg-white overflow-hidden transition-all duration-300 font-sans`}
         >
           {/* Minimalist Top Header */}
-          <div className="relative px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0 z-20">
+          <div className="sticky top-0 px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0 z-20">
             {/* Left: Brand Icon + Agent Title */}
             <div className="flex items-center gap-3">
               {/* Custom Robot Chatbot Icon badge */}
@@ -955,10 +955,10 @@ export default function ChatWidget({
           </div>
 
           {/* Main Body Area */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col justify-between">
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-5 py-4 overscroll-contain scroll-smooth">
             {messages.length === 0 ? (
               /* State 1: Clean Minimalist Welcome Screen (Matching Screenshot) */
-              <div className="my-auto max-w-sm mx-auto w-full py-2 flex flex-col items-center">
+              <div className="min-h-full max-w-sm mx-auto w-full py-2 flex flex-col items-center justify-center">
                 {/* Agent Mascot / Brand Badge */}
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-slate-100 border border-slate-200/90 flex items-center justify-center shadow-md mb-4 ring-4 ring-[#005DAD]/10 group">
                   <ChatbotIcon size="lg" className="transition-transform group-hover:scale-105 duration-200" />
@@ -1190,8 +1190,8 @@ export default function ChatWidget({
             )}
           </div>
 
-          {/* Bottom Chat Input Bar */}
-          <div className="border-t border-slate-100 p-3 sm:p-4 bg-white shrink-0">
+          {/* Bottom Chat Input Bar - Fixed at Bottom */}
+          <div className="sticky bottom-0 z-20 shrink-0 border-t border-slate-100 p-3 sm:p-4 bg-white/95 backdrop-blur-md shadow-[0_-4px_16px_rgba(0,0,0,0.03)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -1208,7 +1208,7 @@ export default function ChatWidget({
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={agentConfig.inputPlaceholder}
-                className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-slate-900 text-[13px] font-medium pl-4 pr-12 py-3 rounded-2xl border border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal"
+                className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-slate-900 text-[16px] sm:text-[13px] font-medium pl-4 pr-12 py-3 rounded-2xl border border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal"
                 disabled={isLoading || isStreaming}
               />
               {isLoading || isStreaming ? (

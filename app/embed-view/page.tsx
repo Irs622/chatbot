@@ -20,7 +20,7 @@ export default function EmbedViewPage() {
   };
 
   return (
-    <main className="w-full h-full m-0 p-0 overflow-hidden bg-white flex flex-col">
+    <main className="fixed inset-0 w-full h-[100dvh] m-0 p-0 overflow-hidden bg-white flex flex-col">
       <ChatWidget
         initialOpen={true}
         embeddedMode={true}

@@ -118,8 +118,8 @@ export async function GET(req: NextRequest) {
       container.style.right = '0';
       container.style.width = '100vw';
       container.style.maxWidth = '100vw';
-      container.style.height = '100%';
-      container.style.maxHeight = '100%';
+      container.style.height = '100dvh';
+      container.style.maxHeight = '100dvh';
       container.style.borderRadius = '0';
       container.style.boxShadow = 'none';
       container.style.border = 'none';
