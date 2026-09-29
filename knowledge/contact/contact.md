@@ -1,40 +1,34 @@
-# Official Inpartner Contact Information (Contact & Advisory Handoff)
+# INPARTNER Official Contact Information
 
 ## Official Communication Channels
-Prospective corporate clients, strategic partners, and institutional investors seeking direct consultation or project proposals with Inpartner Senior Partners and Business Development Directors can reach out through the following channels:
+Prospective corporate clients, strategic partners, and institutional clients seeking direct consultation or project proposals with INPARTNER can reach out through the following channels:
 
-### 1. Direct Contact Channels
-- **Official Phone / WhatsApp:** [+62 896 2831 0192](tel:+6289628310192) / [WhatsApp Direct Chat](https://wa.me/6289628310192)
-- **Corporate Secretary Email:** [corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
-- **Official Website:** [https://inpartner.id/](https://inpartner.id/)
-- **Contact Portal:** [https://inpartner.id/contact](https://inpartner.id/contact)
+## Direct Contact Channels
+- **Phone / WhatsApp:** +62 859 3454 8202
+- **Corporate Email:** corporatesecretary@inpartner.id
+- **Official Website:** https://inpartner.id/
+- **LinkedIn:** https://www.linkedin.com/company/inpartner/
 
-### 2. Physical Corporate Offices
-- **Jakarta Headquarters:**
-  Pakuwon Tower 10th Floor
-  Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet
-  South Jakarta 12870, DKI Jakarta, Indonesia
-  [Open Jakarta Google Maps](https://goo.gl/maps/Jn7pdGFG1Q5j6McL8)
+## Physical Office
+**Jakarta Office:**
+Pakuwon Tower, Unit J, 10th Floor
+Raya Casablanca Street, Kav. 88
+South Jakarta, Indonesia
 
-- **Surabaya Office:**
-  Jemur Sari Street V No. 10
-  Surabaya, East Java, Indonesia
-  [Open Surabaya Google Maps](https://goo.gl/maps/VZKExdeS4SheESnX6)
-
-### 3. Business Hours
+## Business Hours
 - **Monday – Friday:** 09:00 – 17:00 WIB (Western Indonesia Time)
-- **Weekends & Public Holidays:** Closed (Inquiries submitted via consultation form or WhatsApp will be prioritized on the next business morning).
+- **Weekends & Public Holidays:** Closed. Inquiries submitted via consultation form or WhatsApp will be prioritized on the next business morning.
 
-### 4. Verified Social Channels
-- **Instagram:** [@inpartnerconsulting](https://www.instagram.com/inpartnerconsulting)
-- **LinkedIn:** [Inpartner](https://www.linkedin.com/company/inpartner)
-- **TikTok:** [@inpartnerconsulting](https://www.tiktok.com/@inpartnerconsulting)
-- **Facebook:** [Inpartner Consulting](https://www.facebook.com/profile.php?id=100092037564577)
+## Consultation Pathway
+When a client requires a tailored proposal or deeper engagement:
+1. Invite the client to complete the consultation request form: Full Name, Company, Email, Phone, and Primary Business Need.
+2. Direct immediate contact options:
+   - **Chat via WhatsApp:** +62 859 3454 8202
+   - **Email:** corporatesecretary@inpartner.id
+3. An INPARTNER consultant will review requirements and follow up within 1 business day.
 
-## Advisory Consultation Handoff Protocol
-When a client requests a tailored commercial proposal, deep engagement, or when questions require specialized partner attention:
-1. Provide the Consultation Lead Request modal: Full Name, Company, Email, WhatsApp Phone Number, and Primary Business Need.
-2. Present direct instant actions:
-   - **"Chat via WhatsApp (+62 896 2831 0192)"**
-   - **"Email Senior Partners (corporatesecretary@inpartner.id)"**
-3. Assure the client that an Inpartner Partner will review the requirements and follow up within 24 business hours.
+## Advisory Handoff Protocol
+For questions that require partner-level attention or specialized advisory:
+- Direct the client to schedule a consultation via WhatsApp or email.
+- The consultation request includes: company name, industry, business challenge, required service, and contact details.
+- INPARTNER's team will respond with the appropriate advisory service recommendation.

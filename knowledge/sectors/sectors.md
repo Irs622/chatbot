@@ -1,32 +1,69 @@
-# Inpartner Industry Sectors & Coverage Themes
+# INPARTNER Industry Sectors & Expertise
 
 ## Sector Expertise Overview
-Inpartner advises enterprises across a wide spectrum of critical industries, uniting deep local regulatory mastery, domestic supply chain dynamics, and international institutional standards. Our client base includes mid-market growth firms, large conglomerates, state-owned enterprises (BUMN/BUMD), and institutional investment funds.
+INPARTNER advises businesses across a wide spectrum of industries, combining deep local market knowledge with international advisory standards. INPARTNER's client base includes mid-market growth firms, large corporations, state-owned enterprises (BUMN/BUMD), and institutional clients.
 
-## 13 Core Strategic Sectors & Themes
-1. **Environmental, Social, and Governance (ESG):**
-   - ESG policy framework development, sustainability compliance audits, institutional ESG reporting, and ESG integration for investment fund portfolios.
-2. **Food and Beverage (F&B):**
-   - End-to-end supply chain optimization, margin defense, retail FMCG market penetration, and food manufacturing compliance standards.
-3. **Industrial Gas:**
-   - Growth strategy, gas distribution efficiency, operational plant audits, and industrial facility investment feasibility studies.
-4. **Education & Training:**
-   - Institutional transformation, executive education curriculum design, corporate vocational development, and leadership talent acceleration.
-5. **Alternative Investment:**
-   - Alternative asset appraisals, commercial due diligence, structured transaction architecture, and institutional LP/GP investor matching.
-6. **Health and Pharmaceutical:**
-   - Healthcare facility management advisory, clinical network expansion, pharmaceutical procurement optimization, and operational compliance.
-7. **Biotechnology:**
-   - Commercialization strategies for biotechnology innovations, market viability appraisals, and translational research funding.
-8. **Renewable Energy:**
-   - Project feasibility studies (solar PV, biomass, hydroelectricity), energy transition frameworks, regulatory licensing, and green financing access.
-9. **Waste Solution:**
-   - Circular economy frameworks, industrial and municipal waste processing technologies, and public-private partnerships (PPP/KPBU).
-10. **Property Investment and Development:**
-    - Real estate master planning, Highest and Best Use (HBU) market feasibility analysis, and property capital restructuring.
-11. **Electric Vehicle (EV Ecosystem):**
-    - Indonesian EV market intelligence, charging infrastructure deployment, commercial fleet transition economics, and component supply chains.
-12. **Infrastructure:**
-    - Transport, logistics hubs, seaports, toll roads, and public utility development advisory.
-13. **Information Technology (IT & Digital Enterprise):**
-    - Enterprise digital transformation, enterprise data architecture, management system audits, and responsible AI adoption roadmaps.
+## 8 Core Industry Sectors
+
+### 1. Banking & Other Financial Services
+Advisory for financial institutions including banks, multi-finance companies, and financial service providers. Services include strategy development, business transformation, and investment advisory in the financial sector.
+
+### 2. Capital Markets
+Advisory related to capital market activities including IPO preparation, rights issue, M&A transactions, and investment opportunity assessment in capital market contexts.
+
+### 3. Manufacturing & Industrial Engineering
+Strategy and operational advisory for manufacturing and industrial companies. Includes operational improvement, supply chain strategy, and business expansion advisory.
+
+### 4. Natural Resources
+Advisory across the natural resources sector including:
+- **Plantation** — Agribusiness strategy, supply chain, and market access.
+- **Mining** — Investment advisory, feasibility studies, and operational strategy.
+- **Oil & Gas** — Project advisory, commercial analysis, and energy sector strategy.
+- **Natural Resources Services** — Advisory for supporting services in the natural resources ecosystem.
+
+### 5. Technology Development
+Advisory for technology-intensive sectors and clients including:
+- **AI (Artificial Intelligence)** — Business application of AI, market advisory, and sector intelligence.
+- **Data Center** — Investment advisory, feasibility studies, and market access.
+- **Semiconductor** — Sector intelligence and investment advisory.
+- **Biotechnology** — Commercialization strategy and market advisory.
+
+*Note: INPARTNER advises on technology as a business and investment sector, not as a software or IT service provider.*
+
+### 6. Pharmaceutical & Healthcare
+Advisory for pharmaceutical companies and healthcare institutions including market access, investment advisory, and operational improvement.
+
+### 7. Consumer
+Advisory across consumer-facing sectors including:
+- **Consumer Staples** — FMCG strategy, market expansion, and distribution advisory.
+- **Consumer Discretionary** — Market intelligence, brand strategy, and business expansion.
+- **Tourism** — Market access, investment advisory, and business development for tourism-related businesses.
+
+### 8. Renewable Energy & Sustainability Business
+Advisory for the renewable energy sector and sustainability-focused businesses including project feasibility, investment advisory, ESG strategy, and market access for renewable energy projects.
+
+## Thematic Project Experience
+INPARTNER has advisory experience across the following investment and business themes:
+- Regional Bank Equity
+- Information Technology & Data Center
+- Alternative Investment
+- Energy Security
+- Oil & Gas
+- Mining
+- Renewable Energy
+- Healthcare & Wellness
+- Sustainability
+- Transportation in Urban Mobility
+- Company Restructuring
+- Pre-IPO
+- IPO
+- M&A (Mergers & Acquisitions)
+- Rights Issue
+- ESG Strategy
+- ESG Rating
+- Carbon Economic Value
+- Investment & Property Development
+- Food & Water Security
+
+## Geographic Market Exposure
+INPARTNER's sector advisory spans domestic and international markets including Indonesia, Belgium, Australia, China, South Korea, Malaysia, UAE (including Abu Dhabi), South Africa, Switzerland, Turkey, Spain, Singapore, Qatar, and Saudi Arabia.

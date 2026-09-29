@@ -81,22 +81,22 @@ export default function ChatWidget({
     callOffice: 'Hubungi Kantor Pusat',
     privacyPolicy: 'Kebijakan Privasi',
     title: 'Solusi Bisnis Apa yang Anda Butuhkan?',
-    subtitle: 'Inpartner AI siap menganalisis tantangan korporasi dan merekomendasikan solusi penasihat strategis yang tepat.',
+    subtitle: 'Inpartner AI siap menganalisis tantangan korporasi dan merekomendasikan solusi konsultasi bisnis yang tepat.',
     featured: {
-      title: 'Pertumbuhan Bisnis & Ekspansi Pasar',
-      desc: 'Riset penetrasi pasar, peta jalan penjualan, & strategi ekspansi bisnis',
-      query: 'Bagaimana Inpartner mendampingi strategi Pertumbuhan Bisnis & ekspansi pasar untuk perusahaan saya?',
-      intent: 'Growth'
+      title: 'Strategi Korporat & Konsultasi Investasi',
+      desc: 'Corporate strategy, M&A Advisory, IPO, Feasibility Study & Investment Advisory',
+      query: 'Bagaimana Inpartner dapat mendampingi strategi korporat, investasi, atau advisory pasar untuk perusahaan saya?',
+      intent: 'strategy_corporate'
     },
-    dividerText: 'JELAJAHI AREA KONSULTASI LAINNYA',
+    dividerText: 'JELAJAHI LAYANAN KONSULTASI LAINNYA',
     secondary1: {
-      title: 'Pendanaan & Profitabilitas',
-      query: 'Saya butuh pendampingan mengenai skema pendanaan institusional dan optimalisasi margin keuntungan operasional.',
-      intent: 'Funding'
+      title: 'Akses Pasar & Ekspansi Bisnis',
+      query: 'Saya membutuhkan bantuan untuk riset pasar, strategi masuk pasar baru, atau business matching.',
+      intent: 'market_access'
     },
     secondary2: {
       title: 'Diagnostik Kebutuhan Bisnis',
-      query: 'Saya belum yakin solusi apa yang paling dibutuhkan perusahaan saya saat ini. Mohon pandu melalui diagnostik kebutuhan bisnis.',
+      query: 'Saya belum yakin layanan apa yang paling dibutuhkan perusahaan saya. Mohon pandu melalui diagnostik kebutuhan bisnis.',
       intent: 'other'
     },
     inputPlaceholder: 'Tanyakan seputar solusi bisnis atau kendala perusahaan Anda...',
@@ -112,7 +112,7 @@ export default function ChatWidget({
     email: 'Email Kantor / Bisnis',
     emailHint: 'Opsional untuk pengiriman proposal resmi & materi eksekutif',
     advisoryNeed: 'Kebutuhan Konsultasi Utama',
-    selectPillar: '-- Pilih Pilar Konsultasi Utama --',
+    selectPillar: '-- Pilih Layanan Konsultasi Utama --',
     notes: 'Ringkasan Tantangan / Kebutuhan Bisnis',
     notesPlaceholder: 'Ceritakan kendala, skala omset, atau target ekspansi perusahaan Anda...',
     consent: 'Saya menyetujui data di atas digunakan untuk dihubungi oleh tim konsultan Inpartner sesuai Kebijakan Privasi dan regulasi perlindungan data.',
@@ -137,16 +137,16 @@ export default function ChatWidget({
     title: '어떤 비즈니스 솔루션이 필요하십니까?',
     subtitle: '인파트너(Inpartner) AI가 기업의 주요 과제를 분석하고 최적화된 전략 자문 솔루션을 제시합니다.',
     featured: {
-      title: '비즈니스 성장 & 시장 확장 자문',
-      desc: '시장 진입 전략, 세일즈 로드맵 구축 및 신규 사업 확장 지원',
-      query: '인파트너는 기업의 비즈니스 성장 및 시장 확장 전략을 어떻게 지원합니까?',
-      intent: 'Growth'
+      title: '기업전략 & 투자 자문',
+      desc: '기업 전략, M&A, IPO, 타당성 연구 및 투자 자문 서비스',
+      query: '인파트너는 기업전략, 투자 자문, 시장 접근 전략을 어떻게 지원합니까?',
+      intent: 'strategy_corporate'
     },
     dividerText: '주요 자문 분야 둘러보기',
     secondary1: {
-      title: '투자 유치 & 수익성 개선',
-      query: '기관 투자자 펀딩 구조와 운영 마진 최적화에 대한 자문이 필요합니다.',
-      intent: 'Funding'
+      title: '시장 접근 & 사업 확장',
+      query: '시장 조사, 신규 시장 진입 전략, 또는 비즈니스 매칭 서비스에 대한 자문이 필요합니다.',
+      intent: 'market_access'
     },
     secondary2: {
       title: '기업 경영 진단 및 솔루션 매칭',
@@ -166,7 +166,7 @@ export default function ChatWidget({
     email: '회사 이메일',
     emailHint: '공식 제안서 및 경영 자료 발송용 (선택 사항)',
     advisoryNeed: '주요 자문 분야',
-    selectPillar: '-- 주요 자문 분야 선택 --',
+    selectPillar: '-- 주요 자문 서비스 선택 --',
     notes: '기업 과제 요약 / 프로젝트 범위',
     notesPlaceholder: '기업의 주요 애로사항, 매출 규모 또는 사업 확장 목표를 공유해 주세요...',
     consent: '개인정보 처리방침에 따라 인파트너 컨설팅 팀의 상담 진행을 위한 정보 제공에 동의합니다.',
@@ -191,23 +191,23 @@ export default function ChatWidget({
     title: 'What Business Solutions Do You Need?',
     subtitle: 'Inpartner AI is ready to analyze your corporate challenges and recommend tailored strategic advisory solutions.',
     featured: {
-      title: 'Business Growth & Market Expansion',
-      desc: 'Market penetration research, sales roadmap, & business expansion strategy',
-      query: 'How does Inpartner assist with Business Growth & market expansion strategies for my company?',
-      intent: 'Growth'
+      title: 'Corporate Strategy & Investment Advisory',
+      desc: 'Corporate strategy, M&A Advisory, IPO, Feasibility Studies & Investment Advisory',
+      query: 'How does Inpartner assist with corporate strategy, investment advisory, and market access for my company?',
+      intent: 'strategy_corporate'
     },
-    dividerText: 'EXPLORE OTHER CORE ADVISORY AREAS',
+    dividerText: 'EXPLORE OTHER ADVISORY SERVICES',
     secondary1: {
-      title: 'Funding & Profitability',
-      query: 'I need assistance regarding institutional funding schemes and operational profit margin optimization.',
-      intent: 'Funding'
+      title: 'Market Access & Business Expansion',
+      query: 'I need assistance with market research, market entry strategy, or business matching.',
+      intent: 'market_access'
     },
     secondary2: {
       title: 'Business Needs Diagnosis',
-      query: 'I am not sure which solution my company needs most. Please guide me through a business needs diagnosis.',
+      query: 'I am not sure which service my company needs most. Please guide me through a business needs diagnosis.',
       intent: 'other'
     },
-    inputPlaceholder: 'Ask about business solutions or your company’s challenges...',
+    inputPlaceholder: 'Ask about business solutions or your company\'s challenges...',
     sending: 'Thinking...',
     stopGenerating: 'Stop generating',
     disclaimer: 'AI can make mistakes. Double-check replies with our advisory team.',
@@ -1478,20 +1478,23 @@ export default function ChatWidget({
                   required
                 >
                   <option value="">{t.selectPillar}</option>
-                  <option value="Business Growth & Market Expansion">
-                    {lang === 'id' ? 'Pertumbuhan Bisnis & Ekspansi Pasar' : lang === 'ko' ? '비즈니스 성장 및 시장 확장' : 'Business Growth & Market Expansion'}
+                  <option value="Strategy & Corporate Advisory">
+                    {lang === 'id' ? 'Strategy & Corporate Advisory' : lang === 'ko' ? '기업전략 & 기업 자문' : 'Strategy & Corporate Advisory'}
                   </option>
-                  <option value="Funding & Investment Advisory">
-                    {lang === 'id' ? 'Pendanaan & Konsultasi Investasi' : lang === 'ko' ? '자금 조달 및 투자 유치 자문' : 'Funding & Investment Advisory'}
+                  <option value="Investment & Project Advisory">
+                    {lang === 'id' ? 'Investment & Project Advisory' : lang === 'ko' ? '투자 & 프로젝트 자문' : 'Investment & Project Advisory'}
                   </option>
-                  <option value="Profitability & Cost Optimization">
-                    {lang === 'id' ? 'Optimalisasi Profitabilitas & Margin Biaya' : lang === 'ko' ? '수익성 개선 및 비용 최적화' : 'Profitability & Margin Optimization'}
+                  <option value="Market Access & Business Expansion">
+                    {lang === 'id' ? 'Market Access & Business Expansion' : lang === 'ko' ? '시장 접근 & 사업 확장' : 'Market Access & Business Expansion'}
                   </option>
-                  <option value="Capacity Building">
-                    {lang === 'id' ? 'Pengembangan Kapasitas / Program Eksekutif' : lang === 'ko' ? '역량 강화 및 경영진 맞춤 프로그램' : 'Capacity Building / Executive Program'}
+                  <option value="Cross-Border & Technology Advisory">
+                    {lang === 'id' ? 'Cross-Border & Technology Advisory' : lang === 'ko' ? '크로스보더 & 기술 자문' : 'Cross-Border & Technology Advisory'}
                   </option>
-                  <option value="Other Consulting Service">
-                    {lang === 'id' ? 'Layanan Penasihat Korporasi Lainnya' : lang === 'ko' ? '기타 기업 자문 서비스' : 'Other Corporate Advisory Services'}
+                  <option value="Human Capital & Organization">
+                    {lang === 'id' ? 'Human Capital & Organization' : lang === 'ko' ? '인적 자원 & 조직 개발' : 'Human Capital & Organization'}
+                  </option>
+                  <option value="Other Advisory Service">
+                    {lang === 'id' ? 'Layanan Konsultasi Lainnya' : lang === 'ko' ? '기타 자문 서비스' : 'Other Advisory Service'}
                   </option>
                 </select>
               </div>

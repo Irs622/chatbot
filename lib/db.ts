@@ -100,30 +100,7 @@ function initDb(): DatabaseSchema {
       const initialData: DatabaseSchema = {
         conversations: [],
         messages: [],
-        leads: [
-          {
-            id: 'lead-sample-1',
-            name: 'Budi Santoso',
-            company: 'PT Sentosa Logistik Indonesia',
-            email: 'budi.santoso@sentosalogistik.co.id',
-            phone: '081234567890',
-            business_need: 'Profitability & Operational Process Optimization',
-            notes: 'Revenue grew 30% YoY, but profit margin compressed due to elevated logistics OPEX.',
-            created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-            status: 'new'
-          },
-          {
-            id: 'lead-sample-2',
-            name: 'Siti Rahmawati',
-            company: 'PT Bio Farma Prima',
-            email: 'siti.r@biopharmaprima.com',
-            phone: '081987654321',
-            business_need: 'Funding & Investment Readiness',
-            notes: 'Seeking strategic growth capital for biotechnology laboratory expansion.',
-            created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
-            status: 'contacted'
-          }
-        ],
+        leads: [],
         analytics_events: []
       };
       try {

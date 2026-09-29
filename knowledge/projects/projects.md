@@ -1,32 +1,42 @@
-# Inpartner Advisory Projects & Track Record
+# INPARTNER Advisory Projects & Track Record
 
-## Proven Consulting Track Record
-Inpartner brings a proven track record of advising leading corporations, asset managers, and industrial enterprises across Indonesia in overcoming complex strategic, operational, and financial hurdles.
+## Overview
+INPARTNER's 2026 company profile states a portfolio of 90+ projects, serving 70+ corporate, private, and state-owned clients, and 10+ foreign-related clients. These are company-stated figures.
 
-## Representative Case Engagements
-1. **Institutional Environmental, Social, and Governance (ESG) Framework for Private Equity Fund:**
-   - **Context:** An institutional fund manager required an internationally standardized ESG policy to comply with global limited partner (LP) investment requirements.
-   - **Inpartner Role:** Designed an end-to-end framework encompassing investment portfolio ESG screening, environmental and social risk matrices, and international disclosure reporting.
-   - **Outcome:** Successfully adopted institutional ESG policy, materially expanding co-investment participation from global institutional investors.
+Client references are organized under three categories: Corporate Clients, Foreign Related Clients, and Government Clients.
 
-2. **Enterprise ICT-BTF (Business Transformation Framework):**
-   - **Context:** Enterprise client undergoing rapid scaling needed IT-enabled business process re-engineering to sustain competitiveness.
-   - **Inpartner Role:** Deployed collaborative portal architecture, streamlined cross-functional workflows, and implemented real-time performance KPI analytics.
-   - **Outcome:** Reduced operational cycle times by 35% and unified siloed department communications.
+## Thematic Project Experience
+INPARTNER has conducted advisory engagements across the following strategic themes:
 
-3. **Capacity Building of Leadership and Operational Management:**
-   - **Context:** Rapid expansion created strategic misalignment between corporate owners, the board of directors, and operational business unit heads.
-   - **Inpartner Role:** Rolled out The Executive Business Program, intensive leadership coaching, and calibrated balanced scorecard KPIs.
-   - **Outcome:** Restored strategic alignment, increased departmental throughput, and built an accountable performance culture.
+1. **Regional Bank Equity** — Equity advisory and investment assessment for regional banking institutions.
+2. **Information Technology & Data Center** — Investment advisory, feasibility studies, and market access for IT infrastructure and data center projects.
+3. **Alternative Investment** — Advisory for alternative asset investments including structured transactions and commercial due diligence.
+4. **Energy Security** — Strategic advisory related to energy security, supply chain, and resource management.
+5. **Oil & Gas** — Project advisory, investment assessment, and commercial analysis in the oil and gas sector.
+6. **Mining** — Investment advisory and feasibility studies for mining projects.
+7. **Renewable Energy** — Feasibility studies, investment advisory, and market access for renewable energy projects (solar, biomass, hydroelectricity, and others).
+8. **Healthcare & Wellness** — Market access advisory, investment assessment, and operational improvement for healthcare and wellness businesses.
+9. **Sustainability** — ESG strategy, sustainability advisory, and sustainable business development.
+10. **Transportation in Urban Mobility** — Advisory for urban mobility, logistics, and transportation infrastructure projects.
+11. **Company Restructuring** — Corporate restructuring advisory including operational, financial, and organizational restructuring.
+12. **Pre-IPO** — Pre-IPO readiness assessment, preparation, and strategy for companies planning public listing.
+13. **IPO** — Capital market advisory for companies executing initial public offerings.
+14. **M&A (Mergers & Acquisitions)** — Advisory for mergers, acquisitions, divestitures, and strategic transactions.
+15. **Rights Issue** — Capital market advisory for rights issue activities.
+16. **ESG Strategy** — ESG policy framework development, ESG integration, and sustainability strategy.
+17. **ESG Rating** — Advisory for ESG rating preparation and institutional ESG compliance.
+18. **Carbon Economic Value** — Advisory related to carbon valuation, carbon credits, and carbon economic value assessment.
+19. **Investment & Property Development** — Investment advisory and feasibility assessment for property and real estate development projects.
+20. **Food & Water Security** — Advisory related to food supply chain, agribusiness, and water resource management.
 
-4. **National Profitability Audit & Strategic Segment Study:**
-   - **Context:** Client required an objective diagnostic of the most profitable market segments in Indonesia alongside a comprehensive cost structure overhaul.
-   - **Inpartner Role:** Conducted nationwide industry benchmarking, value chain leakage audits, and strategic pricing recalibration.
-   - **Outcome:** Identified high-margin expansion verticals and eliminated redundant operational expenditures.
+## Client Profile
+INPARTNER's client base includes:
+- Mid-market and large private enterprises (domestic and multinational)
+- Business owners and multi-generational family conglomerates
+- Institutional investment managers and private capital funds
+- State-owned enterprises (BUMN & BUMD)
+- Industry associations and institutions
+- Foreign-related clients and international organizations
 
-## Client Profile Spectrum
-- Mid-Market & Large Private Enterprises (Domestic & Multinational)
-- Business Owners & Multi-generational Family Conglomerates
-- Institutional Investment Managers & Private Capital Funds
-- State-Owned Enterprises (BUMN & BUMD)
-- Industry Associations & Leading Educational Institutions
+## Important Note on Client Information
+Specific client names, relationship details, transaction values, and project scope should not be inferred or stated beyond what is publicly documented in INPARTNER's official materials. INPARTNER's 2026 company profile presents client references without disclosing confidential project or transaction specifics.

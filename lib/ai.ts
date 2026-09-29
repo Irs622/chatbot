@@ -38,21 +38,28 @@ export function detectLanguage(text: string): 'id' | 'en' | 'ko' {
   return idMatches > 0 ? 'id' : 'en';
 }
 
-const SYSTEM_PROMPT = `You are the Inpartner AI Business Consultation Assistant, the official corporate advisory assistant for Inpartner (https://inpartner.id/).
-Inpartner is a premier management and business consultancy (PT Inpartner Optima Integra) in Indonesia focusing on 4 core pillars:
-1. Funding & Investment Advisory (Pendanaan & Kesiapan Investasi)
-2. Growth (Pertumbuhan Bisnis & Ekspansi Pasar)
-3. Profitability (Optimalisasi Margin, Efisiensi Biaya & Alur Operasional)
-4. Capacity Building (The Executive Business Program / Inpartner Academy)
+const SYSTEM_PROMPT = `You are the Inpartner AI Business Consultation Assistant, the official corporate advisory assistant for INPARTNER (https://inpartner.id/).
+INPARTNER (legally PT Inpartner Optima Integra) is a Business & Management Consulting firm in Indonesia with the tagline "Unleash The Power Of Your Business" and vision "Bridging Markets, Investment & Business Opportunities."
+
+INPARTNER provides 5 official services:
+1. Strategy & Corporate Advisory — Corporate Strategy, Business Transformation, M&A Advisory, IPO/Capital Market Advisory, Corporate Restructuring.
+2. Investment & Project Advisory — Feasibility Studies (FS), Investment Advisory, Commercial & Financial Analysis, Investment Opportunity Assessment, Project Development.
+3. Market Access & Business Expansion — Market Research & Intelligence, Market Entry Strategy, Business Matching, Partner/Distributor Identification, Market Expansion.
+4. Cross-Border & Technology Advisory — Cross-Border Partnership, Joint Venture (JV), Technology Transfer, Knowledge Transfer, International Business Development.
+5. Human Capital & Organization — Executive Search/Head Hunting, Organization Development, Talent & Leadership Advisory, Training & Capacity Building.
+
+INPARTNER's approach follows 5 stages: Understand → Analyze → Identify → Connect → Execute & Grow.
 
 CONVERSATION & INTEGRITY RULES (STRICTLY REQUIRED):
 1. LANGUAGE DIRECTIVE: Detect the visitor's language. If the visitor speaks Bahasa Indonesia, ALWAYS respond in fluent, professional, articulate corporate Bahasa Indonesia. If the visitor speaks Korean (한국어), ALWAYS respond in fluent, polite, corporate Korean (격식 있는 비즈니스 존댓말/하십시오체). If the visitor speaks English, respond in professional English.
 2. Answer questions based only on the official context and knowledge base provided.
 3. DO NOT fabricate (hallucinate) services, fee schedules, investment yield guarantees, or return percentages.
-4. Inpartner is NOT a direct lender or bank. Inpartner prepares companies for investment readiness, objective business valuations, investor teasers/pitch decks, and connects clients with verified institutional investors.
-5. If information is not in the context, state transparently and honestly that you do not have that specific detail yet, and invite the visitor to schedule a direct exploratory discussion with Inpartner senior consultants.
-6. Maintain a professional, consultative, articulate, and actionable tone with clear bullet points.
-7. Provide relevant Inpartner service recommendations and encourage visitors to schedule a consultation session or leave their contact information.`;
+4. INPARTNER is NOT a bank, direct lender, broker, or regulated financial service provider. INPARTNER provides Business & Management Consulting advisory services.
+5. INPARTNER is NOT a software house, IT company, or technology service provider. Technology is covered as a sector and in Cross-Border Technology advisory context only.
+6. If information is not in the context, state transparently that you do not have that specific detail, and invite the visitor to schedule a direct discussion with INPARTNER consultants.
+7. Maintain a professional, consultative, and actionable tone. Use clear bullet points where appropriate.
+8. Recommend relevant INPARTNER services and encourage visitors to schedule a consultation or leave their contact information.
+9. Use company-stated figures (90+ projects, 70+ clients, 10+ foreign clients) with appropriate attribution to the INPARTNER 2026 Company Profile.`;
 
 export type AIStreamEvent =
   | {
@@ -102,24 +109,27 @@ export async function* generateConsultationResponseStream(
 
   // Determine recommended service based on intent or retrieved topics
   let recommendedService: string | undefined;
-  if (intent === 'funding') {
-    recommendedService = lang === 'id' ? 'Funding & Investment Advisory (Pendanaan & Investasi)' : 'Funding & Investment Advisory';
-  } else if (intent === 'growth') {
-    recommendedService = lang === 'id' ? 'Business Growth & Market Expansion (Pertumbuhan & Ekspansi)' : 'Business Growth & Market Expansion';
-  } else if (intent === 'profitability') {
-    recommendedService = lang === 'id' ? 'Profitability & Operational Excellence (Optimasi Margin & Biaya)' : 'Profitability & Operational Excellence';
-  } else if (intent === 'capacity_building') {
-    recommendedService = lang === 'id' ? 'Capacity Building (The Executive Business Program)' : 'Capacity Building (The Executive Business Program)';
+  if (intent === 'strategy_corporate') {
+    recommendedService = lang === 'id' ? 'Strategy & Corporate Advisory' : lang === 'ko' ? '기업전략 & 기업 자문' : 'Strategy & Corporate Advisory';
+  } else if (intent === 'investment_advisory') {
+    recommendedService = lang === 'id' ? 'Investment & Project Advisory' : lang === 'ko' ? '투자 & 프로젝트 자문' : 'Investment & Project Advisory';
+  } else if (intent === 'market_access') {
+    recommendedService = lang === 'id' ? 'Market Access & Business Expansion' : lang === 'ko' ? '시장 접근 & 사업 확장' : 'Market Access & Business Expansion';
+  } else if (intent === 'cross_border') {
+    recommendedService = lang === 'id' ? 'Cross-Border & Technology Advisory' : lang === 'ko' ? '크로스보더 & 기술 자문' : 'Cross-Border & Technology Advisory';
+  } else if (intent === 'human_capital') {
+    recommendedService = lang === 'id' ? 'Human Capital & Organization' : lang === 'ko' ? '인적 자원 & 조직 개발' : 'Human Capital & Organization';
   } else if (intent === 'company_information') {
     recommendedService = lang === 'id' ? 'Inpartner Corporate Advisory (PT Inpartner Optima Integra)' : 'Inpartner Corporate Advisory';
   }
 
   // Lead capture triggers: business problems, questions about engaging or pricing or specific company needs
   const leadCaptureTriggers = [
-    'funding',
-    'profitability',
-    'growth',
-    'capacity_building',
+    'strategy_corporate',
+    'investment_advisory',
+    'market_access',
+    'cross_border',
+    'human_capital',
     'contact'
   ];
   const suggestLeadCapture =
@@ -129,83 +139,98 @@ export async function* generateConsultationResponseStream(
   // Determine follow-up questions
   const followUpQuestions: string[] = [];
   if (lang === 'id') {
-    if (intent === 'profitability') {
+    if (intent === 'strategy_corporate') {
       followUpQuestions.push(
-        'Apakah tekanan margin ini terutama disebabkan oleh membengkaknya beban operasional (OPEX) atau HPP (COGS)?',
-        'Apakah Anda ingin tim Inpartner melakukan audit diagnostik alur kerja & struktur biaya perusahaan Anda?'
+        'Apakah perusahaan Anda sedang mempertimbangkan M&A, IPO, atau restrukturisasi korporat?',
+        'Apakah Anda ingin tim Inpartner membantu menyusun corporate strategy roadmap jangka panjang?'
       );
-    } else if (intent === 'funding') {
+    } else if (intent === 'investment_advisory') {
       followUpQuestions.push(
-        'Berapa target nominal pendanaan yang dibutuhkan untuk mendukung ekspansi perusahaan?',
-        'Apakah perusahaan Anda sudah memiliki model keuangan dan pitch deck berstandar institusional?'
+        'Apakah Anda membutuhkan feasibility study atau analisis komersial untuk proyek tertentu?',
+        'Apakah perusahaan Anda sedang merencanakan investasi di sektor tertentu dan butuh penilaian independen?'
       );
-    } else if (intent === 'growth') {
+    } else if (intent === 'market_access') {
       followUpQuestions.push(
-        'Apakah ekspansi ini difokuskan pada segmen pasar baru atau membuka cabang di wilayah geografis baru?',
-        'Apakah Anda membutuhkan riset kelayakan pasar dan pemetaan kompetitor mendalam?'
+        'Apakah ekspansi ini difokuskan pada pasar domestik baru atau masuk ke pasar internasional?',
+        'Apakah Anda membutuhkan riset pasar, identifikasi mitra, atau business matching?'
       );
-    } else if (intent === 'capacity_building') {
+    } else if (intent === 'cross_border') {
       followUpQuestions.push(
-        'Berapa banyak jajaran direksi atau manajer yang akan mengikuti program pelatihan eksekutif?',
-        'Apakah kurikulum perlu difokuskan pada strategic leadership atau eksekusi operasional?'
+        'Apakah Anda mencari mitra lokal di Indonesia atau membuka akses ke pasar internasional?',
+        'Apakah ada kebutuhan joint venture, technology transfer, atau kemitraan strategis lintas negara?'
+      );
+    } else if (intent === 'human_capital') {
+      followUpQuestions.push(
+        'Apakah kebutuhan utama Anda executive search, pengembangan organisasi, atau program pelatihan?',
+        'Berapa banyak jajaran eksekutif atau manajer yang akan terlibat dalam program ini?'
       );
     } else {
       followUpQuestions.push(
-        'Pilar layanan Inpartner mana yang paling sesuai dengan prioritas kebutuhan bisnis Anda saat ini?',
+        'Layanan Inpartner mana yang paling sesuai dengan prioritas kebutuhan bisnis Anda saat ini?',
         'Apakah Anda ingin menjadwalkan sesi konsultasi awal dengan tim Business Development kami?'
       );
     }
   } else if (lang === 'ko') {
-    if (intent === 'profitability') {
+    if (intent === 'strategy_corporate') {
       followUpQuestions.push(
-        '현재 마진 압박의 주요 원인이 운영비용(OPEX) 증가인가요, 아니면 매출원가(COGS) 부담인가요?',
-        '인파트너 컨설팅 팀의 기업 운영 워크플로우 및 원가 구조 진단 감사를 원하십니까?'
+        'M&A, IPO, 또는 기업 구조조정을 고려하고 계십니까?',
+        '인파트너 팀이 장기 기업 전략 로드맵 수립을 지원해 드릴까요?'
       );
-    } else if (intent === 'funding') {
+    } else if (intent === 'investment_advisory') {
       followUpQuestions.push(
-        '기업 확장 및 투자 유치를 위해 희망하시는 목표 펀딩 규모는 어느 정도입니까?',
-        '기관 투자자 기준에 부합하는 재무 모델과 IR 피치덱이 이미 준비되어 있으신가요?'
+        '특정 프로젝트에 대한 타당성 연구(FS) 또는 상업적 분석이 필요하십니까?',
+        '특정 섹터에 투자를 계획하고 계시며 독립적인 평가가 필요하십니까?'
       );
-    } else if (intent === 'growth') {
+    } else if (intent === 'market_access') {
       followUpQuestions.push(
-        '이번 사업 확장은 신규 시장 부문 진출인가요, 아니면 신규 지역 지사 설립인가요?',
-        '심층적인 시장 타당성 조사와 경쟁사 벤치마킹 분석이 필요하십니까?'
+        '이번 확장이 국내 신규 시장 진출인가요, 아니면 해외 시장 진출인가요?',
+        '시장 조사, 파트너 발굴, 또는 비즈니스 매칭 서비스가 필요하십니까?'
       );
-    } else if (intent === 'capacity_building') {
+    } else if (intent === 'cross_border') {
       followUpQuestions.push(
-        '임원 역량 강화 프로그램에 참여할 C-Level 및 경영진 인원은 몇 명인가요?',
-        '교육 커리큘럼을 전략적 리더십에 중점을 둘지, 실행 중심의 운영 체계에 맞출지 결정하셨습니까?'
+        '인도네시아 내 현지 파트너를 찾고 계신가요, 아니면 국제 시장 접근을 원하십니까?',
+        '합작투자(JV), 기술 이전, 또는 국경 간 전략적 파트너십이 필요하십니까?'
+      );
+    } else if (intent === 'human_capital') {
+      followUpQuestions.push(
+        '주요 필요 사항이 임원 채용, 조직 개발, 아니면 교육 프로그램인가요?',
+        '이 프로그램에 참여할 임원 또는 경영진 인원은 몇 명인가요?'
       );
     } else {
       followUpQuestions.push(
-        '귀사의 현재 비즈니스 과제와 가장 밀접한 인파트너의 자문 분야는 무엇인가요?',
+        '귀사의 현재 비즈니스 과제와 가장 밀접한 인파트너의 자문 서비스는 무엇인가요?',
         '인파트너 사업개발(BD) 팀과 1:1 사전 진단 상담 일정을 조율하시겠습니까?'
       );
     }
   } else {
-    if (intent === 'profitability') {
+    if (intent === 'strategy_corporate') {
       followUpQuestions.push(
-        'Is the margin compression primarily driven by operating expenses (OPEX) or cost of goods sold (COGS)?',
-        'Would you like Inpartner consultants to conduct an operational diagnostic and cost structure audit?'
+        'Is your company considering M&A, IPO, or corporate restructuring?',
+        'Would you like Inpartner to help develop a long-term corporate strategy roadmap?'
       );
-    } else if (intent === 'funding') {
+    } else if (intent === 'investment_advisory') {
       followUpQuestions.push(
-        'What is your target funding amount for your corporate expansion plans?',
-        'Do you already have an institutional-grade financial model or investor pitch deck prepared?'
+        'Do you need a feasibility study or commercial analysis for a specific project?',
+        'Are you evaluating an investment opportunity that requires an independent assessment?'
       );
-    } else if (intent === 'growth') {
+    } else if (intent === 'market_access') {
       followUpQuestions.push(
-        'Is your expansion focused on new market segments or opening new geographic branches?',
-        'Do you require market feasibility research and competitor landscape benchmarking?'
+        'Is your expansion focused on new domestic markets or entering international markets?',
+        'Do you need market research, partner identification, or business matching support?'
       );
-    } else if (intent === 'capacity_building') {
+    } else if (intent === 'cross_border') {
       followUpQuestions.push(
-        'How many C-level executives or management leaders will participate in the program?',
-        'Should the curriculum focus on strategic leadership or operational workflow execution?'
+        'Are you looking for a local partner in Indonesia or seeking access to international markets?',
+        'Do you need joint venture advisory, technology transfer, or cross-border strategic partnership?'
+      );
+    } else if (intent === 'human_capital') {
+      followUpQuestions.push(
+        'Is your primary need executive search, organization development, or a training program?',
+        'How many executives or managers will be involved in this initiative?'
       );
     } else {
       followUpQuestions.push(
-        'Which advisory pillar aligns most closely with your immediate business priorities?',
+        'Which Inpartner advisory service aligns most closely with your immediate business priorities?',
         'Would you like to schedule an exploratory discussion with the Inpartner Business Development team?'
       );
     }
@@ -214,26 +239,26 @@ export async function* generateConsultationResponseStream(
   // Quick action chips
   const quickActions = lang === 'id'
     ? [
-        '💡 Solusi Profitabilitas & Margin',
-        '💰 Pendanaan & Investor',
-        '📈 Strategi Pertumbuhan & Ekspansi',
-        '👥 Pelatihan Eksekutif & SDM',
-        '📞 Hubungi Tim Konsultan'
+        '🏢 Strategy & Corporate Advisory',
+        '💰 Investment & Project Advisory',
+        '📈 Market Access & Ekspansi Bisnis',
+        '🌏 Cross-Border & Technology',
+        '👥 Human Capital & Organization'
       ]
     : lang === 'ko'
     ? [
-        '💡 수익성 및 마진 최적화',
-        '💰 투자 유치 및 펀딩 자문',
-        '📈 비즈니스 성장 및 시장 확장',
-        '👥 경영진 역량 강화 교육',
-        '📞 컨설턴트 팀 문의'
+        '🏢 기업전략 & 기업 자문',
+        '💰 투자 & 프로젝트 자문',
+        '📈 시장 접근 & 사업 확장',
+        '🌏 크로스보더 & 기술 자문',
+        '👥 인적 자원 & 조직 개발'
       ]
     : [
-        '💡 Profitability Solutions',
-        '💰 Funding & Investor Advisory',
-        '📈 Business Growth Strategy',
-        '👥 Capacity Building Program',
-        '📞 Contact Inpartner Advisors'
+        '🏢 Strategy & Corporate Advisory',
+        '💰 Investment & Project Advisory',
+        '📈 Market Access & Business Expansion',
+        '🌏 Cross-Border & Technology Advisory',
+        '👥 Human Capital & Organization'
       ];
 
   const sources = retrievedChunks.slice(0, 3).map((c) => c.title);
@@ -328,7 +353,7 @@ Untuk mendiskusikan kebutuhan serta tantangan bisnis perusahaan Anda secara meny
 Anda dapat:
 1. Memilih salah satu dari 4 pilar utama Inpartner: **Funding**, **Growth**, **Profitability**, atau **Capacity Building**.
 2. Mengisi formulir konsultasi singkat di bawah ini agar tim Business Development kami dapat menindaklanjuti.
-3. Terhubung langsung dengan tim kami via WhatsApp di **[+62 896 2831 0192](https://wa.me/6289628310192)** atau email **corporatesecretary@inpartner.id**.`
+3. Terhubung langsung dengan tim kami via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)** atau email **corporatesecretary@inpartner.id**.`
           : lang === 'ko'
           ? `죄송합니다. 인파트너 공식 지식 기반에 해당 구체적인 질문에 대한 충분한 문서 정보가 아직 등록되어 있지 않습니다.
 
@@ -337,7 +362,7 @@ Anda dapat:
 다음 옵션을 이용하실 수 있습니다:
 1. 인파트너의 4대 핵심 자문 분야 선택: **투자 유치(Funding)**, **성장 전략(Growth)**, **수익성 최적화(Profitability)**, **역량 강화(Capacity Building)**.
 2. 하단 상담 양식에 기업 정보를 입력하여 사전 진단 세션 신청.
-3. 공식 WhatsApp **[+62 896 2831 0192](https://wa.me/6289628310192)** 또는 이메일 **corporatesecretary@inpartner.id**로 직접 문의.`
+3. 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)** 또는 이메일 **corporatesecretary@inpartner.id**로 직접 문의.`
           : `I apologize, but I do not have sufficient official documentation regarding that specific question in the Inpartner knowledge base.
 
 To comprehensively address your specific business requirements, Inpartner senior consultants are available for a direct consultation.
@@ -345,7 +370,7 @@ To comprehensively address your specific business requirements, Inpartner senior
 You can:
 1. Select one of our 4 core advisory pillars: **Funding**, **Growth**, **Profitability**, or **Capacity Building**.
 2. Submit your contact details using the consultation form below.
-3. Directly connect with our advisory team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)** or email **corporatesecretary@inpartner.id**.`)
+3. Directly connect with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)** or email **corporatesecretary@inpartner.id**.`)
       : buildGroundedAnswer(userMessage, intent, retrievedChunks, lang);
 
     if (simulateTyping) {
@@ -461,7 +486,7 @@ function buildGroundedAnswer(
     queryLower.includes('마진') ||
     queryLower.includes('영업이익') ||
     queryLower.includes('원가') ||
-    (intent === 'profitability' && (queryLower.includes('drop') || queryLower.includes('down') || queryLower.includes('decline') || queryLower.includes('turun') || queryLower.includes('anjlok') || queryLower.includes('bengkak') || queryLower.includes('감소') || queryLower.includes('하락')))
+    (intent === 'strategy_corporate' && (queryLower.includes('drop') || queryLower.includes('down') || queryLower.includes('decline') || queryLower.includes('turun') || queryLower.includes('anjlok') || queryLower.includes('bengkak') || queryLower.includes('감소') || queryLower.includes('하락')))
   ) {
     if (lang === 'id') {
       return `Tentu, **Inpartner aktif mendampingi perusahaan menyelesaikan tantangan ini** melalui pilar **Profitability & Operational Excellence (Optimasi Margin & Biaya)**.
@@ -477,7 +502,7 @@ Kondisi di mana omzet meningkat namun margin keuntungan bersih justru tertekan a
 2. **Diagnostik Struktur Biaya & Unit Economics:** Membedah HPP (COGS) dan OPEX untuk mengisolasi sumber kebocoran margin laba.
 3. **Penyelarasan SDM, Proses & KPI:** Membangun *Dashboard KPI* dan SOP terukur agar skala ekonomi bisnis langsung terkonversi menjadi laba bersih yang sehat.
 
-Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan Anda. Anda dapat mengisi formulir konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[+62 896 2831 0192](https://wa.me/6289628310192)**.`;
+Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan Anda. Anda dapat mengisi formulir konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
     } else if (lang === 'ko') {
       return `물론입니다. **인파트너(Inpartner)는 '수익성 및 운영 혁신(Profitability & Operational Excellence)' 자문 필라를 통해 이 과제를 효과적으로 해결합니다.**
 
@@ -492,7 +517,7 @@ Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan A
 2. **원가 구조 및 유닛 이코노믹스 감사:** 매출원가(COGS)와 판관비(OPEX)를 분해하여 마진 누수 원인 격리.
 3. **인력, 프로세스, KPI 정렬:** 실시간 KPI 대시보드와 SOP를 구축하여 규모의 경제가 실질적인 순이익으로 전환되도록 개선.
 
-인파트너의 수석 컨설턴트 팀이 귀사의 지속 가능한 이익률 회복을 지원합니다. 하단 양식으로 문의를 남기시거나 WhatsApp **[+62 896 2831 0192](https://wa.me/6289628310192)**로 직접 연락해 주십시오.`;
+인파트너의 수석 컨설턴트 팀이 귀사의 지속 가능한 이익률 회복을 지원합니다. 하단 양식으로 문의를 남기시거나 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 직접 연락해 주십시오.`;
     }
 
     return `Certainly, **Inpartner actively helps enterprises resolve this challenge** through our **Profitability & Operational Excellence** pillar.
@@ -508,7 +533,7 @@ A scenario where revenue rises while net profitability shrinks is a frequent cha
 2. **Cost Structure & Unit Economics Diagnostic:** Dissect COGS and OPEX drivers to isolate margin leakage sources.
 3. **Alignment of People, Process, Technology & Data:** Establish real-time KPI Dashboards and standardized operating procedures (SOPs) so economies of scale directly convert to healthy net profitability.
 
-Our senior advisory team is ready to assist your company in restoring sustainable profit margins. You can leave your details below or connect immediately with our advisory team via WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`;
+Our senior advisory team is ready to assist your company in restoring sustainable profit margins. You can leave your details below or connect immediately with our advisory team via WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
   }
 
   // 2. Funding queries
@@ -522,7 +547,7 @@ Our senior advisory team is ready to assist your company in restoring sustainabl
     queryLower.includes('대출') ||
     queryLower.includes('펀딩') ||
     queryLower.includes('자금') ||
-    (intent === 'funding' && (queryLower.includes('money') || queryLower.includes('dana') || queryLower.includes('investor') || queryLower.includes('투자자')))
+    (intent === 'investment_advisory' && (queryLower.includes('money') || queryLower.includes('dana') || queryLower.includes('investor') || queryLower.includes('투자자')))
   ) {
     if (lang === 'id') {
       return `Perlu kami tegaskan bahwa Inpartner **bukan lembaga pinjaman online (pinjol) ataupun bank** (*bukan direct lender*).
@@ -577,35 +602,33 @@ Is your company actively preparing for a capital raise or expansion round? Our a
       return `Anda dapat menghubungi tim resmi **Inpartner (PT Inpartner Optima Integra)** melalui saluran komunikasi berikut:
 
 📍 **Kantor Pusat Jakarta:**
-Pakuwon Tower Lantai 10, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, Jakarta Selatan 12870.
-
-📍 **Kantor Surabaya:**
-Jemur Sari Street V No. 10, Surabaya, Jawa Timur.
+Pakuwon Tower, Unit J, Lantai 10, Jl. Raya Casablanca Kav. 88, Jakarta Selatan, Indonesia.
 
 📞 **Telepon & WhatsApp Resmi:**
-[+62 896 2831 0192](https://wa.me/6289628310192)
+[+62 859 3454 8202](https://wa.me/6285934548202)
 
 ✉️ **Email Resmi:**
 [corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
 
+🌐 **Website:** [https://inpartner.id/](https://inpartner.id/)
+
+🔗 **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
+
 🕒 **Jam Operasional:**
-Senin – Jumat, 08:30 – 17:30 WIB.
+Senin – Jumat, 09:00 – 17:00 WIB.
 
 Silakan kirimkan kebutuhan bisnis Anda melalui formulir di bawah ini atau jadwalkan pertemuan konsultasi langsung dengan konsultan kami!`;
     } else if (lang === 'ko') {
       return `**인파트너(PT Inpartner Optima Integra)** 공식 채널을 통해 본사 컨설팅 팀에 직접 문의하실 수 있습니다:
 
 📍 **자카르타 본사 (Jakarta Head Office):**
-Pakuwon Tower Lantai 10, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, Jakarta Selatan 12870, Indonesia.
-
-📍 **수라바야 지사 (Surabaya Office):**
-Jemur Sari Street V No. 10, Surabaya, Jawa Timur, Indonesia.
+Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia.
 
 📞 **연락처 및 상담 채널:**
-- **공식 WhatsApp:** [+62 896 2831 0192](https://wa.me/6289628310192)
+- **공식 WhatsApp:** [+62 859 3454 8202](https://wa.me/6285934548202)
 - **대표 이메일:** corporatesecretary@inpartner.id
 - **공식 웹사이트:** [https://inpartner.id/](https://inpartner.id/)
-- **업무 시간:** 월요일 – 금요일 (08:30 – 17:30 WIB/UTC+7)
+- **업무 시간:** 월요일 – 금요일 (09:00 – 17:00 WIB/UTC+7)
 
 하단 상담 양식을 작성해 주시면 담당 파트너가 영업일 기준 1일 이내에 연락드리겠습니다!`;
     }
@@ -613,167 +636,186 @@ Jemur Sari Street V No. 10, Surabaya, Jawa Timur, Indonesia.
     return `You can reach the official team at **Inpartner (PT Inpartner Optima Integra)** through the following corporate channels:
 
 📍 **Jakarta Head Office:**
-Pakuwon Tower, 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta 12870.
-
-📍 **Surabaya Office:**
-Jemur Sari Street V No. 10, Surabaya, East Java.
+Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia.
 
 📞 **Phone & WhatsApp:**
-[+62 896 2831 0192](https://wa.me/6289628310192)
+[+62 859 3454 8202](https://wa.me/6285934548202)
 
 ✉️ **Official Email:**
 [corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
 
+🌐 **Website:** [https://inpartner.id/](https://inpartner.id/)
+
 🕒 **Business Hours:**
-Monday – Friday, 08:30 – 17:30 WIB (UTC+7).
+Monday – Friday, 09:00 – 17:00 WIB (UTC+7).
 
 Please submit your business requirements below or schedule an exploratory consultation session with our advisory team!`;
   }
 
-  // 4. Capacity Building queries
-  if (intent === 'capacity_building') {
+  // 4. Human Capital queries
+  if (intent === 'human_capital') {
     if (lang === 'id') {
-      return `Pilar **Capacity Building (The Executive Business Program / Inpartner Academy)** dirancang untuk memperkuat kapabilitas kepemimpinan eksekutif dan efektivitas manajerial perusahaan.
+      return `Layanan **Human Capital & Organization** Inpartner dirancang untuk membantu perusahaan membangun, mengembangkan, dan mengoptimalkan sumber daya manusia serta struktur organisasi.
 
-### Ruang Lingkup Program:
-- **The Executive Business Program:** Kurikulum eksekutif komprehensif bagi C-level, Direksi, dan pimpinan unit bisnis mencakup *Strategic Thinking*, *Financial Acumen*, dan tata kelola korporasi.
-- **In-House Corporate Workshops & Training:** Pelatihan praktis yang dirancang khusus sesuai studi kasus industri nyata perusahaan Anda.
-- **Executive Leadership Coaching & Mentoring:** Pendampingan berkala untuk menjembatani visi dewan direksi dengan eksekusi tim manajerial di lapangan.
-- **Implementation Toolkits:** Panduan operasional langsung pakai termasuk *Scorecard KPI*, SOP terstandarisasi, dan sistem monitoring performa.
+### Ruang Lingkup Layanan:
+- **Executive Search / Head Hunting:** Layanan rekrutmen profesional untuk posisi C-suite dan senior leadership. Mencakup identifikasi kandidat, penilaian, dan fasilitasi penempatan.
+- **Organization Development:** Desain, penilaian, dan improvement struktur organisasi. Pengembangan framework tata kelola dan peninjauan efektivitas organisasi.
+- **Talent & Leadership Advisory:** Strategi pengembangan talenta, framework manajemen talenta, serta advisory pengembangan kepemimpinan dan perencanaan suksesi.
+- **Training & Capacity Building:** Program pelatihan terstruktur termasuk **The Executive Business Program** — kurikulum komprehensif untuk C-level, Direksi, dan pemilik bisnis. Masterclass in-house perusahaan yang disesuaikan.
 
-Program ini fokus meningkatkan produktivitas tim dan sinergi lintas departemen demi mencapai target pertumbuhan bisnis perusahaan.`;
+Program ini berfokus pada peningkatan produktivitas SDM dan sinergi organisasi untuk mendukung pertumbuhan bisnis.`;
     } else if (lang === 'ko') {
-      return `인파트너의 **'역량 강화(Capacity Building - The Executive Business Program / Inpartner Academy)'** 필라는 기업의 C-Level 임원진과 경영 리더들의 전략적 의사결정 역량을 강화하기 위해 설계되었습니다.
+      return `인파트너의 **'인적 자원 & 조직 개발(Human Capital & Organization)'** 서비스는 기업이 인재를 육성하고, 조직 구조를 최적화하도록 지원합니다.
 
-### 주요 프로그램 구성:
-- **The Executive Business Program:** C-Level 임원, 이사진, 사업부장을 위한 종합 최고경영자 과정(전략적 사고, 재무적 통찰력, 기업 지배구조).
-- **사내 맞춤형 워크숍 & 트레이닝:** 귀사의 실제 산업 환경과 비즈니스 케이스에 맞춤 설계된 실전형 경영 워크숍.
-- **리더십 코칭 & 조직문화 정렬:** 조직 내 생산성 향상, 부서 간 시너지 창출, 수립된 비즈니스 전략의 규율 있는 실행력 확보.
-- **실전 툴킷 지원:** KPI 스코어카드, 표준 운영 절차(SOP), 거버넌스 성과 모니터링 시스템.
+### 주요 서비스 구성:
+- **임원 채용 / 헤드헌팅:** C-suite 및 시니어 리더십 전문 채용 서비스. 후보자 발굴, 평가 및 채용 지원.
+- **조직 개발:** 조직 구조 설계·평가·개선. 거버넌스 프레임워크 개발 및 조직 효과성 검토.
+- **인재 & 리더십 자문:** 인재 전략, 인재 관리 프레임워크, 리더십 개발 및 승계 계획 수립.
+- **교육 & 역량 강화:** **The Executive Business Program** 포함 — C-Level, 이사진, 사업주를 위한 종합 커리큘럼. 기업 맞춤형 인하우스 마스터클래스.
 
 프로그램 참가 및 커리큘럼 상담을 원하시면 하단 양식으로 문의를 남겨주세요.`;
     }
 
-    return `The **Capacity Building (The Executive Business Program / Inpartner Academy)** advisory pillar is designed to strengthen executive capabilities and managerial leadership in navigating competitive and evolving market landscapes.
+    return `Inpartner's **Human Capital & Organization** service helps businesses build, develop, and optimize their people and organizational structures.
 
-### Core Program Scope:
-- **The Executive Business Program:** Comprehensive executive curriculum for C-level leaders, Board of Directors, and business unit heads covering *Strategic Thinking*, *Financial Acumen*, and organizational governance.
-- **In-House Corporate Workshops & Training:** Customized practical training tailored to real industry case studies of your enterprise.
-- **Executive Leadership Coaching & Mentoring:** Ongoing advisory to bridge boardroom strategy with field operational execution.
-- **Implementation Toolkits:** Practical frameworks including *KPI Scorecards*, *SOP templates*, and governance monitoring systems.
+### Service Scope:
+- **Executive Search / Head Hunting:** Professional executive search for C-suite and senior leadership roles. Candidate identification, assessment, and placement facilitation.
+- **Organization Development:** Organizational structure design, assessment, and improvement. Governance framework development and organizational effectiveness reviews.
+- **Talent & Leadership Advisory:** Talent strategy development, talent management frameworks, leadership development, and succession planning advisory.
+- **Training & Capacity Building:** Structured training programs including **The Executive Business Program** — comprehensive curriculum for C-level executives, Board of Directors, and enterprise business owners. Customized corporate in-house masterclasses.
 
-The program focuses on elevating workforce productivity, cross-functional synergy, and disciplined execution of your strategic business plans.`;
+The program focuses on elevating workforce productivity and organizational synergy to support business growth.`;
   }
 
-  // 5. Growth queries
-  if (intent === 'growth') {
+  // 5. Market Access queries
+  if (intent === 'market_access') {
     if (lang === 'id') {
-      return `Melalui pilar **Growth (Business Growth & Market Expansion)**, Inpartner mendampingi perusahaan menyusun dan mengeksekusi strategi pertumbuhan berbasis data.
+      return `Melalui layanan **Market Access & Business Expansion**, Inpartner mendampingi perusahaan dalam menavigasi pasar, mengidentifikasi peluang, dan memperluas jangkauan bisnis.
 
-### Fokus Pendampingan Strategis:
-- **Riset Peluang & Segmentasi Pasar:** Mengidentifikasi permintaan pasar yang belum tergarap, menganalisis perilaku pelanggan, dan memetakan keunggulan kompetitif.
-- **Rencana Bisnis Strategis (Strategic Business Plan):** Menyusun roadmap 3–5 tahun yang realistis dan terukur sesuai kapasitas internal.
-- **Ekspansi Geografis & Go-to-Market:** Merancang strategi penetrasi ke wilayah/kota baru atau diversifikasi saluran distribusi penjualan.
-- **Kemitraan Strategis:** Memfasilitasi dan merancang aliansi strategis bernilai tinggi antar korporasi.
+### Fokus Pendampingan:
+- **Riset Pasar & Intelijen Bisnis:** Mengidentifikasi ukuran pasar, tren pertumbuhan, perilaku pelanggan, dan peta kompetitif.
+- **Strategi Masuk Pasar:** Merancang framework Go-to-Market (GTM), strategi channel, dan roadmap peluncuran ke pasar baru.
+- **Business Matching:** Fasilitasi perkenalan strategis antara bisnis — menghubungkan perusahaan dengan mitra, klien, dan distributor yang relevan.
+- **Identifikasi Mitra / Distributor:** Identifikasi sistematis dan seleksi mitra potensial, serta fasilitasi perkenalan jaringan distribusi.
+- **Ekspansi Pasar:** Advisory strategis untuk perusahaan yang sedang memperluas kehadiran pasar domestik maupun internasional.
 
-Konsultan senior Inpartner tidak hanya menyusun dokumen strategi, melainkan turut mendampingi pimpinan manajemen dalam fase eksekusi lapangan.`;
+Apakah ekspansi yang Anda rencanakan berfokus pada pasar domestik baru atau akses ke pasar internasional?`;
     } else if (lang === 'ko') {
-      return `인파트너는 **'성장 전략 및 시장 확장(Business Growth & Market Expansion)'** 필라를 통해 기업이 데이터 기반의 확장 전략을 수립하고 실행할 수 있도록 지원합니다.
+      return `인파트너는 **'시장 접근 및 사업 확장(Market Access & Business Expansion)'** 서비스를 통해 기업이 시장을 탐색하고, 사업 기회를 발굴하며, 시장 입지를 확장할 수 있도록 지원합니다.
 
 ### 주요 자문 영역:
-- **시장 기회 분석 및 타겟 세분화:** 미개척 시장 수요 발굴, 고객 행동 패턴 분석, 경쟁 우위 요소 도출.
-- **중장기 전략 사업 계획(Strategic Business Plan):** 기업 내부 역량에 맞춘 3~5개년 실행 가능하고 정량화된 로드맵 구축.
-- **Go-To-Market(GTM) 및 세일즈 로드맵:** 신규 지역 지사 설립, 대리점 및 파트너십 구축, B2B/B2C 채널 최적화.
-- **전략적 제휴 및 파트너십:** 기업 간 가치 있는 전략적 제휴 및 합작 투자(JV) 구조 설계.
+- **시장 조사 & 비즈니스 인텔리전스:** 시장 규모, 성장 트렌드, 고객 행동 분석 및 경쟁 환경 파악.
+- **시장 진입 전략:** Go-to-Market(GTM) 프레임워크 설계, 채널 전략, 신규 시장 진출 로드맵 구축.
+- **비즈니스 매칭:** 기업 간 전략적 상업 소개 — 관련 파트너, 고객, 유통업체 연결 지원.
+- **파트너 / 유통업체 발굴:** 체계적인 파트너 식별·선별 및 유통 네트워크 개발 지원.
+- **시장 확장:** 국내외 기존 시장 입지 확대를 위한 전략적 자문.
 
-인파트너는 단순한 자문 보고서 제공에 그치지 않고, 경영진과 함께 전략 실행 단계까지 밀착 파트너십을 제공합니다.`;
+계획 중인 확장이 새로운 국내 시장인가요, 아니면 해외 시장 진출인가요?`;
     }
 
-    return `Inpartner's **Growth (Business & Market Growth)** advisory pillar guides mid-market and expanding enterprises in formulating resilient, data-driven expansion strategies.
+    return `Inpartner's **Market Access & Business Expansion** service helps businesses navigate markets, identify opportunities, and expand their market presence.
 
-### Strategic Advisory Focus:
-- **Market Opportunity & Segmentation Studies:** Identifying untapped market demand, analyzing evolving customer behavior, and evaluating competitor positioning.
-- **Strategic Business Planning:** Formulating comprehensive 3–5 year strategic business plans aligned with internal capabilities and technology.
-- **Go-to-Market & Geographic Expansion:** Structuring expansion roadmaps into new regional territories or diversified sales channels.
-- **Strategic Partnerships:** Structuring and negotiating high-value corporate partnerships and joint venture alliances.
+### Advisory Focus:
+- **Market Research & Intelligence:** Market sizing, growth trends, consumer behavior analysis, and competitive landscape assessment.
+- **Market Entry Strategy:** Go-to-Market (GTM) framework design, channel strategy, and market launch roadmap.
+- **Business Matching:** Strategic commercial introductions between businesses — connecting with relevant partners, clients, and distributors.
+- **Partner / Distributor Identification:** Systematic identification and screening of potential partners and distribution network development.
+- **Market Expansion:** Strategic advisory for scaling existing market presence across domestic and international markets.
 
-Inpartner senior consultants not only design actionable roadmaps but also partner with executive management throughout strategic execution.`;
+Is your expansion focused on new domestic markets or entering international markets?`;
   }
-
-  // 6. Funding generic
-  if (intent === 'funding') {
+  // 6. Investment Advisory generic
+  if (intent === 'investment_advisory') {
     if (lang === 'id') {
-      return `Pilar **Funding & Investment Advisory** Inpartner mendampingi perusahaan dalam merancang struktur permodalan, valuasi, dan memperoleh modal dari investor institusional.
+      return `Layanan **Investment & Project Advisory** Inpartner mendampingi perusahaan dalam merancang struktur investasi, analisis komersial, dan pengembangan proyek.
 
-### Ruang Lingkup Pendampingan:
-- **Asesmen Kesiapan Investasi:** Memvalidasi kesiapan tata kelola korporasi, audit keuangan, dan legalitas sebelum berhadapan dengan investor.
-- **Valuasi & Pemodelan Finansial:** Membangun proyeksi keuangan multi-skenario dan valuasi bisnis independen yang dapat dipertanggungjawabkan.
-- **Penyusunan Materi Investor:** Memproduksi *Investment Pitch Deck* dan *Executive Teaser* berstandar internasional.
-- **Akses Jejaring Investor:** Mempertemukan langsung dengan Venture Capital, Private Equity, Family Offices, dan mitra strategis.`;
+### Ruang Lingkup Layanan:
+- **Feasibility Studies (FS):** Analisis kelayakan komersial, keuangan, dan operasional untuk proyek dan investasi.
+- **Investment Advisory:** Advisory investasi independen untuk klien korporasi dan institusional.
+- **Commercial & Financial Analysis:** Analisis komersial dan keuangan mendalam, financial modeling, dan valuasi.
+- **Investment Opportunity Assessment:** Evaluasi peluang investasi secara sistematis lintas sektor.
+- **Project Development:** Advisory pengembangan proyek dari konsep hingga eksekusi.
+
+Apakah perusahaan Anda sedang merencanakan investasi atau membutuhkan feasibility study untuk proyek tertentu?`;
     } else if (lang === 'ko') {
-      return `인파트너의 **'투자 유치 및 펀딩 자문(Funding & Investment Advisory)'** 필라는 기업이 최적의 자본 구조를 설계하고 독립적 밸류에이션을 산정하여 기관 투자자로부터 자본을 유치하도록 지원합니다.
+      return `인파트너의 **'투자 & 프로젝트 자문(Investment & Project Advisory)'** 서비스는 기업이 최적의 투자 구조를 설계하고 프로젝트를 개발할 수 있도록 지원합니다.
 
-### 주요 자문 범위:
-- **투자 유치 준비도(Investment Readiness) 평가:** 투자자 미팅 전 기업 지배구조, 재무 감사 준비도, 법률 리스크 사전 검증.
-- **기업가치 평가 및 재무 모델링:** 신뢰할 수 있는 다각적 재무 프로젝션 구축 및 객관적 밸류에이션 리포트 작성.
-- **IR 투자 유치 자료 제작:** 글로벌 기관 투자자 기준에 부합하는 *Investment Pitch Deck* 및 *Executive Teaser* 제작.
-- **글로벌 투자자 네트워크 연계:** 벤처캐피탈(VC), 사모펀드(PE), 패밀리 오피스 및 전략적 투자 파트너사와의 직접 미팅 주선.`;
+### 주요 서비스 범위:
+- **사업타당성 연구(FS):** 프로젝트 및 투자에 대한 상업적·재무적·운영적 타당성 분석.
+- **투자 자문:** 기업 및 기관 고객을 위한 독립적 투자 자문.
+- **상업적 & 재무 분석:** 심층 상업 분석, 재무 모델링, 기업가치 평가.
+- **투자 기회 평가:** 섹터 전반에 걸친 체계적 투자 기회 발굴 및 평가.
+- **프로젝트 개발:** 개념 단계부터 실행까지 전 과정 프로젝트 개발 자문.
+
+투자를 계획 중이시거나 특정 프로젝트에 대한 타당성 연구가 필요하십니까?`;
     }
 
-    return `Inpartner's **Funding & Investment** advisory pillar assists enterprises in structuring, planning, and securing capital from institutional investors and strategic financiers.
+    return `Inpartner's **Investment & Project Advisory** service assists enterprises in structuring investments, conducting commercial analysis, and developing viable projects.
 
-### Advisory Scope:
-- **Investment Readiness Assessment:** Validating corporate governance, financial audit readiness, and legal structuring prior to investor presentations.
-- **Valuation & Financial Modeling:** Building robust multi-scenario financial forecasts and verifiable corporate valuations.
-- **Investor Collateral Preparation:** Producing institutional-grade *Investment Pitch Decks* and *Executive Teasers*.
-- **Investor Network Introductions:** Providing direct access to vetted Venture Capital, Private Equity, Family Offices, and specialized financing partners across key sectors including ESG, renewable energy, F&B, manufacturing, and technology.`;
+### Service Scope:
+- **Feasibility Studies (FS):** Commercial, financial, and operational feasibility assessments for projects and investments.
+- **Investment Advisory:** Independent advisory supporting investment decisions for corporate and institutional clients.
+- **Commercial & Financial Analysis:** Detailed analysis, financial modeling, valuation, and due diligence.
+- **Investment Opportunity Assessment:** Systematic evaluation of investment opportunities across sectors.
+- **Project Development:** End-to-end project development advisory from concept to execution.
+
+Is your company planning an investment or require a feasibility study for a specific project?`;
   }
 
   // 7. Company Information
   if (intent === 'company_information') {
     if (lang === 'id') {
-      return `**PT Inpartner Optima Integra (INPARTNER)** adalah perusahaan konsultan bisnis dan manajemen independen terkemuka di Indonesia, berkantor pusat di Pakuwon Tower Casablanca Jakarta Selatan dan Surabaya.
+      return `**PT Inpartner Optima Integra (INPARTNER)** adalah perusahaan Business & Management Consulting di Indonesia.
 
-Didirikan oleh para praktisi industri senior sejak tahun 2009, Inpartner berawal dari konsultan spesialis yang mendampingi perusahaan di Jawa Timur dalam akses pasar, pembiayaan modal, dan produktivitas operasional. Saat ini, Inpartner telah berkembang menjadi mitra penasihat strategis komprehensif bagi perusahaan menengah (*middle-market*) hingga korporasi besar di Indonesia dan Asia Tenggara.
+**Tagline:** *"Unleash The Power Of Your Business"*
+**Visi:** *"Bridging Markets, Investment & Business Opportunities"*
+**Misi:** Menggabungkan pengetahuan, teknologi, informasi, dan jaringan untuk membuka solusi dan mencapai tujuan klien.
 
-**Visi:** *"The Most Trusted Consulting Partner To help create positive and enduring changes with Local and Global Coverage."*
+Bisnis berawal pada 2009 sebagai konsultan akses pasar dan kapasitas bisnis untuk UMKM di Jawa Timur. Pada 2019, bertransformasi menjadi perusahaan Business & Management Consulting untuk korporasi menengah dan besar.
 
-**Filosofi Utama:** *"Go Beyond than Just Consultancy"* — berkomitmen membuka akses pendanaan strategis (*funding*), mengakselerasi ekspansi pasar (*business development*), dan mengembangkan talenta eksekutif (*people development*).
+**5 Layanan Resmi INPARTNER:**
+1. Strategy & Corporate Advisory (Corporate Strategy, Business Transformation, M&A, IPO, Restrukturisasi)
+2. Investment & Project Advisory (Feasibility Studies, Investment Advisory, Commercial & Financial Analysis)
+3. Market Access & Business Expansion (Market Research, Market Entry, Business Matching, Partner ID)
+4. Cross-Border & Technology Advisory (Cross-Border Partnership, JV, Technology Transfer)
+5. Human Capital & Organization (Executive Search, Org Development, Talent & Leadership, Training)
 
-**4 Pilar Utama Inpartner:**
-1. Funding & Investment Advisory
-2. Business Growth & Market Expansion
-3. Profitability & Operational Excellence
-4. Capacity Building (The Executive Business Program)`;
+**Track Record:** 90+ proyek, 70+ klien korporasi, 10+ klien internasional (sumber: Profil Perusahaan INPARTNER 2026).`;
     } else if (lang === 'ko') {
-      return `**PT Inpartner Optima Integra (INPARTNER)**는 인도네시아 자카르타 파쿠원 타워(Pakuwon Tower, 10층)와 수라바야에 거점을 둔 선도적인 독립 경영 컨설팅 펌입니다.
+      return `**PT Inpartner Optima Integra (INPARTNER)**는 인도네시아의 Business & Management Consulting 기업입니다.
 
-2009년 시니어 비즈니스 전문가들에 의해 설립된 인파트너는 동부 자바 지역 기업들의 시장 개척, 자금 조달, 생산성 향상 자문으로 시작하여, 현재 인도네시아 및 동남아시아 전역의 중견기업(Middle-Market) 및 대기업을 아우르는 종합 전략 파트너로 성장하였습니다.
+**태그라인:** *"Unleash The Power Of Your Business"*
+**비전:** *"Bridging Markets, Investment & Business Opportunities"*
+**미션:** 지식, 기술, 정보, 네트워크를 결합하여 솔루션을 발굴하고 고객의 목표를 달성합니다.
 
-**비전:** *"The Most Trusted Consulting Partner To help create positive and enduring changes with Local and Global Coverage."*
+2009년 동부 자바 중소기업 대상 시장 접근 및 역량 강화 컨설팅으로 시작, 2019년 중견·대기업 대상 Business & Management Consulting으로 전환하였습니다.
 
-**핵심 철학:** *"Go Beyond than Just Consultancy"* — 전략적 투자 유치(*funding*), 비즈니스 시장 확장(*business development*), 경영진 리더십 육성(*people development*)을 통해 기업의 지속 가능한 도약을 지원합니다.
+**인파트너 5대 공식 서비스:**
+1. **Strategy & Corporate Advisory** (기업전략, 사업변혁, M&A, IPO, 구조조정)
+2. **Investment & Project Advisory** (사업타당성 연구, 투자 자문, 상업적·재무 분석)
+3. **Market Access & Business Expansion** (시장조사, 시장진입, 비즈니스매칭, 파트너 발굴)
+4. **Cross-Border & Technology Advisory** (크로스보더 파트너십, 합작투자, 기술이전)
+5. **Human Capital & Organization** (임원채용, 조직개발, 인재·리더십 자문, 교육)
 
-**인파트너 4대 핵심 자문 필라:**
-1. **Funding & Investment Advisory** (투자 유치 및 펀딩 자문)
-2. **Business Growth & Market Expansion** (비즈니스 성장 및 시장 확장)
-3. **Profitability & Operational Excellence** (수익성 개선 및 운영 마진 최적화)
-4. **Capacity Building** (경영진 역량 강화 아카데미 - The Executive Business Program)`;
+**실적:** 90개 이상 프로젝트, 70개 이상 기업 고객, 10개 이상 해외 관련 고객 (출처: INPARTNER 2026 Company Profile).`;
     }
 
-    return `**PT Inpartner Optima Integra (INPARTNER)** is a leading independent business and management consultancy based in South Jakarta (Pakuwon Tower, 10th Floor) and Surabaya.
+    return `**PT Inpartner Optima Integra (INPARTNER)** is a Business & Management Consulting firm in Indonesia.
 
-Established by seasoned professionals since 2009, Inpartner began as a specialized consultancy empowering businesses in market access, capital raising, and operational productivity in East Java. Today, Inpartner has expanded into a comprehensive strategic advisory partner for mid-market and enterprise corporations across Indonesia and Southeast Asia.
+**Tagline:** *"Unleash The Power Of Your Business"*
+**Vision:** *"Bridging Markets, Investment & Business Opportunities"*
+**Mission:** Combine knowledge, technology, information, and network to unlock solutions and reach client goals.
 
-**Vision:** *"The Most Trusted Consulting Partner To help create positive and enduring changes with Local and Global Coverage."*
+The business originated in 2009 supporting market access and capacity building for MSMEs in East Java. In 2019, it transformed into Business & Management Consulting for mid-sized and large corporations.
 
-**Core Philosophy:** *"Go Beyond than Just Consultancy"* — dedicated to unlocking strategic financing (*funding*), accelerating market expansion (*business development*), and empowering executive talent (*people development*).
+**5 Official INPARTNER Services:**
+1. Strategy & Corporate Advisory (Corporate Strategy, Business Transformation, M&A, IPO, Restructuring)
+2. Investment & Project Advisory (Feasibility Studies, Investment Advisory, Commercial & Financial Analysis)
+3. Market Access & Business Expansion (Market Research, Market Entry, Business Matching, Partner ID)
+4. Cross-Border & Technology Advisory (Cross-Border Partnership, JV, Technology Transfer)
+5. Human Capital & Organization (Executive Search, Org Development, Talent & Leadership, Training)
 
-**Four Core Advisory Pillars:**
-1. Funding & Investment Advisory
-2. Business Growth & Market Expansion
-3. Profitability & Operational Excellence
-4. Capacity Building (The Executive Business Program)`;
+**Track Record:** 90+ projects, 70+ corporate clients, 10+ foreign-related clients (source: INPARTNER 2026 Company Profile).`;
   }
 
   // 8. Generic Grounded Response using top chunk
@@ -785,7 +827,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 Inpartner mendampingi klien korporasi dengan pendekatan holistik menyelaraskan strategi bisnis, proses operasional, kapabilitas SDM, dan teknologi.
 
-Untuk pembahasan yang disesuaikan dengan prioritas bisnis perusahaan Anda, silakan ajukan konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[+62 896 2831 0192](https://wa.me/6289628310192)**.`;
+Untuk pembahasan yang disesuaikan dengan prioritas bisnis perusahaan Anda, silakan ajukan konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
     } else if (lang === 'ko') {
       return `인파트너의 공식 자문 문서 **${topChunk.title}**에 따르면:
 
@@ -793,7 +835,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 인파트너는 기업 전략, 운영 프로세스, 인적 역량, 기술을 유기적으로 정렬하는 총체적(Holistic) 접근법을 통해 고객사를 자문합니다.
 
-귀사의 우선 과제에 맞춘 상세한 상담을 원하시면 하단 양식을 작성해 주시거나 공식 WhatsApp **[+62 896 2831 0192](https://wa.me/6289628310192)**로 문의해 주십시오.`;
+귀사의 우선 과제에 맞춘 상세한 상담을 원하시면 하단 양식을 작성해 주시거나 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 문의해 주십시오.`;
     }
 
     return `Based on official Inpartner advisory documentation regarding **${topChunk.title}**:
@@ -802,20 +844,20 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 Inpartner partners with client enterprises using a holistic advisory approach aligning corporate strategy, operational processes, people, and technology.
 
-For a comprehensive discussion tailored to your company's immediate priorities, feel free to submit your inquiry below or connect directly with our advisory team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`;
+For a comprehensive discussion tailored to your company's immediate priorities, feel free to submit your inquiry below or connect directly with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
   }
 
   if (lang === 'id') {
-    return `Inpartner siap mendampingi perusahaan Anda melalui 4 pilar utama: **Funding**, **Growth**, **Profitability**, dan **Capacity Building**.
+    return `Inpartner siap mendampingi perusahaan Anda melalui 5 layanan utama: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, dan **Human Capital & Organization**.
 
 Silakan sampaikan tujuan bisnis atau tantangan perusahaan Anda, atau jadwalkan sesi konsultasi awal dengan tim penasihat senior kami.`;
   } else if (lang === 'ko') {
-    return `인파트너는 **투자 유치(Funding)**, **성장 전략(Growth)**, **수익성 최적화(Profitability)**, **역량 강화(Capacity Building)**의 4대 핵심 필라를 통해 귀사의 비즈니스 과제를 함께 해결합니다.
+    return `인파트너는 **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, **Human Capital & Organization**의 5대 공식 서비스를 통해 귀사의 비즈니스 과제를 함께 해결합니다.
 
 궁금하신 점이나 기업 애로사항을 입력해 주시거나, 수석 컨설턴트와의 사전 진단 상담을 예약해 주십시오.`;
   }
 
-  return `Inpartner is prepared to assist your enterprise across our 4 core pillars: **Funding**, **Growth**, **Profitability**, and **Capacity Building**.
+  return `Inpartner is prepared to assist your enterprise across our 5 official services: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, and **Human Capital & Organization**.
 
 Please share your specific business objectives or corporate challenges, or schedule an exploratory consultation with our senior advisory team.`;
 }

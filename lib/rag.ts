@@ -106,56 +106,81 @@ export function retrieveKnowledge(query: string, topK: number = 4): RetrievedChu
     return chunks.slice(0, topK).map((c) => ({ ...c, score: 0.5 }));
   }
 
-  // Synonym expansion map for high domain accuracy (English & Indonesian)
+  // Synonym expansion map for high domain accuracy (English, Indonesian, Korean)
   const expansionMap: Record<string, string[]> = {
-    // Profitability terms
-    profit: ['margin', 'profitability', 'revenue', 'cost', 'cogs', 'opex', 'operational', 'margins', 'ebitda', 'loss', 'laba', 'keuntungan'],
-    margin: ['profit', 'profitability', 'cost', 'cogs', 'opex', 'margin', 'margins', 'laba', 'keuntungan'],
-    revenue: ['sales', 'topline', 'growth', 'omzet', 'omset', 'turnover', 'income', 'penjualan'],
-    profitability: ['profit', 'margin', 'cogs', 'opex', 'operational', 'excellence', 'efficiency', 'bottomline', 'laba'],
-    laba: ['profit', 'margin', 'profitability', 'keuntungan', 'revenue', 'cogs', 'opex', 'loss', 'bottomline'],
-    keuntungan: ['profit', 'margin', 'profitability', 'laba', 'revenue'],
-    rugi: ['loss', 'profit', 'margin', 'profitability', 'laba', 'kerugian'],
-    omset: ['revenue', 'sales', 'topline', 'growth', 'omzet', 'turnover', 'income', 'penjualan'],
-    omzet: ['revenue', 'sales', 'topline', 'growth', 'omset', 'turnover', 'income', 'penjualan'],
-    biaya: ['cost', 'opex', 'cogs', 'expenses', 'operational', 'pengeluaran', 'overhead'],
-    operasional: ['operational', 'opex', 'efficiency', 'workflow', 'operations', 'proses'],
-    efisiensi: ['efficiency', 'lean', 'optimization', 'cost', 'workflow'],
+    // Strategy & Corporate Advisory terms
+    strategy: ['corporate', 'advisory', 'planning', 'roadmap', 'transformation', 'restructuring', 'strategi', 'korporat'],
+    corporate: ['strategy', 'advisory', 'governance', 'restructuring', 'transformation', 'korporat'],
+    merger: ['acquisition', 'ma', 'transaction', 'deal', 'advisory', 'divestiture', 'merger', 'akuisisi'],
+    acquisition: ['merger', 'ma', 'transaction', 'deal', 'advisory', 'akuisisi'],
+    restructuring: ['reorganization', 'turnaround', 'restrukturisasi', 'corporate', 'strategy'],
+    ipo: ['listing', 'capital', 'market', 'public', 'offering', 'pre-ipo', 'rights', 'issue', 'bursa'],
+    transformation: ['change', 'business', 'transformation', 'operational', 'improvement', 'transformasi'],
 
-    // Funding terms
+    // Investment & Project Advisory terms
     modal: ['funding', 'capital', 'investment', 'investor', 'equity', 'pembiayaan', 'pendanaan', 'saham'],
     pendanaan: ['funding', 'investment', 'investor', 'capital', 'equity', 'debt', 'pembiayaan', 'modal'],
-    investasi: ['funding', 'modal', 'investor', 'capital', 'fund', 'equity', 'valuation', 'advisory', 'readiness'],
-    funding: ['investment', 'investor', 'capital', 'equity', 'debt', 'mezzanine', 'financing', 'valuation', 'fund', 'modal', 'pendanaan'],
-    investment: ['funding', 'investor', 'capital', 'equity', 'venture', 'private', 'advisory', 'investasi'],
+    investasi: ['funding', 'modal', 'investor', 'capital', 'fund', 'equity', 'valuation', 'advisory', 'feasibility'],
+    funding: ['investment', 'investor', 'capital', 'equity', 'debt', 'financing', 'valuation', 'fund', 'modal', 'pendanaan'],
+    investment: ['funding', 'investor', 'capital', 'equity', 'venture', 'private', 'advisory', 'investasi', 'feasibility'],
     investor: ['funding', 'investment', 'capital', 'vc', 'pe', 'equity', 'investasi', 'modal'],
+    feasibility: ['study', 'fs', 'kelayakan', 'analysis', 'commercial', 'financial', 'viability', 'project'],
+    kelayakan: ['feasibility', 'studi', 'analisis', 'investasi', 'project'],
+    valuation: ['valuasi', 'dcf', 'multiples', 'financial', 'model'],
+    valuasi: ['valuation', 'dcf', 'multiples', 'financial', 'model'],
     pinjaman: ['loan', 'funding', 'debt', 'bank', 'financing', 'lender'],
     saham: ['equity', 'shares', 'valuation', 'capital', 'investor'],
-    valuasi: ['valuation', 'dcf', 'multiples', 'financial', 'model'],
 
-    // Growth terms
+    // Market Access & Business Expansion terms
+    market: ['access', 'entry', 'research', 'expansion', 'penetration', 'growth', 'pasar', 'segment'],
+    expansion: ['market', 'access', 'entry', 'growth', 'scale', 'territory', 'ekspansi', 'perluasan'],
     growth: ['expansion', 'scale', 'market', 'penetration', 'strategy', 'revenue', 'gtm', 'pertumbuhan', 'ekspansi'],
-    expansion: ['growth', 'market', 'penetration', 'scale', 'territory', 'ekspansi', 'cabang'],
-    market: ['growth', 'penetration', 'expansion', 'segment', 'customer', 'pasar'],
-    ekspansi: ['expansion', 'growth', 'scale', 'market', 'cabang', 'perluasan'],
-    pertumbuhan: ['growth', 'expansion', 'scale', 'market', 'sales', 'penjualan'],
-    pasar: ['market', 'growth', 'penetration', 'segment', 'customer'],
-    penjualan: ['sales', 'revenue', 'omset', 'omzet', 'growth', 'roadmap'],
+    ekspansi: ['expansion', 'market', 'growth', 'scale', 'perluasan', 'cabang'],
+    pertumbuhan: ['growth', 'expansion', 'scale', 'market', 'sales'],
+    pasar: ['market', 'access', 'entry', 'research', 'expansion', 'penetration'],
+    riset: ['research', 'market', 'intelligence', 'analysis', 'study'],
+    penjualan: ['sales', 'revenue', 'omset', 'omzet', 'growth'],
+    omset: ['revenue', 'sales', 'topline', 'growth', 'omzet', 'turnover', 'income', 'penjualan'],
+    omzet: ['revenue', 'sales', 'topline', 'growth', 'omset', 'turnover', 'income', 'penjualan'],
+    distributor: ['partner', 'channel', 'distribution', 'network', 'mitra'],
+    mitra: ['partner', 'distributor', 'matching', 'business', 'network', 'kemitraan'],
 
-    // Capacity building terms
-    capacity: ['building', 'training', 'mentoring', 'coaching', 'executive', 'leadership', 'academy', 'program', 'pelatihan', 'sdm'],
+    // Profitability-related (mapped to strategy/advisory)
+    profit: ['margin', 'revenue', 'cost', 'cogs', 'opex', 'operational', 'laba', 'keuntungan', 'strategy'],
+    margin: ['profit', 'cost', 'cogs', 'opex', 'laba', 'keuntungan'],
+    profitability: ['profit', 'margin', 'operational', 'efficiency', 'strategy', 'laba'],
+    laba: ['profit', 'margin', 'profitability', 'keuntungan', 'revenue'],
+    keuntungan: ['profit', 'margin', 'profitability', 'laba'],
+    biaya: ['cost', 'opex', 'cogs', 'expenses', 'operational', 'pengeluaran'],
+    operasional: ['operational', 'opex', 'efficiency', 'workflow', 'operations'],
+
+    // Cross-Border & Technology Advisory terms
+    'cross-border': ['international', 'border', 'global', 'overseas', 'lintas', 'batas', 'asing'],
+    international: ['global', 'overseas', 'cross-border', 'foreign', 'internasional'],
+    joint: ['venture', 'jv', 'partnership', 'collaboration', 'alliance'],
+    technology: ['transfer', 'tech', 'digital', 'teknologi', 'alih'],
+    transfer: ['technology', 'knowledge', 'transfer', 'alih', 'teknologi'],
+    internasional: ['international', 'global', 'overseas', 'asing', 'cross-border'],
+    asing: ['foreign', 'international', 'cross-border', 'global', 'internasional'],
+
+    // Human Capital & Organization terms
+    capacity: ['building', 'training', 'mentoring', 'coaching', 'executive', 'leadership', 'program', 'pelatihan', 'sdm', 'human', 'capital'],
     training: ['capacity', 'building', 'executive', 'workshop', 'coaching', 'mentoring', 'leadership', 'pelatihan'],
-    leadership: ['capacity', 'building', 'coaching', 'executive', 'management', 'mentoring', 'kepemimpinan'],
-    pelatihan: ['training', 'capacity', 'building', 'coaching', 'mentoring', 'workshop', 'sdm', 'leadership'],
-    karyawan: ['employee', 'talent', 'staff', 'sdm', 'training', 'capacity'],
+    leadership: ['coaching', 'executive', 'management', 'mentoring', 'kepemimpinan', 'talent'],
+    pelatihan: ['training', 'capacity', 'coaching', 'mentoring', 'workshop', 'sdm'],
+    executive: ['search', 'headhunting', 'leadership', 'coaching', 'training', 'c-suite', 'recruitment'],
+    headhunting: ['executive', 'search', 'recruitment', 'talent', 'hiring', 'rekrutmen'],
+    rekrutmen: ['recruitment', 'headhunting', 'executive', 'search', 'talent'],
     sdm: ['talent', 'employee', 'human', 'capital', 'training', 'capacity', 'karyawan'],
+    karyawan: ['employee', 'talent', 'staff', 'sdm', 'training'],
     manajemen: ['management', 'executive', 'leadership', 'capacity', 'governance'],
     kepemimpinan: ['leadership', 'executive', 'management', 'coaching'],
+    talent: ['executive', 'leadership', 'headhunting', 'recruitment', 'sdm', 'talent'],
 
     // Contact & Office terms
-    contact: ['office', 'location', 'phone', 'whatsapp', 'email', 'address', 'jakarta', 'surabaya', 'kontak', 'hubungi'],
-    office: ['contact', 'location', 'address', 'jakarta', 'surabaya', 'pakuwon', 'headquarters', 'kantor'],
-    location: ['office', 'address', 'jakarta', 'surabaya', 'pakuwon', 'contact', 'lokasi'],
+    contact: ['office', 'location', 'phone', 'whatsapp', 'email', 'address', 'jakarta', 'kontak', 'hubungi'],
+    office: ['contact', 'location', 'address', 'jakarta', 'pakuwon', 'headquarters', 'kantor'],
+    location: ['office', 'address', 'jakarta', 'pakuwon', 'contact', 'lokasi'],
     kontak: ['contact', 'office', 'phone', 'whatsapp', 'email', 'address', 'lokasi'],
     hubungi: ['contact', 'call', 'reach', 'whatsapp', 'phone'],
     kantor: ['office', 'address', 'location', 'jakarta', 'surabaya', 'pakuwon'],

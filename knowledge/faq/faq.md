@@ -1,48 +1,78 @@
-# Inpartner Frequently Asked Questions (FAQ)
+# INPARTNER FAQ — Frequently Asked Questions
 
-## 1. General Questions About Inpartner
-### Q: What is Inpartner and what are its core advisory services?
-**A:** Inpartner (PT Inpartner Optima Integra) is a leading independent corporate strategy and management consulting firm in Indonesia, established in 2009. Inpartner's core services are structured across four fundamental business pillars:
-1. **Funding & Investment Advisory:** Institutional investment readiness, business valuation, capital structuring, and investor network access.
-2. **Business Growth:** New market penetration, strategic long-term planning, segment analysis, and high-impact partnerships.
-3. **Profitability & Operational Excellence:** Operational workflow optimization, cost/margin restructuring, supply chain efficiency, and people-technology alignment.
-4. **Capacity Building (The Executive Business Program / Inpartner Academy):** Executive education, corporate workshops, leadership coaching, and operational execution frameworks for senior leadership.
+## What is INPARTNER?
+INPARTNER, legally PT Inpartner Optima Integra, is a Business & Management Consulting firm that helps businesses navigate markets, investment, business opportunities, transformation, and strategic growth. INPARTNER operates under the tagline "Unleash The Power Of Your Business" with a vision of "Bridging Markets, Investment & Business Opportunities."
 
-### Q: Where are Inpartner's offices located?
-**A:** Inpartner operates two corporate offices in Indonesia:
-- **Jakarta Headquarters:** Pakuwon Tower 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta.
-- **Surabaya Office:** Jemur Sari Street V No. 10, Surabaya, East Java.
+## When was INPARTNER established?
+INPARTNER's business originated in 2009 as a consulting activity supporting market access, financing, technology, productivity, and capacity building for the MSME sector in East Java. In 2019, the business transformed into business and management consulting services for middle-sized and large corporations. These are not contradictory dates — 2009 is the business origin, and 2019 marks the transformation to the current consulting model.
 
-### Q: Who is Inpartner's target clientele?
-**A:** Inpartner advises medium-sized enterprises (*middle-market*), large corporations, business founders/owners, private investment fund managers, and public-sector institutions requiring disciplined corporate growth strategies.
+## What services does INPARTNER provide?
+INPARTNER provides five official services:
+1. **Strategy & Corporate Advisory** — Corporate Strategy, Business Transformation, M&A Advisory, IPO/Capital Market Advisory, Corporate Restructuring.
+2. **Investment & Project Advisory** — Feasibility Studies, Investment Advisory, Commercial & Financial Analysis, Investment Opportunity Assessment, Project Development.
+3. **Market Access & Business Expansion** — Market Research & Intelligence, Market Entry Strategy, Business Matching, Partner/Distributor Identification, Market Expansion.
+4. **Cross-Border & Technology Advisory** — Cross-Border Partnership, Joint Venture (JV), Technology Transfer, Knowledge Transfer, International Business Development.
+5. **Human Capital & Organization** — Executive Search/Head Hunting, Organization Development, Talent & Leadership Advisory, Training & Capacity Building.
 
----
+## Does INPARTNER provide investment advisory?
+Yes. Investment Advisory is part of INPARTNER's Investment & Project Advisory service, supporting individuals, institutions, and corporate clients in making informed investment decisions.
 
-## 2. Specific Business Scenarios
+## Does INPARTNER support M&A?
+Yes. M&A Advisory is listed under Strategy & Corporate Advisory. INPARTNER provides advisory support for mergers, acquisitions, divestitures, target identification, due diligence, and deal structuring.
 
-### Q: My company is scaling rapidly and revenue is climbing, but net profit margins are compressing. Can Inpartner help?
-**A:** Absolutely. This is a classic challenge addressed under our **Profitability & Operational Excellence** pillar (often termed the *growth paradox*). It typically stems from unchecked operational expenditure (OPEX) growth, unstandardized workflows, supply chain friction, or miscalibrated pricing models. Inpartner consultants perform an exhaustive cost audit, pinpoint process bottlenecks and margin leaks, and design scalable SOPs and KPI dashboards to ensure top-line growth translates directly into healthy bottom-line net profit.
+## Does INPARTNER support IPO?
+Yes. IPO / Capital Market Advisory is listed under Strategy & Corporate Advisory, including pre-IPO readiness and rights issue advisory.
 
-### Q: Does Inpartner provide direct loans or direct cash financing?
-**A:** **No.** Inpartner is **not a bank or direct lender**. Under our **Funding & Investment** pillar, Inpartner acts as an independent institutional financial advisor. We help businesses become investment-ready by refining financial models, establishing independent valuations, preparing institutional pitch decks, and connecting companies with verified venture capital, private equity, family offices, and mezzanine capital providers.
+## Does INPARTNER provide market research?
+Yes. Market Research & Intelligence is part of Market Access & Business Expansion, covering market sizing, consumer behavior, competitive intelligence, and industry assessments.
 
-### Q: What is Inpartner's advisory engagement methodology?
-**A:** Inpartner operates on the philosophy **"Go Beyond than Just Consultancy"**:
-1. **Phase 1 – Discovery & Diagnostic:** Rigorously identifying root causes through executive stakeholder sessions and proprietary financial/operational audits.
-2. **Phase 2 – Strategy Formulation:** Formulating concrete, prioritized roadmaps with financial impact modeling and alternative scenarios.
-3. **Phase 3 – Implementation & Execution Support:** Standing alongside leadership teams during rollout to ensure measurable milestones are achieved.
+## Does INPARTNER help companies enter new markets?
+Yes. Market Entry Strategy, Market Expansion, Business Matching, and Partner/Distributor Identification are among INPARTNER's capabilities under Market Access & Business Expansion.
 
-### Q: How much does Inpartner charge for consulting engagements?
-**A:** Engagement fees depend on the project's scope of work, technical complexity, timeline, and specialized team deployment. To discuss your requirements and receive an introductory consultation or tailored proposal, please schedule an appointment via WhatsApp at +62 896 2831 0192 or email corporatesecretary@inpartner.id.
+## Does INPARTNER support cross-border business?
+Yes. INPARTNER's Cross-Border & Technology Advisory includes cross-border partnerships, joint ventures, technology transfer, knowledge transfer, and international business development. INPARTNER serves as a Cross-Border Bridge connecting international companies with local opportunities.
 
-### Q: What is the Inpartner Capacity Building Program?
-**A:** The Inpartner Capacity Building Program (The Executive Business Program / Inpartner Academy) provides specialized leadership training, executive mentoring, and cross-functional alignment frameworks designed to equip executive leadership with practical execution skills.
+## Does INPARTNER provide executive search?
+Yes. Executive Search / Head Hunting is listed under Human Capital & Organization as a client-facing B2B service for C-suite and senior leadership recruitment.
 
----
+## What is INPARTNER's approach?
+INPARTNER's approach follows five stages:
+1. **Understand** — Client objectives, challenges, and requirements.
+2. **Analyze** — Market, industry, financial, and regulatory assessment.
+3. **Identify** — Opportunities, partners, investors, and solutions.
+4. **Connect** — Introductions, negotiations, and strategic partnerships.
+5. **Execute & Grow** — Implementation, market entry, and business expansion.
 
-## 3. How to Connect with Inpartner
-### Q: How can I initiate an advisory consultation with Inpartner?
-**A:** You can submit your contact details and business requirements directly through this AI assistant (Name, Company, Email, WhatsApp Phone), or contact our advisory office directly via:
-- **WhatsApp:** [+62 896 2831 0192](https://wa.me/6289628310192)
+## What industries does INPARTNER have expertise in?
+INPARTNER's company profile identifies expertise across:
+- Banking & Other Financial Services
+- Capital Markets
+- Manufacturing & Industrial Engineering
+- Natural Resources (Plantation, Mining, Oil & Gas, Natural Resources Services)
+- Technology Development (AI, Data Center, Semiconductor, Biotechnology)
+- Pharmaceutical & Healthcare
+- Consumer (Consumer Staples, Consumer Discretionary, Tourism)
+- Renewable Energy & Sustainability Business
+
+## Does INPARTNER work internationally?
+Yes. INPARTNER presents global market exposure across Indonesia and multiple international markets including South Korea, China, Australia, Belgium, Malaysia, Singapore, UAE (including Abu Dhabi), Saudi Arabia, Qatar, Switzerland, Spain, Turkey, and South Africa.
+
+## How many projects has INPARTNER completed?
+INPARTNER's 2026 company profile states a portfolio of 90+ projects. This is a company-stated figure and should not be interpreted as an exact count.
+
+## Who are INPARTNER's clients?
+The 2026 company profile presents corporate, private and state-owned clients, foreign-related clients, and government clients — totaling 70+ corporate/private/state-owned clients and 10+ foreign-related clients (company-stated figures). Specific client relationships are presented as institutional references and should not have their scope or value inferred beyond verified information.
+
+## Is INPARTNER a bank or direct lender?
+No. INPARTNER is a Business & Management Consulting firm. INPARTNER provides advisory services and does not operate as a bank, direct lender, broker, asset manager, or regulated financial service provider.
+
+## Is INPARTNER a software or IT company?
+No. While INPARTNER has expertise in Technology Development as a sector and provides Cross-Border Technology advisory (including technology transfer), INPARTNER does not operate as a software house, IT service provider, or technology vendor.
+
+## How can I contact INPARTNER?
+- **Website:** https://inpartner.id/
 - **Email:** corporatesecretary@inpartner.id
-- **Office Consultation:** Pakuwon Tower 10th Floor Jakarta or Jemur Sari V No. 10 Surabaya (by prior appointment).
+- **Phone:** +62 859 3454 8202
+- **LinkedIn:** https://www.linkedin.com/company/inpartner/
+- **Office:** Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia
+- **Operating Hours:** Monday – Friday, 09:00 – 17:00 WIB

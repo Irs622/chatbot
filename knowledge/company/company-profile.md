@@ -1,41 +1,78 @@
-# Inpartner Company Profile
+# INPARTNER Company Profile
 
 ## About INPARTNER (PT Inpartner Optima Integra)
-INPARTNER (PT Inpartner Optima Integra) is a premier business and management consulting firm in Indonesia, headquartered in South Jakarta and Surabaya. Founded by senior industry professionals in 2009 (evolving from boutique management advisory services), Inpartner originally focused on unlocking market accessibility, structured financing, advanced technology, and operational productivity for growing enterprises and regional capacity building.
+INPARTNER (legally PT Inpartner Optima Integra, brand name INPARTNER, publicly known as Inpartner Consulting) is a Business & Management Consulting firm based in Indonesia.
 
-Through relentless continuous improvement, Inpartner has matured into a comprehensive corporate strategy and management consultancy advising middle-market enterprises and large corporations across domestic and international markets.
+**Tagline:** Unleash The Power Of Your Business
+**Vision:** Bridging Markets, Investment & Business Opportunities
+**Mission:** Our mission is to combine knowledge, technology, information, and network to unlock solution and reach client's goals.
 
-## Corporate Vision
-"The Most Trusted Consulting Partner To help create positive and enduring changes in Local and Global Coverage."
+INPARTNER is a management consulting firm supporting businesses in market access, financing, technology, productivity, capacity building, business transformation, market expansion, investment, and strategic partnerships.
 
-## Corporate Mission
-"Our mission is to combine knowledge, technology, information, and network to unlock solutions and reach client goals."
+## Company History
+The business originated in 2009 as a consulting activity supporting market access, financing, technology, productivity, and capacity building for the MSME sector in East Java.
 
-## Core Values
-**"Go Beyond than Just Consultancy"**
-Inpartner goes far beyond theoretical paper reports, committing to unlock critical strategic capabilities across all client dimensions:
-1. **Financing & Investment Access:** Capital structuring, valuation rigor, and strategic introductions to institutional capital providers.
-2. **Business Development:** Market expansion analysis, consumer segmentation, scalable go-to-market strategies, and execution.
-3. **People & Capacity Development:** Elevating leadership and managerial excellence through structured executive development programs.
+In 2019, the business transformed into business and management consulting services, expanding its focus to serve middle-sized and large corporations across domestic and international markets.
 
-## Advisory Methodology & Philosophy
-Inpartner employs a rigorous holistic approach to accurately diagnose root-cause business problems, establish clear actionable roadmaps, and provide hands-on implementation support at every phase of organizational growth (*be there for you every step of the way*).
+Note: 2009 represents the origin of the business, and 2019 represents the transformation into the current business and management consulting model. These are not contradictory founding dates.
 
-## Diversity & Sustainability Commitment
-- **Diversity:** Inpartner embraces diversity across sectoral backgrounds, functional skill sets, and multidisciplinary perspectives to generate robust, resilient solutions.
-- **Sustainability & ESG:** Inpartner actively champions sustainable governance, environmental stewardship, and social integrity (ESG - Environmental, Social, and Governance frameworks).
+## Business & Management Consulting
+INPARTNER improves business strategy, organizational performance, and operations by aligning strategy with people, processes, technology, and data. Capabilities include:
+- Business Strategy
+- Organizational Performance
+- Operational Improvement
+- People, Process, Technology, and Data Alignment
+- Market Research
+- Growth Strategy
 
-## Official Office Locations
-1. **Jakarta Head Office:**
-   Pakuwon Tower 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta 12870, Indonesia.
-2. **Surabaya Office:**
-   Jemur Sari Street V No. 10, Surabaya, East Java, Indonesia.
+## Investment Advisory
+INPARTNER offers customized investment solutions for individuals, institutions, and corporate clients, backed by experienced professionals guiding informed decisions. This includes Investment Advisory, Investment Opportunity Assessment, Commercial & Financial Analysis, Feasibility Studies, and Project Development.
 
-## Official Contact Channels
-- **Official Phone / WhatsApp:** +62 896 2831 0192 (0896 2831 0192)
-- **Official Email:** corporatesecretary@inpartner.id
-- **Corporate Website:** https://inpartner.id/
-- **Social Media:**
-  - Instagram: @inpartnerconsulting
-  - LinkedIn: Inpartner (PT Inpartner Optima Integra)
-  - TikTok: @inpartnerconsulting
+## Capacity Building
+INPARTNER provides training, mentoring, and coaching to boost efficiency and effectiveness, helping clients build and implement business plans and develop strategic partnerships. Programs are delivered through the Executive Business Program.
+
+## Market Access & Expansion
+INPARTNER helps businesses navigate markets, identify opportunities, establish connections, and expand across markets through Market Research & Intelligence, Market Entry Strategy, Business Matching, Partner/Distributor Identification, and Market Expansion.
+
+## Cross-Border Bridge
+INPARTNER supports businesses in connecting international companies with local opportunities and developing cross-border business relationships. Services include Cross-Border Partnership, Joint Ventures (JV), Technology Transfer, Knowledge Transfer, and International Business Development.
+
+## INPARTNER Approach (5 Stages)
+INPARTNER works closely with clients following five stages:
+1. **Understand** — Understand client objectives, challenges, and requirements.
+2. **Analyze** — Conduct market, industry, financial, and regulatory assessment.
+3. **Identify** — Identify opportunities, partners, investors, and solutions.
+4. **Connect** — Facilitate introductions, negotiations, and strategic partnerships.
+5. **Execute & Grow** — Support implementation, market entry, and business expansion.
+
+## Competitive Advantages
+- **Local Insight:** Deep understanding of Indonesia's business landscape.
+- **Strategic Network:** Access to corporate, government, and institutional stakeholders.
+- **Cross-Border Bridge:** Connecting international companies with local opportunities.
+- **Proven Delivery:** Quality consulting and advisory track record since 2019.
+- **Industry Expertise:** 20+ years of strategic advisory experience across key sectors.
+- **Strong Talent:** Business, strategy, and financial analysis capabilities.
+
+## Client & Project Evidence
+- 90+ project portfolio (company-stated figure, INPARTNER 2026 Company Profile)
+- 70+ corporate, private, and state-owned clients (company-stated figure)
+- 10+ foreign-related clients (company-stated figure)
+
+Client references are organized under three categories: Corporate Clients, Foreign Related Clients, and Government Clients. Specific client relationships should not have their scope, duration, or financial value inferred beyond what is publicly documented.
+
+## Company Values
+1. **Integrity** — Building trust through transparency.
+2. **Connectivity** — Bridging businesses, markets, and opportunities.
+3. **Client-Centric** — Delivering solutions that create value.
+4. **Global-Local** — Combining global perspective with local insight.
+5. **Sustainable Impact** — Creating long-term growth and value.
+
+## Geographic Coverage — Global Reach, Diverse Market Exposure
+INPARTNER presents global market exposure across: Indonesia, Belgium, Australia, China, South Korea, Malaysia, United Arab Emirates (including Abu Dhabi), South Africa, Switzerland, Turkey, Spain, Singapore, Qatar, and Saudi Arabia.
+
+## Official Contact
+- **Website:** https://inpartner.id/
+- **Email:** corporatesecretary@inpartner.id
+- **Phone:** +62 859 3454 8202
+- **LinkedIn:** https://www.linkedin.com/company/inpartner/
+- **Office:** Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia

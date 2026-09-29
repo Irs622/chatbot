@@ -9,18 +9,17 @@ export const INPARTNER_CONFIG = {
   websiteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://inpartner.id',
   
   // WhatsApp Contact (Tim Sales / Business Development)
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '089628310192',
-  whatsappDisplay: process.env.NEXT_PUBLIC_WHATSAPP_DISPLAY || '0896 2831 0192',
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '6285934548202',
+  whatsappDisplay: process.env.NEXT_PUBLIC_WHATSAPP_DISPLAY || '+62 859 3454 8202',
   
   // Official Corporate Email
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'corporatesecretary@inpartner.id',
   
-  // Office Addresses
-  addressJakarta: 'Pakuwon Tower 10th Floor, Jl. Raya Casablanca Kav. 88, Menteng Dalam, Tebet, South Jakarta 12870, Indonesia',
-  addressSurabaya: 'Jemur Sari Street V No. 10, Surabaya, East Java, Indonesia',
+  // Office Address
+  addressJakarta: 'Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia',
   
   // Operating Hours
-  operatingHours: 'Monday – Friday: 08:30 – 17:30 WIB'
+  operatingHours: 'Monday – Friday: 09:00 – 17:00 WIB'
 };
 
 /**
