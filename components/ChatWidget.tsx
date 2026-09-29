@@ -70,9 +70,9 @@ export default function ChatWidget({
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
-  const [lang, setLang] = useState<'id' | 'en'>('id');
+  const [lang, setLang] = useState<'id' | 'en' | 'ko'>('id');
 
-  // Bilingual UI Translations
+  // Trilingual UI Translations (ID / EN / KO)
   const t = lang === 'id' ? {
     onlineStatus: 'Online • Siap Membantu',
     newChat: 'Percakapan baru',
@@ -127,6 +127,60 @@ export default function ChatWidget({
     generating: 'Menyusun analisis...',
     interestedCta: 'Tertarik dengan Konsultasi Strategis Lebih Lanjut?',
     interestedDesc: 'Tinggalkan kontak bisnis Anda, dan konsultan senior Inpartner akan menghubungi Anda untuk analisis diagnostik mendalam.'
+  } : lang === 'ko' ? {
+    onlineStatus: '온라인 • 실시간 상담 가능',
+    newChat: '새 대화 시작',
+    scheduleConsultation: '경영 상담 예약하기',
+    chatWa: '공식 WhatsApp 문의',
+    callOffice: '본사 전화 문의',
+    privacyPolicy: '개인정보 처리방침',
+    title: '어떤 비즈니스 솔루션이 필요하십니까?',
+    subtitle: '인파트너(Inpartner) AI가 기업의 주요 과제를 분석하고 최적화된 전략 자문 솔루션을 제시합니다.',
+    featured: {
+      title: '비즈니스 성장 & 시장 확장 자문',
+      desc: '시장 진입 전략, 세일즈 로드맵 구축 및 신규 사업 확장 지원',
+      query: '인파트너는 기업의 비즈니스 성장 및 시장 확장 전략을 어떻게 지원합니까?',
+      intent: 'Growth'
+    },
+    dividerText: '주요 자문 분야 둘러보기',
+    secondary1: {
+      title: '투자 유치 & 수익성 개선',
+      query: '기관 투자자 펀딩 구조와 운영 마진 최적화에 대한 자문이 필요합니다.',
+      intent: 'Funding'
+    },
+    secondary2: {
+      title: '기업 경영 진단 및 솔루션 매칭',
+      query: '현재 기업에 가장 필요한 솔루션이 무엇인지 진단을 받고 싶습니다.',
+      intent: 'other'
+    },
+    inputPlaceholder: '기업 경영 과제 또는 문의 사항을 입력하세요...',
+    sending: '답변 작성 중...',
+    stopGenerating: '답변 생성 중지',
+    disclaimer: 'AI 응답은 참고용입니다. 세부 사항은 인파트너 전문 컨설턴트와 확인하세요.',
+    consultationSchedule: '비즈니스 자문 세션 예약',
+    consultationDesc: '기업 개요와 주요 과제를 남겨주시면 인파트너 수석 파트너가 사전 진단 세션을 준비합니다.',
+    fullName: '성함',
+    companyName: '회사명',
+    phone: 'WhatsApp / 연락처',
+    phoneFormatHint: '예: 010-xxxx-xxxx 또는 국가번호 포함 (+82...)',
+    email: '회사 이메일',
+    emailHint: '공식 제안서 및 경영 자료 발송용 (선택 사항)',
+    advisoryNeed: '주요 자문 분야',
+    selectPillar: '-- 주요 자문 분야 선택 --',
+    notes: '기업 과제 요약 / 프로젝트 범위',
+    notesPlaceholder: '기업의 주요 애로사항, 매출 규모 또는 사업 확장 목표를 공유해 주세요...',
+    consent: '개인정보 처리방침에 따라 인파트너 컨설팅 팀의 상담 진행을 위한 정보 제공에 동의합니다.',
+    cancel: '취소',
+    submit: '상담 요청서 제출',
+    submitting: '요청서 제출 중...',
+    successTitle: '상담 요청이 접수되었습니다!',
+    successDesc: '제출하신 정보가 안전하게 전달되었습니다. 인파트너 사업개발팀이 영업일 기준 1일 이내에 연락드리겠습니다.',
+    chatNowWa: 'WhatsApp으로 실시간 문의',
+    sources: '참조 공식 문서:',
+    service: '추천 서비스:',
+    generating: '분석 내용 생성 중...',
+    interestedCta: '심층 비즈니스 자문이 필요하십니까?',
+    interestedDesc: '연락처를 남겨주시면 인파트너 수석 컨설턴트가 1:1 맞춤형 진단 상담을 제공해 드립니다.'
   } : {
     onlineStatus: 'Online • Ready to assist',
     newChat: 'New conversation',
@@ -229,8 +283,8 @@ export default function ChatWidget({
 
     // Restore saved language preference
     try {
-      const savedLang = localStorage.getItem('inpartner_chat_lang') as 'id' | 'en' | null;
-      if (savedLang === 'id' || savedLang === 'en') {
+      const savedLang = localStorage.getItem('inpartner_chat_lang') as 'id' | 'en' | 'ko' | null;
+      if (savedLang === 'id' || savedLang === 'en' || savedLang === 'ko') {
         setLang(savedLang);
       }
     } catch {}
@@ -264,8 +318,16 @@ export default function ChatWidget({
     }
   }, []);
 
-  const handleToggleLanguage = (targetLang?: 'id' | 'en') => {
-    const next = targetLang || (lang === 'id' ? 'en' : 'id');
+  const handleToggleLanguage = (targetLang?: 'id' | 'en' | 'ko') => {
+    let next: 'id' | 'en' | 'ko';
+    if (targetLang) {
+      next = targetLang;
+    } else {
+      // Cycle: id -> en -> ko -> id
+      if (lang === 'id') next = 'en';
+      else if (lang === 'en') next = 'ko';
+      else next = 'id';
+    }
     setLang(next);
     try {
       localStorage.setItem('inpartner_chat_lang', next);
@@ -589,6 +651,8 @@ export default function ChatWidget({
           sender: 'bot',
           text: lang === 'id'
             ? 'Mohon maaf, terjadi gangguan koneksi ke server. Silakan coba kembali atau hubungi konsultan kami via WhatsApp di [+62 896 2831 0192](https://wa.me/6289628310192).'
+            : lang === 'ko'
+            ? '죄송합니다. 서버 연결에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주시거나 공식 WhatsApp [+62 896 2831 0192](https://wa.me/6289628310192)로 직접 문의해 주십시오.'
             : 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 896 2831 0192](https://wa.me/6289628310192).',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isFallback: true,
@@ -634,35 +698,35 @@ export default function ChatWidget({
     setLeadError('');
 
     if (!leadForm.name || leadForm.name.trim().length < 2) {
-      setLeadError(lang === 'id' ? 'Nama lengkap wajib diisi (minimal 2 karakter).' : 'Full name is required (minimum 2 characters).');
+      setLeadError(lang === 'id' ? 'Nama lengkap wajib diisi (minimal 2 karakter).' : lang === 'ko' ? '성함을 입력해 주세요 (최소 2자 이상).' : 'Full name is required (minimum 2 characters).');
       return;
     }
 
     if (!leadForm.businessNeed) {
-      setLeadError(lang === 'id' ? 'Kebutuhan konsultasi utama wajib dipilih.' : 'Primary advisory need must be selected.');
+      setLeadError(lang === 'id' ? 'Kebutuhan konsultasi utama wajib dipilih.' : lang === 'ko' ? '주요 자문 분야를 선택해 주세요.' : 'Primary advisory need must be selected.');
       return;
     }
 
     if (!leadForm.email && !leadForm.phone) {
-      setLeadError(lang === 'id' ? 'Harap cantumkan nomor WhatsApp atau email kantor untuk tindak lanjut konsultasi.' : 'Please provide a WhatsApp phone number or business email for consultation follow-up.');
+      setLeadError(lang === 'id' ? 'Harap cantumkan nomor WhatsApp atau email kantor untuk tindak lanjut konsultasi.' : lang === 'ko' ? '상담 후속 조치를 위해 WhatsApp 번호 또는 회사 이메일을 입력해 주세요.' : 'Please provide a WhatsApp phone number or business email for consultation follow-up.');
       return;
     }
 
     if (leadForm.phone) {
       const pValidation = validatePhoneNumber(leadForm.phone);
       if (!pValidation.isValid) {
-        setLeadError(lang === 'id' ? 'Format nomor WhatsApp / telepon tidak valid (contoh: 08123456789 atau +62...).' : (pValidation.error || 'Invalid phone or WhatsApp number format.'));
+        setLeadError(lang === 'id' ? 'Format nomor WhatsApp / telepon tidak valid (contoh: 08123456789 atau +62...).' : lang === 'ko' ? '전화번호 형식이 올바르지 않습니다 (예: 01012345678 또는 +82...).' : (pValidation.error || 'Invalid phone or WhatsApp number format.'));
         return;
       }
     }
 
     if (leadForm.email && !validateEmail(leadForm.email)) {
-      setLeadError(lang === 'id' ? 'Format email tidak valid (contoh: nama@perusahaan.com).' : 'Invalid email address format (e.g. name@company.com).');
+      setLeadError(lang === 'id' ? 'Format email tidak valid (contoh: nama@perusahaan.com).' : lang === 'ko' ? '이메일 형식이 올바르지 않습니다 (예: name@company.com).' : 'Invalid email address format (e.g. name@company.com).');
       return;
     }
 
     if (!leadForm.consent) {
-      setLeadError(lang === 'id' ? 'Harap centang persetujuan komunikasi agar tim kami dapat menghubungi Anda.' : 'Please agree to communication consent so our team can reach out to you.');
+      setLeadError(lang === 'id' ? 'Harap centang persetujuan komunikasi agar tim kami dapat menghubungi Anda.' : lang === 'ko' ? '상담 진행을 위한 개인정보 처리 및 연락 동의에 체크해 주세요.' : 'Please agree to communication consent so our team can reach out to you.');
       return;
     }
 
@@ -684,7 +748,7 @@ export default function ChatWidget({
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || (lang === 'id' ? 'Gagal mengirimkan permintaan konsultasi' : 'Failed to submit consultation inquiry'));
+        throw new Error(data.error || (lang === 'id' ? 'Gagal mengirimkan permintaan konsultasi' : lang === 'ko' ? '상담 요청 제출에 실패했습니다.' : 'Failed to submit consultation inquiry'));
       }
 
       setLeadSubmitted(true);
@@ -700,12 +764,14 @@ export default function ChatWidget({
         sender: 'bot',
         text: lang === 'id'
           ? `✅ **Terima kasih, ${leadForm.name}!**\n\nPermintaan konsultasi Anda telah kami terima. Tim konsultan senior Inpartner akan menganalisis profil bisnis Anda (**${leadForm.company || 'perusahaan Anda'}**) dan menghubungi Anda dalam 1x24 jam kerja.\n\nUntuk respon cepat, Anda juga dapat menghubungi tim kami langsung via WhatsApp di **[+62 896 2831 0192](https://wa.me/6289628310192)**.`
+          : lang === 'ko'
+          ? `✅ **감사합니다, ${leadForm.name}님!**\n\n상담 요청이 성공적으로 접수되었습니다. 인파트너 수석 자문팀이 귀사의 비즈니스 개요(**${leadForm.company || '귀사'}**)를 검토한 후 영업일 기준 1일 이내에 연락드리겠습니다.\n\n빠른 상담을 원하시면 공식 WhatsApp **[+62 896 2831 0192](https://wa.me/6289628310192)**로 즉시 문의하실 수 있습니다.`
           : `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, confirmMsg]);
     } catch (err: any) {
-      setLeadError(err.message || (lang === 'id' ? 'Terjadi kesalahan sistem saat mengirimkan data.' : 'A system error occurred while submitting.'));
+      setLeadError(err.message || (lang === 'id' ? 'Terjadi kesalahan sistem saat mengirimkan data.' : lang === 'ko' ? '데이터 제출 중 시스템 오류가 발생했습니다.' : 'A system error occurred while submitting.'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -761,17 +827,27 @@ export default function ChatWidget({
               </div>
 
               <h4 className="font-bold text-xs text-slate-900 leading-snug group-hover:text-[#005DAD] transition-colors">
-                Looking for Strategic Business Advisory or Profit Optimization?
+                {lang === 'id'
+                  ? 'Butuh Konsultasi Strategi Bisnis atau Optimasi Profit?'
+                  : lang === 'ko'
+                  ? '비즈니스 전략 자문 또는 수익성 최적화가 필요하신가요?'
+                  : 'Looking for Strategic Business Advisory or Profit Optimization?'}
               </h4>
               <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                Receive an executive diagnostic & 4-pillar advisory roadmap in under 2 minutes.
+                {lang === 'id'
+                  ? 'Dapatkan diagnosa eksekutif & peta jalan 4 pilar advisory dalam 2 menit.'
+                  : lang === 'ko'
+                  ? '2분 안에 경영진 진단 및 4대 핵심 자문 로드맵을 확인하세요.'
+                  : 'Receive an executive diagnostic & 4-pillar advisory roadmap in under 2 minutes.'}
               </p>
 
               <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
                 <span className="font-bold text-[#005DAD] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                  Start Consultation &rarr;
+                  {lang === 'id' ? 'Mulai Konsultasi →' : lang === 'ko' ? '상담 시작하기 →' : 'Start Consultation →'}
                 </span>
-                <span className="text-slate-400">Online 24/7 • Complimentary</span>
+                <span className="text-slate-400">
+                  {lang === 'id' ? 'Online 24/7 • Gratis' : lang === 'ko' ? '24시간 상시 운영 • 무료' : 'Online 24/7 • Complimentary'}
+                </span>
               </div>
             </div>
           )}
@@ -852,11 +928,13 @@ export default function ChatWidget({
                 onClick={() => handleToggleLanguage()}
                 className="px-2 py-1 text-[11px] font-bold rounded-lg border border-slate-200 hover:border-[#005DAD] hover:bg-[#005DAD]/5 text-slate-700 transition-colors cursor-pointer mr-0.5 flex items-center gap-0.5"
                 aria-label="Switch Language"
-                title={lang === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
+                title={lang === 'id' ? 'Switch to English' : lang === 'en' ? 'Switch to 한국어' : 'Ganti ke Bahasa Indonesia'}
               >
                 <span className={lang === 'id' ? 'text-[#005DAD] font-extrabold' : 'text-slate-400 font-medium'}>ID</span>
                 <span className="text-slate-300">/</span>
                 <span className={lang === 'en' ? 'text-[#005DAD] font-extrabold' : 'text-slate-400 font-medium'}>EN</span>
+                <span className="text-slate-300">/</span>
+                <span className={lang === 'ko' ? 'text-[#005DAD] font-extrabold' : 'text-slate-400 font-medium'}>KO</span>
               </button>
 
               {/* Dropdown Options Menu */}
@@ -884,7 +962,9 @@ export default function ChatWidget({
                     >
                       <div className="flex items-center gap-2">
                         <Globe className="w-3.5 h-3.5 text-slate-500" />
-                        <span>{lang === 'id' ? 'Bahasa: Indonesia' : 'Language: English'}</span>
+                        <span>
+                          {lang === 'id' ? 'Bahasa: Indonesia' : lang === 'ko' ? '언어: 한국어' : 'Language: English'}
+                        </span>
                       </div>
                       <span className="text-[10px] font-bold text-[#005DAD] uppercase bg-[#005DAD]/10 px-1.5 py-0.5 rounded">
                         {lang.toUpperCase()}
@@ -908,7 +988,13 @@ export default function ChatWidget({
                     </button>
 
                     <a
-                      href={getWhatsAppUrl()}
+                      href={getWhatsAppUrl(
+                        lang === 'id'
+                          ? 'Halo tim Inpartner, saya ingin berkonsultasi mengenai layanan penasihat bisnis.'
+                          : lang === 'ko'
+                          ? '안녕하세요 인파트너 팀, 기업 비즈니스 자문 서비스 관련 상담을 요청합니다.'
+                          : 'Hello Inpartner team, I would like to inquire about business advisory services.'
+                      )}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackEvent('contact_clicked', { channel: 'whatsapp', location: 'menu' })}
@@ -934,7 +1020,7 @@ export default function ChatWidget({
                         className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
-                        <span>{lang === 'id' ? 'Tutup Chat' : 'Close Chat'}</span>
+                        <span>{lang === 'id' ? 'Tutup Chat' : lang === 'ko' ? '대화창 닫기' : 'Close Chat'}</span>
                       </button>
                     </div>
                   </div>
@@ -1150,7 +1236,13 @@ export default function ChatWidget({
                                 <span>{t.scheduleConsultation}</span>
                               </button>
                               <a
-                                href={getWhatsAppUrl(lang === 'id' ? 'Halo tim Inpartner, saya ingin berkonsultasi mengenai layanan penasihat bisnis.' : 'Hello Inpartner team, I would like to inquire about business advisory services.')}
+                                href={getWhatsAppUrl(
+                                  lang === 'id'
+                                    ? 'Halo tim Inpartner, saya ingin berkonsultasi mengenai layanan penasihat bisnis.'
+                                    : lang === 'ko'
+                                    ? '안녕하세요 인파트너 팀, 기업 비즈니스 자문 서비스 관련 상담을 요청합니다.'
+                                    : 'Hello Inpartner team, I would like to inquire about business advisory services.'
+                                )}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={() => trackEvent('contact_clicked', { channel: 'whatsapp', location: 'chat_cta' })}
@@ -1299,7 +1391,7 @@ export default function ChatWidget({
                     autoComplete="name"
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
-                    placeholder={lang === 'id' ? 'contoh: Budi Santoso' : 'e.g. John Doe / Budi Santoso'}
+                    placeholder={lang === 'id' ? 'contoh: Budi Santoso' : lang === 'ko' ? '예: 홍길동' : 'e.g. John Doe / Budi Santoso'}
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
@@ -1314,7 +1406,7 @@ export default function ChatWidget({
                     autoComplete="organization"
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
-                    placeholder={lang === 'id' ? 'contoh: PT Maju Bersama' : 'e.g. Acme Corp / Enterprise Ltd'}
+                    placeholder={lang === 'id' ? 'contoh: PT Maju Bersama' : lang === 'ko' ? '예: (주)한국상사' : 'e.g. Acme Corp / Enterprise Ltd'}
                     className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
@@ -1387,19 +1479,19 @@ export default function ChatWidget({
                 >
                   <option value="">{t.selectPillar}</option>
                   <option value="Business Growth & Market Expansion">
-                    {lang === 'id' ? 'Pertumbuhan Bisnis & Ekspansi Pasar' : 'Business Growth & Market Expansion'}
+                    {lang === 'id' ? 'Pertumbuhan Bisnis & Ekspansi Pasar' : lang === 'ko' ? '비즈니스 성장 및 시장 확장' : 'Business Growth & Market Expansion'}
                   </option>
                   <option value="Funding & Investment Advisory">
-                    {lang === 'id' ? 'Pendanaan & Konsultasi Investasi' : 'Funding & Investment Advisory'}
+                    {lang === 'id' ? 'Pendanaan & Konsultasi Investasi' : lang === 'ko' ? '자금 조달 및 투자 유치 자문' : 'Funding & Investment Advisory'}
                   </option>
                   <option value="Profitability & Cost Optimization">
-                    {lang === 'id' ? 'Optimalisasi Profitabilitas & Margin Biaya' : 'Profitability & Margin Optimization'}
+                    {lang === 'id' ? 'Optimalisasi Profitabilitas & Margin Biaya' : lang === 'ko' ? '수익성 개선 및 비용 최적화' : 'Profitability & Margin Optimization'}
                   </option>
                   <option value="Capacity Building">
-                    {lang === 'id' ? 'Pengembangan Kapasitas / Program Eksekutif' : 'Capacity Building / Executive Program'}
+                    {lang === 'id' ? 'Pengembangan Kapasitas / Program Eksekutif' : lang === 'ko' ? '역량 강화 및 경영진 맞춤 프로그램' : 'Capacity Building / Executive Program'}
                   </option>
                   <option value="Other Consulting Service">
-                    {lang === 'id' ? 'Layanan Penasihat Korporasi Lainnya' : 'Other Corporate Advisory Services'}
+                    {lang === 'id' ? 'Layanan Penasihat Korporasi Lainnya' : lang === 'ko' ? '기타 기업 자문 서비스' : 'Other Corporate Advisory Services'}
                   </option>
                 </select>
               </div>
@@ -1436,6 +1528,14 @@ export default function ChatWidget({
                         Kebijakan Privasi
                       </a>{' '}
                       dan regulasi perlindungan data.
+                    </>
+                  ) : lang === 'ko' ? (
+                    <>
+                      인파트너 비즈니스 자문팀의 상담 안내를 위해 개인정보를 제공하고{' '}
+                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#005DAD] underline underline-offset-2 hover:text-[#004785]">
+                        개인정보처리방침
+                      </a>
+                      에 동의합니다.
                     </>
                   ) : (
                     <>

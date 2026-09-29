@@ -25,15 +25,21 @@ const STOPWORDS = new Set([
   'dengan', 'bisa', 'apakah', 'bagaimana', 'apa', 'saya', 'kami', 'anda', 'kamu',
   'mau', 'ingin', 'tolong', 'bantu', 'bantuan', 'tentang', 'kenapa', 'mengapa', 'adakah',
   'the', 'is', 'at', 'which', 'on', 'and', 'a', 'an', 'in', 'to', 'for', 'of', 'with', 'about',
-  'how', 'what', 'can', 'we', 'you', 'my', 'our'
+  'how', 'what', 'can', 'we', 'you', 'my', 'our',
+  // Korean common particles & stopwords
+  '은', '는', '이', '가', '을', '를', '에', '에서', '으로', '로', '와', '과', '도', '의',
+  '대한', '대해', '어떻게', '무엇', '어떤', '있나요', '있습니까', '해주세요', '합니다'
 ]);
 
 function tokenize(text: string): string[] {
   return text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, ' ')
+    .replace(/[^\w\s\uac00-\ud7af\u1100-\u11ff\u3130-\u318f-]/g, ' ')
     .split(/\s+/)
-    .filter((word) => word.length > 2 && !STOPWORDS.has(word));
+    .filter((word) => {
+      const hasHangul = /[\uac00-\ud7af]/.test(word);
+      return (hasHangul ? word.length >= 2 : word.length > 2) && !STOPWORDS.has(word);
+    });
 }
 
 export function loadAllKnowledgeChunks(): KnowledgeChunk[] {
