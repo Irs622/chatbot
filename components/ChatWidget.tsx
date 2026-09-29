@@ -808,7 +808,7 @@ export default function ChatWidget({
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span className="font-bold text-[11px] text-[#005DAD]">Inpartner AI Assistant</span>
+                  <span className="font-bold text-[11.5px] text-[#0779D1]">Inpartner AI Assistant</span>
                 </div>
                 <button
                   type="button"
@@ -826,14 +826,14 @@ export default function ChatWidget({
                 </button>
               </div>
 
-              <h4 className="font-bold text-xs text-slate-900 leading-snug group-hover:text-[#005DAD] transition-colors">
+              <h4 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-[#0779D1] transition-colors">
                 {lang === 'id'
                   ? 'Butuh Konsultasi Strategi Bisnis atau Optimasi Profit?'
                   : lang === 'ko'
                   ? '비즈니스 전략 자문 또는 수익성 최적화가 필요하신가요?'
                   : 'Looking for Strategic Business Advisory or Profit Optimization?'}
               </h4>
-              <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed font-normal">
                 {lang === 'id'
                   ? 'Dapatkan diagnosa eksekutif & peta jalan 4 pilar advisory dalam 2 menit.'
                   : lang === 'ko'
@@ -841,11 +841,11 @@ export default function ChatWidget({
                   : 'Receive an executive diagnostic & 4-pillar advisory roadmap in under 2 minutes.'}
               </p>
 
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10.5px]">
-                <span className="font-bold text-[#005DAD] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-[#0779D1] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                   {lang === 'id' ? 'Mulai Konsultasi →' : lang === 'ko' ? '상담 시작하기 →' : 'Start Consultation →'}
                 </span>
-                <span className="text-slate-400">
+                <span className="text-[11px] text-slate-400">
                   {lang === 'id' ? 'Online 24/7 • Gratis' : lang === 'ko' ? '24시간 상시 운영 • 무료' : 'Online 24/7 • Complimentary'}
                 </span>
               </div>
@@ -866,7 +866,7 @@ export default function ChatWidget({
                 className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all cursor-pointer"
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Consult {agentConfig.name}
+                <span>Consult <strong className="text-[#0779D1] font-bold">{agentConfig.name}</strong></span>
               </button>
             )}
             <button
@@ -910,7 +910,7 @@ export default function ChatWidget({
                 <ChatbotIcon size="sm" />
               </div>
               <div>
-                <h2 className="font-extrabold text-[15px] text-slate-900 tracking-[-0.02em] leading-snug">
+                <h2 className="font-extrabold text-[15px] sm:text-base text-[#0779D1] tracking-[-0.02em] leading-snug">
                   {agentConfig.name}
                 </h2>
                 <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold tracking-normal">
@@ -1046,17 +1046,17 @@ export default function ChatWidget({
               /* State 1: Clean Minimalist Welcome Screen (Matching Screenshot) */
               <div className="min-h-full max-w-sm mx-auto w-full py-2 flex flex-col items-center justify-center">
                 {/* Agent Mascot / Brand Badge */}
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-slate-100 border border-slate-200/90 flex items-center justify-center shadow-md mb-4 ring-4 ring-[#005DAD]/10 group">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-slate-100 border border-slate-200/90 flex items-center justify-center shadow-md mb-3.5 ring-4 ring-[#0779D1]/10 group">
                   <ChatbotIcon size="lg" className="transition-transform group-hover:scale-105 duration-200" />
                 </div>
 
                 {/* Heading */}
-                <h1 className="text-2xl sm:text-[26px] font-extrabold text-slate-900 text-center tracking-[-0.03em] leading-tight">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 text-center tracking-[-0.03em] leading-snug">
                   {agentConfig.title}
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-[13px] sm:text-[13.5px] text-slate-500 text-center mt-2.5 leading-relaxed max-w-[310px] font-normal">
+                <p className="text-xs sm:text-[13px] text-slate-600 text-center mt-2 leading-relaxed max-w-[320px] font-normal">
                   {agentConfig.subtitle}
                 </p>
 
@@ -1064,31 +1064,31 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={() => handleSendMessage(agentConfig.featured.query, agentConfig.featured.intent)}
-                  className="mt-7 w-full p-4 rounded-2xl bg-[#005DAD]/10 hover:bg-[#005DAD]/15 border border-[#005DAD]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-xs hover:shadow-md text-left group active:scale-[0.99]"
+                  className="mt-6 w-full p-4 rounded-2xl bg-[#0779D1]/8 hover:bg-[#0779D1]/12 border border-[#0779D1]/20 transition-all flex items-center justify-between gap-3.5 cursor-pointer shadow-2xs hover:shadow-sm text-left group active:scale-[0.99]"
                 >
                   {/* Executive Inpartner Blue Icon */}
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#005DAD] to-[#004785] text-white flex items-center justify-center shrink-0 shadow-sm ring-2 ring-[#005DAD]/20">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0779D1] to-[#055ea3] text-white flex items-center justify-center shrink-0 shadow-sm ring-2 ring-[#0779D1]/20">
                     <TrendingUp className="w-5 h-5 text-white stroke-[2.3]" />
                   </div>
 
                   {/* Text Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-[13.5px] text-slate-900 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
+                    <div className="font-bold text-sm text-slate-900 group-hover:text-[#0779D1] transition-colors leading-snug tracking-tight">
                       {agentConfig.featured.title}
                     </div>
-                    <div className="text-[12px] text-slate-500 mt-0.5 leading-snug font-normal">
+                    <div className="text-xs text-slate-500 mt-0.5 leading-snug font-normal">
                       {agentConfig.featured.desc}
                     </div>
                   </div>
 
                   {/* Right Chevron */}
-                  <ChevronRight className="w-4 h-4 text-slate-700 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight className="w-4 h-4 text-slate-600 shrink-0 group-hover:translate-x-0.5 transition-transform" />
                 </button>
 
                 {/* Divider */}
-                <div className="my-6 relative flex items-center justify-center w-full">
+                <div className="my-5 relative flex items-center justify-center w-full">
                   <div className="w-full border-t border-slate-200/80"></div>
-                  <span className="absolute bg-white px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider select-none">
+                  <span className="absolute bg-white px-3 text-[10.5px] uppercase font-bold text-slate-400 tracking-wider select-none">
                     {agentConfig.dividerText}
                   </span>
                 </div>
@@ -1099,12 +1099,12 @@ export default function ChatWidget({
                   <button
                     type="button"
                     onClick={() => handleSendMessage(agentConfig.secondary1.query, agentConfig.secondary1.intent)}
-                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#005DAD]/40 hover:bg-[#005DAD]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
+                    className="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0779D1]/40 hover:bg-[#0779D1]/5 transition-all flex flex-col items-center justify-center text-center gap-2 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-9 h-9 rounded-full bg-[#0779D1]/10 text-[#0779D1] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <Landmark className="w-4 h-4 stroke-[2]" />
                     </div>
-                    <span className="text-[12px] font-semibold text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
+                    <span className="text-xs font-semibold text-slate-800 group-hover:text-[#0779D1] transition-colors leading-snug tracking-tight">
                       {agentConfig.secondary1.title}
                     </span>
                   </button>
@@ -1113,12 +1113,12 @@ export default function ChatWidget({
                   <button
                     type="button"
                     onClick={() => handleSendMessage(agentConfig.secondary2.query, agentConfig.secondary2.intent)}
-                    className="p-4 rounded-2xl border border-slate-200 hover:border-[#005DAD]/40 hover:bg-[#005DAD]/5 transition-all flex flex-col items-center justify-center text-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
+                    className="p-3.5 rounded-2xl border border-slate-200 hover:border-[#0779D1]/40 hover:bg-[#0779D1]/5 transition-all flex flex-col items-center justify-center text-center gap-2 cursor-pointer shadow-2xs hover:shadow-xs group active:scale-[0.99]"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#005DAD]/10 text-[#005DAD] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-9 h-9 rounded-full bg-[#0779D1]/10 text-[#0779D1] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <Compass className="w-4 h-4 stroke-[2]" />
                     </div>
-                    <span className="text-[12px] font-semibold text-slate-800 group-hover:text-[#005DAD] transition-colors leading-snug tracking-tight">
+                    <span className="text-xs font-semibold text-slate-800 group-hover:text-[#0779D1] transition-colors leading-snug tracking-tight">
                       {agentConfig.secondary2.title}
                     </span>
                   </button>
@@ -1145,34 +1145,34 @@ export default function ChatWidget({
                       } max-w-[85%] sm:max-w-[80%]`}
                     >
                       <div
-                        className={`w-full rounded-2xl px-4 py-3 text-[13px] leading-[1.65] ${
+                        className={`w-full rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                           msg.sender === 'user'
-                            ? 'bg-[#005DAD] text-white rounded-br-xs shadow-xs font-medium'
+                            ? 'bg-[#0779D1] text-white rounded-br-xs shadow-xs font-medium'
                             : 'bg-slate-50/90 border border-slate-200/70 text-slate-800 rounded-bl-xs shadow-2xs font-normal'
                         }`}
                       >
                       {/* Message Content with Markdown rendering & Typewriter Caret */}
-                      <div className="whitespace-pre-line prose prose-sm max-w-none text-[13px] leading-[1.65]">
+                      <div className="whitespace-pre-line prose prose-sm max-w-none text-sm leading-relaxed">
                         {formatBotMessage(msg.text)}
                         {msg.isStreaming && (
-                          <span className="inline-block w-1.5 h-3.5 ml-1 bg-[#005DAD] animate-pulse align-middle rounded-xs" />
+                          <span className="inline-block w-1.5 h-4 ml-1 bg-[#0779D1] animate-pulse align-middle rounded-xs" />
                         )}
                       </div>
 
                       {/* Recommended Service Badge */}
                       {msg.recommendedService && !msg.isStreaming && (
-                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#005DAD]/10 text-[#005DAD] border border-[#005DAD]/20 rounded-lg text-[11px] font-bold tracking-tight">
-                          <Sparkles className="w-3.5 h-3.5 text-[#005DAD]" />
+                        <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#0779D1]/10 text-[#0779D1] border border-[#0779D1]/20 rounded-lg text-xs font-semibold tracking-tight">
+                          <Sparkles className="w-3.5 h-3.5 text-[#0779D1]" />
                           <span>{t.service} {msg.recommendedService}</span>
                         </div>
                       )}
 
                       {/* Official Sources */}
                       {msg.sources && msg.sources.length > 0 && !msg.isStreaming && (
-                        <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
-                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[9.5px]">{t.sources}</span>
+                        <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+                          <span className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">{t.sources}</span>
                           {msg.sources.map((s, idx) => (
-                            <span key={idx} className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono text-[10px] text-slate-600 font-medium">
+                            <span key={idx} className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono text-[11px] text-slate-600 font-medium">
                               {s}
                             </span>
                           ))}
@@ -1181,13 +1181,13 @@ export default function ChatWidget({
 
                       {/* Timestamp & Realtime indicator */}
                       <div
-                        className={`mt-1.5 flex items-center justify-between gap-2 text-[10px] font-mono ${
+                        className={`mt-1.5 flex items-center justify-between gap-2 text-[10.5px] font-mono ${
                           msg.sender === 'user' ? 'text-sky-100/90 text-right' : 'text-slate-400'
                         }`}
                       >
                         {msg.sender === 'bot' && msg.isStreaming ? (
-                          <span className="inline-flex items-center gap-1 text-[#005DAD] font-medium not-italic animate-pulse">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#005DAD]" />
+                          <span className="inline-flex items-center gap-1 text-[#0779D1] font-medium not-italic animate-pulse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0779D1]" />
                             {t.generating}
                           </span>
                         ) : (
@@ -1199,15 +1199,15 @@ export default function ChatWidget({
 
                     {/* Follow-up Questions Suggestions */}
                     {msg.followUpQuestions && msg.followUpQuestions.length > 0 && !msg.isStreaming && (
-                      <div className="mt-2 flex flex-wrap gap-1.5 max-w-[85%]">
+                      <div className="mt-2 flex flex-wrap gap-1.5 max-w-[88%]">
                         {msg.followUpQuestions.map((q, idx) => (
                           <button
                             key={idx}
                             onClick={() => handleSendMessage(q)}
-                            className="text-left text-[11.5px] font-medium bg-white hover:bg-[#005DAD]/5 text-slate-700 hover:text-[#005DAD] px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#005DAD]/40 transition-all shadow-2xs flex items-center gap-1.5 group cursor-pointer"
+                            className="text-left text-xs font-medium bg-white hover:bg-[#0779D1]/5 text-slate-700 hover:text-[#0779D1] px-3.5 py-1.5 rounded-full border border-slate-200 hover:border-[#0779D1]/40 transition-all shadow-2xs flex items-center gap-1.5 group cursor-pointer"
                           >
                             <span>{q}</span>
-                            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-[#005DAD] shrink-0" />
+                            <ChevronRight className="w-3 h-3 text-slate-400 group-hover:text-[#0779D1] shrink-0" />
                           </button>
                         ))}
                       </div>
@@ -1215,22 +1215,22 @@ export default function ChatWidget({
 
                     {/* Lead Capture CTA Card */}
                     {msg.suggestLeadCapture && !leadSubmitted && !msg.isStreaming && (
-                      <div className="mt-3 w-full sm:w-[90%] bg-gradient-to-br from-[#005DAD]/5 via-sky-50/50 to-[#005DAD]/10 border border-[#005DAD]/25 rounded-2xl p-4 shadow-sm">
+                      <div className="mt-3 w-full sm:w-[92%] bg-gradient-to-br from-[#0779D1]/5 via-sky-50/50 to-[#0779D1]/10 border border-[#0779D1]/25 rounded-2xl p-4 shadow-sm">
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#005DAD] to-[#004785] text-white flex items-center justify-center shrink-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0779D1] to-[#055ea3] text-white flex items-center justify-center shrink-0 shadow-xs">
                             <Building2 className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-[13px] font-bold text-slate-900 tracking-tight leading-snug">
+                            <h4 className="text-sm font-bold text-slate-900 tracking-tight leading-snug">
                               {t.interestedCta}
                             </h4>
-                            <p className="text-[11.5px] text-slate-600 mt-1 leading-relaxed font-normal">
+                            <p className="text-xs text-slate-600 mt-1 leading-relaxed font-normal">
                               {t.interestedDesc}
                             </p>
                             <div className="mt-3 flex flex-wrap items-center gap-2">
                               <button
                                 onClick={() => handleOpenLeadModal(msg.recommendedService)}
-                                className="bg-[#005DAD] hover:bg-[#004785] text-white text-xs font-bold tracking-tight px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                                className="bg-[#0779D1] hover:bg-[#055ea3] text-white text-xs font-bold tracking-tight px-3.5 py-2 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
                               >
                                 <Building2 className="w-3.5 h-3.5" />
                                 <span>{t.scheduleConsultation}</span>
@@ -1267,9 +1267,9 @@ export default function ChatWidget({
                     </div>
                     <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-bl-xs px-4 py-3 shadow-2xs">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce"></div>
-                        <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.2s]"></div>
-                        <div className="w-2 h-2 rounded-full bg-[#005DAD] animate-bounce [animation-delay:0.4s]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#0779D1] animate-bounce"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#0779D1] animate-bounce [animation-delay:0.2s]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#0779D1] animate-bounce [animation-delay:0.4s]"></div>
                         <span className="text-xs text-slate-500 font-medium ml-1.5">
                           {t.sending}
                         </span>
@@ -1300,7 +1300,7 @@ export default function ChatWidget({
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder={agentConfig.inputPlaceholder}
-                className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-slate-900 text-[16px] sm:text-[13px] font-medium pl-4 pr-12 py-3 rounded-2xl border border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal"
+                className="w-full bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white text-slate-900 text-[16px] sm:text-sm font-medium pl-4 pr-12 py-3 rounded-2xl border border-slate-200 focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal"
                 disabled={isLoading || isStreaming}
               />
               {isLoading || isStreaming ? (
@@ -1318,7 +1318,7 @@ export default function ChatWidget({
                   type="submit"
                   disabled={!inputMessage.trim()}
                   aria-label="Send message"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#005DAD] hover:bg-[#004785] text-white cursor-pointer active:scale-95 shadow-xs"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:bg-slate-100 disabled:text-slate-300 bg-[#0779D1] hover:bg-[#055ea3] text-white cursor-pointer active:scale-95 shadow-xs"
                 >
                   <ArrowUp className="w-4 h-4 stroke-[2.5]" />
                 </button>
@@ -1326,7 +1326,7 @@ export default function ChatWidget({
             </form>
 
             {/* Disclaimer Matching Screenshot */}
-            <div className="text-center text-[10.5px] text-slate-400 mt-2 font-medium tracking-normal select-none">
+            <div className="text-center text-[11px] text-slate-400 mt-2 font-medium tracking-normal select-none">
               {t.disclaimer}
             </div>
           </div>
@@ -1344,17 +1344,17 @@ export default function ChatWidget({
 
           {/* Dialog Card Container */}
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[94vh] sm:max-h-[88vh] flex flex-col overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 my-auto">
-            {/* Modal Header with #005DAD Brand Gradient - Shrink-0 ensures it NEVER gets clipped */}
-            <div className="shrink-0 bg-gradient-to-r from-[#005DAD] to-[#004785] text-white px-5 py-3.5 sm:px-6 sm:py-4 flex items-center justify-between shadow-md">
+            {/* Modal Header with #0779D1 Brand Gradient - Shrink-0 ensures it NEVER gets clipped */}
+            <div className="shrink-0 bg-gradient-to-r from-[#0779D1] to-[#055ea3] text-white px-5 py-3.5 sm:px-6 sm:py-4 flex items-center justify-between shadow-md">
               <div className="flex items-center gap-3 min-w-0 pr-2">
                 <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
                   <Building2 className="w-4.5 h-4.5 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-extrabold text-[15px] sm:text-base text-white tracking-tight leading-snug truncate">
+                  <h3 className="font-bold text-base sm:text-lg text-white tracking-tight leading-snug truncate">
                     {t.consultationSchedule}
                   </h3>
-                  <p className="text-[11.5px] text-sky-100/90 leading-tight font-normal truncate mt-0.5">
+                  <p className="text-xs text-sky-100/90 leading-tight font-normal truncate mt-0.5">
                     {t.consultationDesc}
                   </p>
                 </div>
@@ -1380,7 +1380,7 @@ export default function ChatWidget({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
-                  <label htmlFor="lead-full-name" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  <label htmlFor="lead-full-name" className="block text-xs font-semibold text-slate-700 mb-1">
                     {t.fullName} <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1392,11 +1392,11 @@ export default function ChatWidget({
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                     placeholder={lang === 'id' ? 'contoh: Budi Santoso' : lang === 'ko' ? '예: 홍길동' : 'e.g. John Doe / Budi Santoso'}
-                    className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
                 <div>
-                  <label htmlFor="lead-company-name" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  <label htmlFor="lead-company-name" className="block text-xs font-semibold text-slate-700 mb-1">
                     {t.companyName}
                   </label>
                   <input
@@ -1407,7 +1407,7 @@ export default function ChatWidget({
                     value={leadForm.company}
                     onChange={(e) => setLeadForm({ ...leadForm, company: e.target.value })}
                     placeholder={lang === 'id' ? 'contoh: PT Maju Bersama' : lang === 'ko' ? '예: (주)한국상사' : 'e.g. Acme Corp / Enterprise Ltd'}
-                    className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
                 </div>
               </div>
@@ -1415,11 +1415,11 @@ export default function ChatWidget({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label htmlFor="lead-phone-number" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600">
+                    <label htmlFor="lead-phone-number" className="block text-xs font-semibold text-slate-700">
                       {t.phone} <span className="text-rose-500">*</span>
                     </label>
                     {leadForm.phone && (
-                      <span className={`text-[10px] font-semibold ${phoneValidation.isValid ? 'text-emerald-600' : 'text-slate-400'}`}>
+                      <span className={`text-[11px] font-semibold ${phoneValidation.isValid ? 'text-emerald-600' : 'text-slate-400'}`}>
                         {phoneValidation.isValid ? '✓ Valid' : `${leadForm.phone.replace(/[^0-9]/g, '').length} digits`}
                       </span>
                     )}
@@ -1433,20 +1433,20 @@ export default function ChatWidget({
                     value={leadForm.phone}
                     onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                     placeholder="0812xxxxxxxx / +62..."
-                    className={`w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border bg-slate-50/50 hover:bg-white focus:bg-white focus:outline-none transition-all placeholder:text-slate-400 text-slate-900 ${
+                    className={`w-full text-sm px-3.5 py-2.5 rounded-xl border bg-slate-50/50 hover:bg-white focus:bg-white focus:outline-none transition-all placeholder:text-slate-400 text-slate-900 ${
                       leadForm.phone && !phoneValidation.isValid && leadForm.phone.length >= 4
                         ? 'border-amber-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200'
                         : leadForm.phone && phoneValidation.isValid
                         ? 'border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100'
-                        : 'border-slate-200 focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15'
+                        : 'border-slate-200 focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15'
                     }`}
                   />
-                  <span className="block text-[10px] text-slate-400 mt-1">
+                  <span className="block text-[11px] text-slate-400 mt-1">
                     {t.phoneFormatHint}
                   </span>
                 </div>
                 <div>
-                  <label htmlFor="lead-business-email" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  <label htmlFor="lead-business-email" className="block text-xs font-semibold text-slate-700 mb-1">
                     {t.email}
                   </label>
                   <input
@@ -1457,16 +1457,16 @@ export default function ChatWidget({
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
                     placeholder="name@company.com"
-                    className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
-                  <span className="block text-[10px] text-slate-400 mt-1">
+                  <span className="block text-[11px] text-slate-400 mt-1">
                     {t.emailHint}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="lead-advisory-need" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <label htmlFor="lead-advisory-need" className="block text-xs font-semibold text-slate-700 mb-1">
                   {t.advisoryNeed} <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -1474,7 +1474,7 @@ export default function ChatWidget({
                   name="businessNeed"
                   value={leadForm.businessNeed}
                   onChange={(e) => setLeadForm({ ...leadForm, businessNeed: e.target.value })}
-                  className="w-full text-xs px-3 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
+                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
                   required
                 >
                   <option value="">{t.selectPillar}</option>
@@ -1497,7 +1497,7 @@ export default function ChatWidget({
               </div>
 
               <div>
-                <label htmlFor="lead-project-notes" className="block text-[10.5px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <label htmlFor="lead-project-notes" className="block text-xs font-semibold text-slate-700 mb-1">
                   {t.notes}
                 </label>
                 <textarea
@@ -1507,24 +1507,24 @@ export default function ChatWidget({
                   value={leadForm.notes}
                   onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })}
                   placeholder={t.notesPlaceholder}
-                  className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#005DAD] focus:ring-2 focus:ring-[#005DAD]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900 resize-none"
+                  className="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900 resize-none"
                 />
               </div>
 
-              <div className="flex items-start gap-2.5 bg-[#005DAD]/5 p-2.5 rounded-xl border border-[#005DAD]/15">
+              <div className="flex items-start gap-2.5 bg-[#0779D1]/5 p-3 rounded-xl border border-[#0779D1]/15">
                 <input
                   type="checkbox"
                   id="lead-consent"
                   name="consent"
                   checked={leadForm.consent}
                   onChange={(e) => setLeadForm({ ...leadForm, consent: e.target.checked })}
-                  className="mt-0.5 rounded text-[#005DAD] focus:ring-[#005DAD] w-3.5 h-3.5 cursor-pointer accent-[#005DAD]"
+                  className="mt-0.5 rounded text-[#0779D1] focus:ring-[#0779D1] w-4 h-4 cursor-pointer accent-[#0779D1]"
                 />
-                <label htmlFor="lead-consent" className="text-[11px] font-medium text-slate-700 leading-snug cursor-pointer select-none">
+                <label htmlFor="lead-consent" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
                   {lang === 'id' ? (
                     <>
                       Saya menyetujui data di atas digunakan untuk dihubungi oleh tim konsultan Inpartner sesuai{' '}
-                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#005DAD] underline underline-offset-2 hover:text-[#004785]">
+                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#0779D1] underline underline-offset-2 hover:text-[#055ea3]">
                         Kebijakan Privasi
                       </a>{' '}
                       dan regulasi perlindungan data.
@@ -1532,7 +1532,7 @@ export default function ChatWidget({
                   ) : lang === 'ko' ? (
                     <>
                       인파트너 비즈니스 자문팀의 상담 안내를 위해 개인정보를 제공하고{' '}
-                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#005DAD] underline underline-offset-2 hover:text-[#004785]">
+                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#0779D1] underline underline-offset-2 hover:text-[#055ea3]">
                         개인정보처리방침
                       </a>
                       에 동의합니다.
@@ -1540,7 +1540,7 @@ export default function ChatWidget({
                   ) : (
                     <>
                       I agree to be contacted by the Inpartner corporate advisory team for consultation follow-up in accordance with the{' '}
-                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#005DAD] underline underline-offset-2 hover:text-[#004785]">
+                      <a href="https://inpartner.id" target="_blank" rel="noopener noreferrer" className="text-[#0779D1] underline underline-offset-2 hover:text-[#055ea3]">
                         Privacy Policy
                       </a>.
                     </>
@@ -1552,14 +1552,14 @@ export default function ChatWidget({
                 <button
                   type="button"
                   onClick={() => setShowLeadModal(false)}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {t.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={leadSubmitting}
-                  className="px-5 py-2 text-xs font-bold uppercase tracking-wider text-white bg-[#005DAD] hover:bg-[#004785] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white bg-[#0779D1] hover:bg-[#055ea3] active:scale-[0.98] rounded-xl shadow-md hover:shadow-lg transition-all disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
                 >
                   {leadSubmitting ? (
                     <>
@@ -1598,7 +1598,7 @@ function formatBotMessage(text: string) {
           href={linkMatch[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#005DAD] font-semibold underline underline-offset-2 hover:text-[#004785] transition-colors"
+          className="text-[#0779D1] font-semibold underline underline-offset-2 hover:text-[#055ea3] transition-colors"
         >
           {linkMatch[1]}
         </a>
