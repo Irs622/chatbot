@@ -376,3 +376,18 @@ export function detectIntent(text: string): {
     matchedKeywords: bestMatchedKeywords
   };
 }
+
+export function getAllSupportedIntents(): IntentType[] {
+  return [
+    'strategy_corporate',
+    'investment_advisory',
+    'market_access',
+    'cross_border',
+    'human_capital',
+    'company_information',
+    'service_information',
+    'contact',
+    'other',
+    'unknown'
+  ];
+}

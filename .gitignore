@@ -43,3 +43,7 @@ PRESENTASI_EKSEKUTIF_PROYEK_INPARTNER_AI.md
 # temporary screenshots / testing artifacts
 public/*.png
 *.png
+
+# local database file
+data/db.json
+

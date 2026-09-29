@@ -465,42 +465,42 @@ export function getAnalyticsSummary() {
       {
         id: 'q_default_1',
         conversation_id: 'conv_sample_1',
-        question: 'Perusahaan saya sedang berkembang tetapi profit margin menurun. Apakah Inpartner bisa membantu?',
-        intent: 'profitability',
+        question: 'Bagaimana Inpartner mendampingi restrukturisasi korporasi dan rencana M&A?',
+        intent: 'strategy_corporate',
         created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-        bot_answer_preview: 'Tentu, Inpartner dapat membantu melalui pilar Profitability & Operational Excellence untuk mengidentifikasi inefisiensi alur kerja dan kebocoran OPEX...'
+        bot_answer_preview: 'Inpartner mendampingi penyusunan strategi korporat, valuasi M&A, hingga integrasi pasca transaksi...'
       },
       {
         id: 'q_default_2',
         conversation_id: 'conv_sample_2',
-        question: 'Saya butuh bantuan terkait skema Funding (pendanaan) dan optimalisasi Profit Margin bisnis.',
-        intent: 'funding',
+        question: 'Apakah Inpartner dapat menyusun Feasibility Study untuk proyek investasi kami?',
+        intent: 'investment_advisory',
         created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
-        bot_answer_preview: 'Layanan Funding & Investment Inpartner mendampingi perusahaan dalam Investment Readiness Assessment, Valuasi & Financial Modeling, serta koneksi ke mitra investor...'
+        bot_answer_preview: 'Layanan Investment & Project Advisory Inpartner mencakup penyusunan Feasibility Studies (FS) independen dan analisis komersial...'
       },
       {
         id: 'q_default_3',
         conversation_id: 'conv_sample_3',
-        question: 'Bagaimana prosedur dan estimasi biaya pendirian PT PMA untuk foreign investor dari Singapura?',
-        intent: 'growth',
+        question: 'Bagaimana strategi market entry dan pencarian distributor di Indonesia?',
+        intent: 'market_access',
         created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
-        bot_answer_preview: 'Inpartner mendampingi pendirian PT PMA (Foreign Investment Entity) secara komprehensif, mulai dari penyesuaian KBLI, perizinan OSS RBA, hingga struktur permodalan minimum...'
+        bot_answer_preview: 'Inpartner mendampingi formulasi Go-To-Market (GTM) dan fasilitasi business matching dengan mitra distributor lokal...'
       },
       {
         id: 'q_default_4',
         conversation_id: 'conv_sample_4',
-        question: 'Apakah Inpartner menyediakan pinjaman uang atau modal langsung?',
-        intent: 'funding',
+        question: 'Apakah Inpartner membantu aliansi joint venture dan transfer teknologi lintas negara?',
+        intent: 'cross_border',
         created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-        bot_answer_preview: 'Inpartner bukan lembaga keuangan pemberi pinjaman langsung (not a direct lender), melainkan konsultan independen yang membantu penataan struktur modal dan koneksi ke investor...'
+        bot_answer_preview: 'Layanan Cross-Border & Technology Advisory kami menghubungkan perusahaan global dengan mitra strategis di Indonesia...'
       },
       {
         id: 'q_default_5',
         conversation_id: 'conv_sample_5',
-        question: 'Apa saja materi dan format pelatihan dalam The Executive Business Program?',
-        intent: 'capacity_building',
+        question: 'Bagaimana kurikulum The Executive Business Program untuk jajaran direksi?',
+        intent: 'human_capital',
         created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
-        bot_answer_preview: 'The Executive Business Program mencakup modul Strategic Business Plan, Operational Alignment, Financial Modeling, dan Leadership Coaching untuk C-level dan business founders...'
+        bot_answer_preview: 'The Executive Business Program mencakup kurikulum kepemimpinan strategis, manajemen talenta, dan efektivitas organisasi...'
       }
     );
   }
