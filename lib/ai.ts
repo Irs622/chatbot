@@ -76,9 +76,10 @@ CONVERSATION & INTEGRITY RULES (STRICTLY REQUIRED):
 4. INPARTNER is NOT a bank, direct lender, broker, or regulated financial service provider. INPARTNER provides Business & Management Consulting advisory services.
 5. INPARTNER is NOT a software house, IT company, or technology service provider. Technology is covered as a sector and in Cross-Border Technology advisory context only.
 6. If information is not in the context, state transparently that you do not have that specific detail, and invite the visitor to schedule a direct discussion with INPARTNER consultants.
-7. Maintain a professional, consultative, and actionable tone. Use clear bullet points where appropriate.
+7. Maintain a professional, consultative, and actionable tone.
 8. Recommend relevant INPARTNER services and encourage visitors to schedule a consultation or leave their contact information.
-9. Use company-stated figures (90+ projects, 70+ clients, 10+ foreign clients) with appropriate attribution to the INPARTNER 2026 Company Profile.`;
+9. Use company-stated figures (90+ projects, 70+ clients, 10+ foreign clients) with appropriate attribution to the INPARTNER 2026 Company Profile.
+10. CLEAN PRESENTATION (STRICT): NEVER output raw markdown symbols like "###", "##", "---", or asterisks for bullets ("* "). Use bold (**Section Title**) for headings and clean bullet dots (• ) or numbers (1., 2.). Ensure all text is clean and executive-ready without raw symbols.`;
 
 export type AIStreamEvent =
   | {
@@ -349,7 +350,7 @@ ${cleanUserMessage}
 2. Identify the relevant Inpartner advisory pillar.
 3. Outline tangible steps for how Inpartner guides client engagements.
 4. Offer an option to schedule an advisory consultation with Inpartner senior partners.
-Use clean markdown formatting with bullet points.
+5. NO RAW MARKDOWN SYMBOLS: Do NOT output "###", "##", "---", or "*" for bullets. Use bold (**Title**) for headings, and clean bullet dots (• ) or numbers (1., 2.) for lists.
 </format_instructions>`;
 
       for (const mName of candidateModels) {
@@ -590,7 +591,7 @@ Kondisi di mana omzet meningkat namun margin keuntungan bersih justru tertekan a
 - **Kebocoran Rantai Pasok:** Biaya pengadaan (procurement) dan logistik yang belum dioptimasi secara berkala.
 - **Struktur Penetapan Harga (Pricing Strategy):** Margin per unit belum disesuaikan dengan kenaikan biaya variabel operasional.
 
-### Langkah Pendampingan Inpartner untuk Perusahaan Anda:
+**Langkah Pendampingan Inpartner untuk Perusahaan Anda:**
 1. **Audit Menyeluruh Alur Kerja Operasional:** Mengidentifikasi hambatan (*bottleneck*) dan memangkas aktivitas pemborosan (*lean waste elimination*).
 2. **Diagnostik Struktur Biaya & Unit Economics:** Membedah HPP (COGS) dan OPEX untuk mengisolasi sumber kebocoran margin laba.
 3. **Penyelarasan SDM, Proses & KPI:** Membangun *Dashboard KPI* dan SOP terukur agar skala ekonomi bisnis langsung terkonversi menjadi laba bersih yang sehat.
@@ -605,7 +606,7 @@ Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan A
 - **공급망 누수:** 주기적인 검토와 최적화가 결여된 조달(Procurement) 및 물류 비용.
 - **가격 책정 전략(Pricing) 미비:** 상승한 변동비가 단가 및 마진 구조에 제대로 반영되지 않음.
 
-### 인파트너의 단계별 자문 접근 방식:
+**인파트너의 단계별 자문 접근 방식:**
 1. **운영 워크플로우 엔드투엔드 진단:** 병목 구간(Bottleneck) 식별 및 낭비 요인 제거(Lean Waste Elimination).
 2. **원가 구조 및 유닛 이코노믹스 감사:** 매출원가(COGS)와 판관비(OPEX)를 분해하여 마진 누수 원인 격리.
 3. **인력, 프로세스, KPI 정렬:** 실시간 KPI 대시보드와 SOP를 구축하여 규모의 경제가 실질적인 순이익으로 전환되도록 개선.
@@ -621,7 +622,7 @@ A scenario where revenue rises while net profitability shrinks is a frequent cha
 - **Supply Chain Leakage:** Unoptimized procurement costs, supplier dependencies, and logistics overhead.
 - **Pricing Strategy Gaps:** Unit margins that fail to capture recent increases in variable operating costs.
 
-### How Inpartner Guides Your Enterprise:
+**How Inpartner Guides Your Enterprise:**
 1. **End-to-End Operational Workflow Audit:** Pinpoint operational bottlenecks and eliminate non-value-adding activities (*lean waste elimination*).
 2. **Cost Structure & Unit Economics Diagnostic:** Dissect COGS and OPEX drivers to isolate margin leakage sources.
 3. **Alignment of People, Process, Technology & Data:** Establish real-time KPI Dashboards and standardized operating procedures (SOPs) so economies of scale directly convert to healthy net profitability.
@@ -750,7 +751,7 @@ Please submit your business requirements below or schedule an exploratory consul
     if (lang === 'id') {
       return `Layanan **Human Capital & Organization** Inpartner dirancang untuk membantu perusahaan membangun, mengembangkan, dan mengoptimalkan sumber daya manusia serta struktur organisasi.
 
-### Ruang Lingkup Layanan:
+**Ruang Lingkup Layanan:**
 - **Executive Search / Head Hunting:** Layanan rekrutmen profesional untuk posisi C-suite dan senior leadership. Mencakup identifikasi kandidat, penilaian, dan fasilitasi penempatan.
 - **Organization Development:** Desain, penilaian, dan improvement struktur organisasi. Pengembangan framework tata kelola dan peninjauan efektivitas organisasi.
 - **Talent & Leadership Advisory:** Strategi pengembangan talenta, framework manajemen talenta, serta advisory pengembangan kepemimpinan dan perencanaan suksesi.
@@ -760,7 +761,7 @@ Program ini berfokus pada peningkatan produktivitas SDM dan sinergi organisasi u
     } else if (lang === 'ko') {
       return `인파트너의 **'인적 자원 & 조직 개발(Human Capital & Organization)'** 서비스는 기업이 인재를 육성하고, 조직 구조를 최적화하도록 지원합니다.
 
-### 주요 서비스 구성:
+**주요 서비스 구성:**
 - **임원 채용 / 헤드헌팅:** C-suite 및 시니어 리더십 전문 채용 서비스. 후보자 발굴, 평가 및 채용 지원.
 - **조직 개발:** 조직 구조 설계·평가·개선. 거버넌스 프레임워크 개발 및 조직 효과성 검토.
 - **인재 & 리더십 자문:** 인재 전략, 인재 관리 프레임워크, 리더십 개발 및 승계 계획 수립.
@@ -771,7 +772,7 @@ Program ini berfokus pada peningkatan produktivitas SDM dan sinergi organisasi u
 
     return `Inpartner's **Human Capital & Organization** service helps businesses build, develop, and optimize their people and organizational structures.
 
-### Service Scope:
+**Service Scope:**
 - **Executive Search / Head Hunting:** Professional executive search for C-suite and senior leadership roles. Candidate identification, assessment, and placement facilitation.
 - **Organization Development:** Organizational structure design, assessment, and improvement. Governance framework development and organizational effectiveness reviews.
 - **Talent & Leadership Advisory:** Talent strategy development, talent management frameworks, leadership development, and succession planning advisory.
@@ -785,7 +786,7 @@ The program focuses on elevating workforce productivity and organizational syner
     if (lang === 'id') {
       return `Melalui layanan **Market Access & Business Expansion**, Inpartner mendampingi perusahaan dalam menavigasi pasar, mengidentifikasi peluang, dan memperluas jangkauan bisnis.
 
-### Fokus Pendampingan:
+**Fokus Pendampingan:**
 - **Riset Pasar & Intelijen Bisnis:** Mengidentifikasi ukuran pasar, tren pertumbuhan, perilaku pelanggan, dan peta kompetitif.
 - **Strategi Masuk Pasar:** Merancang framework Go-to-Market (GTM), strategi channel, dan roadmap peluncuran ke pasar baru.
 - **Business Matching:** Fasilitasi perkenalan strategis antara bisnis — menghubungkan perusahaan dengan mitra, klien, dan distributor yang relevan.
@@ -796,7 +797,7 @@ Apakah ekspansi yang Anda rencanakan berfokus pada pasar domestik baru atau akse
     } else if (lang === 'ko') {
       return `인파트너는 **'시장 접근 및 사업 확장(Market Access & Business Expansion)'** 서비스를 통해 기업이 시장을 탐색하고, 사업 기회를 발굴하며, 시장 입지를 확장할 수 있도록 지원합니다.
 
-### 주요 자문 영역:
+**주요 자문 영역:**
 - **시장 조사 & 비즈니스 인텔리전스:** 시장 규모, 성장 트렌드, 고객 행동 분석 및 경쟁 환경 파악.
 - **시장 진입 전략:** Go-to-Market(GTM) 프레임워크 설계, 채널 전략, 신규 시장 진출 로드맵 구축.
 - **비즈니스 매칭:** 기업 간 전략적 상업 소개 — 관련 파트너, 고객, 유통업체 연결 지원.
@@ -808,7 +809,7 @@ Apakah ekspansi yang Anda rencanakan berfokus pada pasar domestik baru atau akse
 
     return `Inpartner's **Market Access & Business Expansion** service helps businesses navigate markets, identify opportunities, and expand their market presence.
 
-### Advisory Focus:
+**Advisory Focus:**
 - **Market Research & Intelligence:** Market sizing, growth trends, consumer behavior analysis, and competitive landscape assessment.
 - **Market Entry Strategy:** Go-to-Market (GTM) framework design, channel strategy, and market launch roadmap.
 - **Business Matching:** Strategic commercial introductions between businesses — connecting with relevant partners, clients, and distributors.
@@ -822,7 +823,7 @@ Is your expansion focused on new domestic markets or entering international mark
     if (lang === 'id') {
       return `Layanan **Investment & Project Advisory** Inpartner mendampingi perusahaan dalam merancang struktur investasi, analisis komersial, dan pengembangan proyek.
 
-### Ruang Lingkup Layanan:
+**Ruang Lingkup Layanan:**
 - **Feasibility Studies (FS):** Analisis kelayakan komersial, keuangan, dan operasional untuk proyek dan investasi.
 - **Investment Advisory:** Advisory investasi independen untuk klien korporasi dan institusional.
 - **Commercial & Financial Analysis:** Analisis komersial dan keuangan mendalam, financial modeling, dan valuasi.
@@ -833,7 +834,7 @@ Apakah perusahaan Anda sedang merencanakan investasi atau membutuhkan feasibilit
     } else if (lang === 'ko') {
       return `인파트너의 **'투자 & 프로젝트 자문(Investment & Project Advisory)'** 서비스는 기업이 최적의 투자 구조를 설계하고 프로젝트를 개발할 수 있도록 지원합니다.
 
-### 주요 서비스 범위:
+**주요 서비스 범위:**
 - **사업타당성 연구(FS):** 프로젝트 및 투자에 대한 상업적·재무적·운영적 타당성 분석.
 - **투자 자문:** 기업 및 기관 고객을 위한 독립적 투자 자문.
 - **상업적 & 재무 분석:** 심층 상업 분석, 재무 모델링, 기업가치 평가.
@@ -845,7 +846,7 @@ Apakah perusahaan Anda sedang merencanakan investasi atau membutuhkan feasibilit
 
     return `Inpartner's **Investment & Project Advisory** service assists enterprises in structuring investments, conducting commercial analysis, and developing viable projects.
 
-### Service Scope:
+**Service Scope:**
 - **Feasibility Studies (FS):** Commercial, financial, and operational feasibility assessments for projects and investments.
 - **Investment Advisory:** Independent advisory supporting investment decisions for corporate and institutional clients.
 - **Commercial & Financial Analysis:** Detailed analysis, financial modeling, valuation, and due diligence.

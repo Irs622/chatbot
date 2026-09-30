@@ -1152,7 +1152,7 @@ export default function ChatWidget({
                         }`}
                       >
                       {/* Message Content with Markdown rendering & Typewriter Caret */}
-                      <div className="whitespace-pre-line prose prose-sm max-w-none text-sm leading-relaxed">
+                      <div className="prose prose-sm max-w-none text-sm leading-relaxed space-y-0.5">
                         {formatBotMessage(msg.text)}
                         {msg.isStreaming && (
                           <span className="inline-block w-1.5 h-4 ml-1 bg-[#0779D1] animate-pulse align-middle rounded-xs" />
@@ -1582,17 +1582,103 @@ export default function ChatWidget({
   );
 }
 
-// Simple Helper to highlight bold text, headers, and markdown links
+// Clean Helper to format bot responses cleanly without raw markdown symbols (###, ---, *, etc.)
 function formatBotMessage(text: string) {
-  const parts = text.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g);
-  return parts.map((part, index) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
+  if (!text) return null;
+
+  // Pre-normalize text so headings and dividers have proper line breaks
+  const normalized = text
+    .replace(/\r\n/g, '\n')
+    .replace(/([^\n])\s*(#{1,4}\s+)/g, '$1\n\n$2')
+    .replace(/([^\n])\s*(\-{3,}|\*{3,}|_{3,})\s*/g, '$1\n\n$2\n\n');
+
+  // Split text by newlines into logical lines
+  const lines = normalized.split('\n');
+
+  return lines.map((line, lineIndex) => {
+    const trimmed = line.trim();
+
+    // 1. Horizontal rules (--- or ***) -> render clean subtle divider
+    if (/^(\-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      return <hr key={`hr-${lineIndex}`} className="my-2 border-slate-200/80" />;
+    }
+
+    // 2. Headings (### Title or ## Title) -> render clean bold subheader without ### symbols
+    const headingMatch = trimmed.match(/^#{1,4}\s+(.+)$/);
+    if (headingMatch) {
       return (
-        <strong key={index} className="font-bold text-slate-900">
+        <div key={`h-${lineIndex}`} className="font-bold text-slate-900 text-sm mt-3 mb-1">
+          {renderInlineElements(headingMatch[1])}
+        </div>
+      );
+    }
+
+    // 3. Bullet points (* item, - item, • item) -> render clean bullet dot without raw asterisk
+    const bulletMatch = trimmed.match(/^[\*\-\•]\s+(.+)$/);
+    if (bulletMatch) {
+      return (
+        <div key={`b-${lineIndex}`} className="flex items-start gap-2 my-1 pl-1">
+          <span className="text-[#0779D1] font-bold select-none text-xs leading-5">•</span>
+          <div className="flex-1 text-slate-800">{renderInlineElements(bulletMatch[1])}</div>
+        </div>
+      );
+    }
+
+    // 4. Numbered list (1. item, 2. item)
+    const numMatch = trimmed.match(/^(\d+[\.\)])\s+(.+)$/);
+    if (numMatch) {
+      return (
+        <div key={`num-${lineIndex}`} className="flex items-start gap-2 my-1 pl-1">
+          <span className="text-[#0779D1] font-semibold select-none text-xs leading-5 min-w-[18px]">
+            {numMatch[1]}
+          </span>
+          <div className="flex-1 text-slate-800">{renderInlineElements(numMatch[2])}</div>
+        </div>
+      );
+    }
+
+    // 5. Empty line -> clean spacing
+    if (!trimmed) {
+      return <div key={`empty-${lineIndex}`} className="h-1.5" />;
+    }
+
+    // 6. Regular paragraph text
+    return (
+      <div key={`p-${lineIndex}`} className="my-0.5 text-slate-800">
+        {renderInlineElements(line)}
+      </div>
+    );
+  });
+}
+
+// Inline renderer for bold, italic, and links without leaking raw asterisks
+function renderInlineElements(content: string) {
+  // Matches **bold**, *italic*, and [link](url)
+  const regex = /(\*\*.*?\*\*|\*[^\*]+?\*|\[.*?\]\(.*?\))/g;
+  const parts = content.split(regex);
+
+  return parts.map((part, index) => {
+    if (!part) return null;
+
+    // Bold: **text**
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      return (
+        <strong key={index} className="font-semibold text-slate-900">
           {part.slice(2, -2)}
         </strong>
       );
     }
+
+    // Italic: *text* (clean up the asterisks so no raw symbol is shown)
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2 && !part.includes('**')) {
+      return (
+        <span key={index} className="italic text-slate-700">
+          {part.slice(1, -1)}
+        </span>
+      );
+    }
+
+    // Link: [label](url)
     const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
     if (linkMatch) {
       return (
@@ -1607,6 +1693,9 @@ function formatBotMessage(text: string) {
         </a>
       );
     }
-    return part;
+
+    // Clean any stray single asterisk or hashes from text
+    const cleaned = part.replace(/#{1,4}\s*/g, '').replace(/[\*\_]/g, '');
+    return cleaned;
   });
 }
