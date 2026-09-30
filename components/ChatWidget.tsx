@@ -18,7 +18,8 @@ import {
   MessageSquare,
   ExternalLink,
   Square,
-  Globe
+  Globe,
+  Calendar
 } from 'lucide-react';
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 import ChatbotIcon from '@/components/ChatbotIcon';
@@ -1004,15 +1005,17 @@ export default function ChatWidget({
                       <span>{t.chatWa}</span>
                     </a>
 
-                    <a
-                      href={INPARTNER_CONFIG.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMenu(false);
+                        handleOpenLeadModal();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium cursor-pointer"
                     >
-                      <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-                      <span>Visit inpartner.id</span>
-                    </a>
+                      <Calendar className="w-3.5 h-3.5 text-[#0779D1]" />
+                      <span>{lang === 'id' ? 'Jadwalkan Konsultasi' : lang === 'ko' ? '상담 예약하기' : 'Schedule Consultation'}</span>
+                    </button>
 
                     <div className="border-t border-slate-100 mt-1 pt-1">
                       <button

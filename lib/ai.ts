@@ -57,10 +57,10 @@ export function detectLanguage(text: string): 'id' | 'en' | 'ko' {
   return 'id';
 }
 
-const SYSTEM_PROMPT = `You are the Inpartner AI Business Consultation Assistant, the official corporate advisory assistant for INPARTNER (https://inpartner.id/).
-INPARTNER (legally PT Inpartner Optima Integra) is a Business & Management Consulting firm in Indonesia with the tagline "Unleash The Power Of Your Business" and vision "Bridging Markets, Investment & Business Opportunities."
+const SYSTEM_PROMPT = `You are the Inpartner AI Business Consultation Assistant, the official corporate advisory assistant for PT Inpartner Optima Integra (INPARTNER).
+INPARTNER is a premier Business & Management Consulting firm in Indonesia operating under the tagline "Unleash The Power Of Your Business" and vision "Bridging Markets, Investment & Business Opportunities."
 
-INPARTNER provides 5 official services:
+INPARTNER provides 5 official core services:
 1. Strategy & Corporate Advisory — Corporate Strategy, Business Transformation, M&A Advisory, IPO/Capital Market Advisory, Corporate Restructuring.
 2. Investment & Project Advisory — Feasibility Studies (FS), Investment Advisory, Commercial & Financial Analysis, Investment Opportunity Assessment, Project Development.
 3. Market Access & Business Expansion — Market Research & Intelligence, Market Entry Strategy, Business Matching, Partner/Distributor Identification, Market Expansion.
@@ -77,7 +77,12 @@ CONVERSATION & INTEGRITY RULES (STRICTLY REQUIRED):
 5. INPARTNER is NOT a software house, IT company, or technology service provider. Technology is covered as a sector and in Cross-Border Technology advisory context only.
 6. If information is not in the context, state transparently that you do not have that specific detail, and invite the visitor to schedule a direct discussion with INPARTNER consultants.
 7. Maintain a professional, consultative, and actionable tone.
-8. Recommend relevant INPARTNER services and encourage visitors to schedule a consultation or leave their contact information.
+8. EMBEDDED CONVERSION & BOOKING DIRECTIVE (CRITICAL): This chatbot is embedded directly on the official INPARTNER website (inpartner.id). The visitor is ALREADY browsing the official website.
+   - NEVER tell or suggest to the visitor to "visit our website", "kunjungi website https://inpartner.id/", or link to inpartner.id.
+   - ALWAYS guide the visitor to take direct action to consult:
+     a) Schedule an exploratory consultation (booking konsultasi) directly via the interactive consultation form in this chat window or by sharing their business contact details.
+     b) Provide the follow-up reassurance: "Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut." (or English equivalent: "Our Business Development team will follow up promptly for further coordination.")
+     c) Conclude with a tailored, consultative discovery question matching their immediate business priorities (e.g., "Bagaimana kami dapat membantu mempersiapkan ekspansi pasar Anda hari ini?").
 9. Use company-stated figures (90+ projects, 70+ clients, 10+ foreign clients) with appropriate attribution to the INPARTNER 2026 Company Profile.
 10. CLEAN PRESENTATION (STRICT): NEVER output raw markdown symbols like "###", "##", "---", or asterisks for bullets ("* "). Use bold (**Section Title**) for headings and clean bullet dots (• ) or numbers (1., 2.). Ensure all text is clean and executive-ready without raw symbols.`;
 
@@ -349,7 +354,11 @@ ${cleanUserMessage}
 1. Provide a direct, strategic, and practical answer tailored to the visitor's corporate challenges.
 2. Identify the relevant Inpartner advisory pillar.
 3. Outline tangible steps for how Inpartner guides client engagements.
-4. Offer an option to schedule an advisory consultation with Inpartner senior partners.
+4. CALL-TO-ACTION & CLOSING (STRICT):
+   - You are running inside the official website. NEVER tell the visitor to visit the website or link to inpartner.id.
+   - Guide the visitor to schedule an exploratory consultation (booking konsultasi) directly via the interactive consultation form below or by sharing their business contact details.
+   - Include the follow-up reassurance: "Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut." (or English: "Our Business Development team will follow up promptly for further coordination.")
+   - Conclude with a tailored discovery question (e.g., "Bagaimana kami dapat membantu mempersiapkan [topik kebutuhan bisnis klien] perusahaan Anda hari ini?").
 5. NO RAW MARKDOWN SYMBOLS: Do NOT output "###", "##", "---", or "*" for bullets. Use bold (**Title**) for headings, and clean bullet dots (• ) or numbers (1., 2.) for lists.
 </format_instructions>`;
 
@@ -704,14 +713,12 @@ Pakuwon Tower, Unit J, Lantai 10, Jl. Raya Casablanca Kav. 88, Jakarta Selatan, 
 ✉️ **Email Resmi:**
 [corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
 
-🌐 **Website:** [https://inpartner.id/](https://inpartner.id/)
-
 🔗 **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
 
 🕒 **Jam Operasional:**
 Senin – Jumat, 09:00 – 17:00 WIB.
 
-Silakan kirimkan kebutuhan bisnis Anda melalui formulir di bawah ini atau jadwalkan pertemuan konsultasi langsung dengan konsultan kami!`;
+Untuk respon tercepat, Anda dapat langsung mengisi formulir konsultasi singkat di bawah ini atau menghubungi kami via WhatsApp. Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut.`;
     } else if (lang === 'ko') {
       return `**인파트너(PT Inpartner Optima Integra)** 공식 채널을 통해 본사 컨설팅 팀에 직접 문의하실 수 있습니다:
 
@@ -719,12 +726,12 @@ Silakan kirimkan kebutuhan bisnis Anda melalui formulir di bawah ini atau jadwal
 Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia.
 
 📞 **연락처 및 상담 채널:**
-- **공식 WhatsApp:** [+62 859 3454 8202](https://wa.me/6285934548202)
-- **대표 이메일:** corporatesecretary@inpartner.id
-- **공식 웹사이트:** [https://inpartner.id/](https://inpartner.id/)
-- **업무 시간:** 월요일 – 금요일 (09:00 – 17:00 WIB/UTC+7)
+• **공식 WhatsApp:** [+62 859 3454 8202](https://wa.me/6285934548202)
+• **대표 이메일:** corporatesecretary@inpartner.id
+• **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
+• **업무 시간:** 월요일 – 금요일 (09:00 – 17:00 WIB/UTC+7)
 
-하단 상담 양식을 작성해 주시면 담당 파트너가 영업일 기준 1일 이내에 연락드리겠습니다!`;
+신속한 상담 진행을 위해 하단 상담 양식을 작성해 주시거나 WhatsApp으로 문의해 주십시오. 인파트너 비즈니스 개발(BD) 팀에서 확인 후 즉시 연락드리겠습니다!`;
     }
 
     return `You can reach the official team at **Inpartner (PT Inpartner Optima Integra)** through the following corporate channels:
@@ -738,12 +745,12 @@ Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakart
 ✉️ **Official Email:**
 [corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
 
-🌐 **Website:** [https://inpartner.id/](https://inpartner.id/)
+🔗 **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
 
 🕒 **Business Hours:**
 Monday – Friday, 09:00 – 17:00 WIB (UTC+7).
 
-Please submit your business requirements below or schedule an exploratory consultation session with our advisory team!`;
+For the fastest arrangement, please complete the brief consultation form below or connect directly on WhatsApp. Our Business Development team will follow up promptly for further coordination.`;
   }
 
   // 4. Human Capital queries
@@ -921,7 +928,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 Inpartner mendampingi klien korporasi dengan pendekatan holistik menyelaraskan strategi bisnis, proses operasional, kapabilitas SDM, dan teknologi.
 
-Untuk pembahasan yang disesuaikan dengan prioritas bisnis perusahaan Anda, silakan ajukan konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
+Untuk pembahasan yang disesuaikan dengan prioritas bisnis perusahaan Anda, silakan ajukan konsultasi melalui formulir di bawah ini atau terhubung langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**. Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut.`;
     } else if (lang === 'ko') {
       return `인파트너의 공식 자문 문서 **${topChunk.title}**에 따르면:
 
@@ -929,7 +936,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 인파트너는 기업 전략, 운영 프로세스, 인적 역량, 기술을 유기적으로 정렬하는 총체적(Holistic) 접근법을 통해 고객사를 자문합니다.
 
-귀사의 우선 과제에 맞춘 상세한 상담을 원하시면 하단 양식을 작성해 주시거나 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 문의해 주십시오.`;
+귀사의 우선 과제에 맞춘 상세한 상담을 원하시면 하단 상담 양식을 작성해 주시거나 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 문의해 주십시오. 인파트너 비즈니스 개발(BD) 팀에서 확인 후 즉시 연락드리겠습니다.`;
     }
 
     return `Based on official Inpartner advisory documentation regarding **${topChunk.title}**:
@@ -938,20 +945,20 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 Inpartner partners with client enterprises using a holistic advisory approach aligning corporate strategy, operational processes, people, and technology.
 
-For a comprehensive discussion tailored to your company's immediate priorities, feel free to submit your inquiry below or connect directly with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
+For a comprehensive discussion tailored to your company's immediate priorities, feel free to submit an inquiry through the consultation form below or connect directly with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**. Our Business Development team will follow up promptly for further coordination.`;
   }
 
   if (lang === 'id') {
     return `Inpartner siap mendampingi perusahaan Anda melalui 5 layanan utama: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, dan **Human Capital & Organization**.
 
-Silakan sampaikan tujuan bisnis atau tantangan perusahaan Anda, atau jadwalkan sesi konsultasi awal dengan tim penasihat senior kami.`;
+Silakan sampaikan tujuan bisnis atau tantangan perusahaan Anda, atau jadwalkan sesi konsultasi awal melalui formulir di bawah ini. Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut.`;
   } else if (lang === 'ko') {
     return `인파트너는 **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, **Human Capital & Organization**의 5대 공식 서비스를 통해 귀사의 비즈니스 과제를 함께 해결합니다.
 
-궁금하신 점이나 기업 애로사항을 입력해 주시거나, 수석 컨설턴트와의 사전 진단 상담을 예약해 주십시오.`;
+궁금하신 점이나 기업 애로사항을 입력해 주시거나, 하단 상담 양식을 통해 사전 진단 상담을 예약해 주십시오. 인파트너 비즈니스 개발(BD) 팀에서 즉시 연락드리겠습니다.`;
   }
 
   return `Inpartner is prepared to assist your enterprise across our 5 official services: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, and **Human Capital & Organization**.
 
-Please share your specific business objectives or corporate challenges, or schedule an exploratory consultation with our senior advisory team.`;
+Please share your specific business objectives or corporate challenges, or schedule an exploratory consultation session using the form below. Our Business Development team will follow up promptly for further coordination.`;
 }
