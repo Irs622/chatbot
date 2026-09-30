@@ -281,7 +281,12 @@ export async function* generateConsultationResponseStream(
   if (geminiApiKey && !isQueryUnclear) {
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const candidateModels = [
+        process.env.GEMINI_MODEL,
+        'gemini-3.5-flash-lite',
+        'gemini-3.5-flash',
+        'gemini-flash-latest'
+      ].filter(Boolean) as string[];
 
       const contextText = retrievedChunks
         .map((c, i) => `[Source ${i + 1}: ${c.title} (${c.sourceFile})]\n${c.content}`)
@@ -328,15 +333,25 @@ ${cleanUserMessage}
 Use clean markdown formatting with bullet points.
 </format_instructions>`;
 
-      const result = await model.generateContentStream(prompt);
-      for await (const chunk of result.stream) {
-        const piece = chunk.text();
-        if (piece) {
-          fullText += piece;
-          yield { type: 'chunk', text: piece };
+      for (const mName of candidateModels) {
+        try {
+          const model = genAI.getGenerativeModel({ model: mName });
+          const result = await model.generateContentStream(prompt);
+          for await (const chunk of result.stream) {
+            const piece = chunk.text();
+            if (piece) {
+              fullText += piece;
+              yield { type: 'chunk', text: piece };
+            }
+          }
+          if (fullText.length > 0) {
+            streamSucceeded = true;
+            break;
+          }
+        } catch (mErr) {
+          console.warn(`Gemini model ${mName} streaming failed, trying next candidate:`, mErr);
         }
       }
-      streamSucceeded = true;
     } catch (err) {
       console.warn('Gemini streaming call failed, falling back to offline RAG engine:', err);
     }
