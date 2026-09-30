@@ -31,7 +31,8 @@ const INTENT_RULES: IntentRule[] = [
       'strategi bisnis', 'strategi korporat', 'strategi perusahaan',
       'transformasi bisnis', 'restrukturisasi', 'restrukturisasi perusahaan',
       'merger', 'akuisisi', 'm&a', 'go public', 'ipo', 'penawaran umum',
-      'pasar modal', 'rights issue', 'pre-ipo', 'listing bursa',
+      'pasar modal', 'rights issue', 'pre-ipo', 'listing bursa', 'bursa saham', 'bursa efek',
+      'melantai di bursa', 'masuk bursa', 'jual saham ke publik',
       'perencanaan strategis', 'arah perusahaan', 'divestasi', 'spin-off',
       'turnaround', 'pembenahan perusahaan',
       // Korean
@@ -50,7 +51,7 @@ const INTENT_RULES: IntentRule[] = [
       // Indonesian
       /(strategi|transformasi|restrukturisasi)\s*(bisnis|perusahaan|korporat)/i,
       /(merger|akuisisi|go\s*public|ipo|divestasi)/i,
-      /(pasar\s*modal|penawaran\s*umum|listing\s*bursa)/i,
+      /(pasar\s*modal|penawaran\s*umum|listing\s*bursa|bursa\s*saham|bursa\s*efek|masuk\s*bursa|melantai\s*di\s*bursa)/i,
       /(perencanaan|arah)\s*(strategis|perusahaan)/i,
       // Korean
       /(기업|사업|전략).*(전략|변혁|구조조정)/i,
