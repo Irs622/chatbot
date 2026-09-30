@@ -23,19 +23,38 @@ export function detectLanguage(text: string): 'id' | 'en' | 'ko' {
   const lower = text.toLowerCase();
   const idMarkers = [
     'yang', 'untuk', 'dengan', 'saya', 'kami', 'bisa', 'bagaimana', 'apakah', 'apa',
-    'halo', 'selamat', 'pagi', 'siang', 'sore', 'malam', 'terima', 'kasih',
+    'halo', 'hai', 'hei', 'hi', 'selamat', 'pagi', 'siang', 'sore', 'malam', 'terima', 'kasih',
     'butuh', 'ingin', 'mau', 'tanya', 'konsultasi', 'laba', 'modal', 'dana',
     'pendanaan', 'biaya', 'operasional', 'perusahaan', 'bisnis', 'ekspansi',
     'cabang', 'omset', 'omzet', 'pelatihan', 'karyawan', 'kantor', 'alamat',
-    'hubungi', 'solusi', 'masalah', 'turun', 'naik', 'rugi', 'keuntungan', 'pt'
+    'hubungi', 'solusi', 'masalah', 'turun', 'naik', 'rugi', 'keuntungan', 'pt',
+    'kamu', 'anda', 'siapa', 'bantu', 'ngapain', 'gimana', 'kok', 'dong', 'nih', 'ya', 'yah', 'dong'
   ];
+
+  const enMarkers = [
+    'the', 'is', 'are', 'was', 'were', 'what', 'how', 'why', 'when', 'where', 'who',
+    'can', 'could', 'would', 'should', 'you', 'your', 'we', 'our', 'my', 'about',
+    'which', 'services', 'please', 'help', 'looking', 'corporate', 'need'
+  ];
+
   let idMatches = 0;
   for (const marker of idMarkers) {
     if (new RegExp(`\\b${marker}\\b`, 'i').test(lower)) {
       idMatches++;
     }
   }
-  return idMatches > 0 ? 'id' : 'en';
+
+  let enMatches = 0;
+  for (const marker of enMarkers) {
+    if (new RegExp(`\\b${marker}\\b`, 'i').test(lower)) {
+      enMatches++;
+    }
+  }
+
+  if (enMatches > idMatches) {
+    return 'en';
+  }
+  return 'id';
 }
 
 const SYSTEM_PROMPT = `You are the Inpartner AI Business Consultation Assistant, the official corporate advisory assistant for INPARTNER (https://inpartner.id/).
@@ -278,7 +297,7 @@ export async function* generateConsultationResponseStream(
 
   // 1. Try real Gemini API streaming if key is set in environment
   const geminiApiKey = process.env.GEMINI_API_KEY;
-  if (geminiApiKey && !isQueryUnclear) {
+  if (geminiApiKey) {
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey);
       const candidateModels = [
@@ -366,7 +385,7 @@ Use clean markdown formatting with bullet points.
 Untuk mendiskusikan kebutuhan serta tantangan bisnis perusahaan Anda secara menyeluruh, tim konsultan senior Inpartner siap membantu melalui sesi konsultasi langsung.
 
 Anda dapat:
-1. Memilih salah satu dari 4 pilar utama Inpartner: **Funding**, **Growth**, **Profitability**, atau **Capacity Building**.
+1. Memilih salah satu dari 5 layanan resmi Inpartner: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, atau **Human Capital & Organization**.
 2. Mengisi formulir konsultasi singkat di bawah ini agar tim Business Development kami dapat menindaklanjuti.
 3. Terhubung langsung dengan tim kami via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)** atau email **corporatesecretary@inpartner.id**.`
           : lang === 'ko'
@@ -375,7 +394,7 @@ Anda dapat:
 귀사의 구체적인 비즈니스 요구사항과 경영 과제를 면밀히 검토하고 해결책을 모색하기 위해 인파트너 수석 컨설턴트와의 1:1 직접 상담을 추천해 드립니다.
 
 다음 옵션을 이용하실 수 있습니다:
-1. 인파트너의 4대 핵심 자문 분야 선택: **투자 유치(Funding)**, **성장 전략(Growth)**, **수익성 최적화(Profitability)**, **역량 강화(Capacity Building)**.
+1. 인파트너의 5대 공식 자문 분야 선택: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, **Human Capital & Organization**.
 2. 하단 상담 양식에 기업 정보를 입력하여 사전 진단 세션 신청.
 3. 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)** 또는 이메일 **corporatesecretary@inpartner.id**로 직접 문의.`
           : `I apologize, but I do not have sufficient official documentation regarding that specific question in the Inpartner knowledge base.
@@ -383,7 +402,7 @@ Anda dapat:
 To comprehensively address your specific business requirements, Inpartner senior consultants are available for a direct consultation.
 
 You can:
-1. Select one of our 4 core advisory pillars: **Funding**, **Growth**, **Profitability**, or **Capacity Building**.
+1. Select one of our 5 official advisory services: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, or **Human Capital & Organization**.
 2. Submit your contact details using the consultation form below.
 3. Directly connect with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)** or email **corporatesecretary@inpartner.id**.`)
       : buildGroundedAnswer(userMessage, intent, retrievedChunks, lang);
@@ -487,6 +506,65 @@ function buildGroundedAnswer(
 ): string {
   const topChunk = chunks[0];
   const queryLower = query.toLowerCase();
+
+  // 0. Conversational & Greeting queries (hai, halo, kamu bisa apa, siapa kamu, dll)
+  const isGreetingOrCapabilities =
+    /^(hai|halo|hei|hi|hello|selamat|assalamualaikum|pagi|siang|sore|malam)\b/i.test(queryLower) ||
+    /kamu\s*(bisa|siapa|apa)|bisa\s*apa|siapa\s*kamu|who\s*are\s*you|what\s*can\s*you\s*do|bisa\s*bantu\s*apa|fungsimu\s*apa/i.test(queryLower) ||
+    /layanan\s*inpartner\s*mana|which\s*inpartner\s*advisory/i.test(queryLower);
+
+  if (isGreetingOrCapabilities) {
+    if (lang === 'id') {
+      return `Halo! Saya adalah **Inpartner AI Assistant**, asisten konsultasi bisnis resmi dari **PT Inpartner Optima Integra (INPARTNER)**.
+
+Saya dapat membantu menganalisis kebutuhan perusahaan Anda dan memberikan rekomendasi solusi melalui **5 Layanan Resmi INPARTNER**:
+1. 🏢 **Strategy & Corporate Advisory:** Perumusan strategi korporat, transformasi bisnis, advisory M&A, persiapan IPO, dan restrukturisasi perusahaan.
+2. 💰 **Investment & Project Advisory:** Studi kelayakan (Feasibility Studies), analisis komersial & finansial, valuasi independen, dan pengembangan proyek investasi.
+3. 📈 **Market Access & Business Expansion:** Riset pasar, strategi Go-To-Market (GTM), identifikasi distributor, dan fasilitasi business matching.
+4. 🌏 **Cross-Border & Technology Advisory:** Kemitraan strategis internasional, Joint Venture (JV), dan transfer teknologi lintas negara.
+5. 👥 **Human Capital & Organization:** Executive search (C-level & senior leadership), desain organisasi, dan program pengembangan eksekutif (*The Executive Business Program*).
+
+Silakan ceritakan rencana bisnis atau kendala yang sedang dihadapi perusahaan Anda, dan saya siap membantu!`;
+    } else if (lang === 'ko') {
+      return `안녕하세요! 저는 **인파트너(PT Inpartner Optima Integra)**의 공식 AI 비즈니스 컨설팅 어시스턴트입니다.
+
+귀사의 비즈니스 성장과 도전 과제를 해결하기 위해 인파트너의 **5대 공식 자문 서비스**를 안내해 드립니다:
+1. 🏢 **Strategy & Corporate Advisory:** 기업 전략 수립, 비즈니스 변혁, M&A 및 IPO 자문, 기업 구조조정.
+2. 💰 **Investment & Project Advisory:** 사업타당성 연구(FS), 재무 및 상업 분석, 기업가치 평가, 투자 자문.
+3. 📈 **Market Access & Business Expansion:** 시장 조사, 시장 진입(GTM) 전략, 파트너 및 유통망 발굴, 비즈니스 매칭.
+4. 🌏 **Cross-Border & Technology Advisory:** 크로스보더 합작투자(JV), 기술 이전, 글로벌 비즈니스 개발.
+5. 👥 **Human Capital & Organization:** 임원 채용(헤드헌팅), 조직 개발, 리더십 교육(*The Executive Business Program*).
+
+현재 귀사에서 검토 중이신 사업 과제나 우선순위는 무엇인가요?`;
+    }
+
+    return `Hello! I am the **Inpartner AI Assistant**, the official business advisory consultation assistant for **PT Inpartner Optima Integra (INPARTNER)**.
+
+I am here to assist your enterprise across our **5 Official Advisory Services**:
+1. 🏢 **Strategy & Corporate Advisory:** Corporate strategy, business transformation, M&A advisory, IPO advisory, and corporate restructuring.
+2. 💰 **Investment & Project Advisory:** Commercial feasibility studies (FS), financial analysis & valuation, and project development.
+3. 📈 **Market Access & Business Expansion:** Market intelligence, Go-To-Market (GTM) frameworks, partner identification, and business matching.
+4. 🌏 **Cross-Border & Technology Advisory:** Cross-border partnerships, joint ventures (JV), and technology transfer.
+5. 👥 **Human Capital & Organization:** Executive search (C-suite), organization development, and executive leadership training (*The Executive Business Program*).
+
+Please share the specific business objectives or strategic challenges your company is currently navigating!`;
+  }
+
+  // 0.1 Identity inquiry (siapa saya, saya siapa, who am i)
+  if (/siapa\s*saya|saya\s*(adalah\s*)?siapa|who\s*am\s*i/i.test(queryLower)) {
+    if (lang === 'id') {
+      return `Saya belum mengetahui identitas Anda secara spesifik karena interaksi ini bersifat anonim dan privat. Namun, saya siap mendampingi Anda sebagai mitra diskusi dan konsultasi bisnis untuk perusahaan Anda!
+
+Jika Anda berkenan, Anda dapat memperkenalkan nama, industri, atau perusahaan Anda agar konsultasi kita dapat lebih terarah.`;
+    } else if (lang === 'ko') {
+      return `현재 세션은 익명으로 보호되어 있어 귀하의 개인적인 신원을 직접 알 수는 없습니다. 하지만 귀사의 비즈니스 과제를 함께 고민할 전략적 컨설팅 파트너로서 준비되어 있습니다!
+
+원하신다면 귀하의 성함, 소속 기업, 또는 현재 영위 중인 산업 분야를 소개해 주시면 더욱 맞춤화된 자문을 제공해 드릴 수 있습니다.`;
+    }
+    return `I do not have access to your personal identity as this consultation session is private and anonymous. However, I am here as your dedicated business advisory partner!
+
+Feel free to introduce your name, company, or industry sector so we can tailor the discussion to your specific corporate goals.`;
+  }
 
   // 1. Profitability queries
   if (
