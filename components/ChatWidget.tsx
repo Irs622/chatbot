@@ -651,10 +651,10 @@ export default function ChatWidget({
           id: `err_${Date.now()}`,
           sender: 'bot',
           text: lang === 'id'
-            ? 'Mohon maaf, terjadi gangguan koneksi ke server. Silakan coba kembali atau hubungi konsultan kami via WhatsApp di [+62 896 2831 0192](https://wa.me/6289628310192).'
+            ? 'Mohon maaf, terjadi gangguan koneksi ke server. Silakan coba kembali atau hubungi konsultan kami via WhatsApp di [+62 859 3454 8202](https://wa.me/6285934548202).'
             : lang === 'ko'
-            ? '죄송합니다. 서버 연결에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주시거나 공식 WhatsApp [+62 896 2831 0192](https://wa.me/6289628310192)로 직접 문의해 주십시오.'
-            : 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 896 2831 0192](https://wa.me/6289628310192).',
+            ? '죄송합니다. 서버 연결에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주시거나 공식 WhatsApp [+62 859 3454 8202](https://wa.me/6285934548202)로 직접 문의해 주십시오.'
+            : 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 859 3454 8202](https://wa.me/6285934548202).',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isFallback: true,
           isStreaming: false
@@ -764,10 +764,10 @@ export default function ChatWidget({
         id: `sys_lead_${Date.now()}`,
         sender: 'bot',
         text: lang === 'id'
-          ? `✅ **Terima kasih, ${leadForm.name}!**\n\nPermintaan konsultasi Anda telah kami terima. Tim konsultan senior Inpartner akan menganalisis profil bisnis Anda (**${leadForm.company || 'perusahaan Anda'}**) dan menghubungi Anda dalam 1x24 jam kerja.\n\nUntuk respon cepat, Anda juga dapat menghubungi tim kami langsung via WhatsApp di **[+62 896 2831 0192](https://wa.me/6289628310192)**.`
+          ? `✅ **Terima kasih, ${leadForm.name}!**\n\nPermintaan konsultasi Anda telah kami terima. Tim konsultan senior Inpartner akan menganalisis profil bisnis Anda (**${leadForm.company || 'perusahaan Anda'}**) dan menghubungi Anda dalam 1x24 jam kerja.\n\nUntuk respon cepat, Anda juga dapat menghubungi tim kami langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**.`
           : lang === 'ko'
-          ? `✅ **감사합니다, ${leadForm.name}님!**\n\n상담 요청이 성공적으로 접수되었습니다. 인파트너 수석 자문팀이 귀사의 비즈니스 개요(**${leadForm.company || '귀사'}**)를 검토한 후 영업일 기준 1일 이내에 연락드리겠습니다.\n\n빠른 상담을 원하시면 공식 WhatsApp **[+62 896 2831 0192](https://wa.me/6289628310192)**로 즉시 문의하실 수 있습니다.`
-          : `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 896 2831 0192](https://wa.me/6289628310192)**.`,
+          ? `✅ **감사합니다, ${leadForm.name}님!**\n\n상담 요청이 성공적으로 접수되었습니다. 인파트너 수석 자문팀이 귀사의 비즈니스 개요(**${leadForm.company || '귀사'}**)를 검토한 후 영업일 기준 1일 이내에 연락드리겠습니다.\n\n빠른 상담을 원하시면 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 즉시 문의하실 수 있습니다.`
+          : `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, confirmMsg]);
