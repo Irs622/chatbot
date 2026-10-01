@@ -47,7 +47,7 @@ export async function PATCH(
     const body = await req.json();
     const { status, notes } = body;
 
-    const validStatuses: LeadStatus[] = ['new', 'contacted', 'in_progress', 'converted', 'closed'];
+    const validStatuses: LeadStatus[] = ['new', 'contacted', 'in_progress', 'proposal', 'converted', 'closed'];
 
     if (status !== undefined && !validStatuses.includes(status)) {
       return NextResponse.json({ error: 'Invalid lead status' }, { status: 400 });

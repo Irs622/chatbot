@@ -29,6 +29,7 @@ const suites = [
   { name: 'Client Confirmation & WhatsApp Handoff', file: 'tests/client-confirmation.test.ts', category: 'Automation' },
   { name: 'Enterprise Qualification & Schema UX', file: 'tests/enterprise-qualification.test.ts', category: 'Qualification' },
   { name: 'Consultative Diagnostic & Discovery Flow', file: 'tests/consultative-diagnostic.test.ts', category: 'Consultative' },
+  { name: 'CRM Kanban Pipeline & Data Export', file: 'tests/crm-kanban-export.test.ts', category: 'CRM Kanban' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 

@@ -34,7 +34,7 @@ import type { DiagnosticDataRecord, DiagnosticPillarKey } from './diagnostic.ts'
 
 export type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification, DiagnosticDataRecord, DiagnosticPillarKey };
 
-export type LeadStatus = 'new' | 'contacted' | 'in_progress' | 'converted' | 'closed';
+export type LeadStatus = 'new' | 'contacted' | 'in_progress' | 'proposal' | 'converted' | 'closed';
 
 export interface Lead {
   id: string;
