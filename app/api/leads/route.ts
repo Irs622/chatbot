@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllLeads, getAllLeadsAsync, createLead } from '@/lib/db';
+import { getAllLeads, getAllLeadsAsync, createLead, createLeadAsync } from '@/lib/db';
 import { sendLeadNotification, generateConsultationRef, generateClientWhatsAppUrl } from '@/lib/notifications';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const lead = createLead({
+    const lead = await createLeadAsync({
       conversation_id,
       name: name.trim(),
       company: company?.trim() || '',

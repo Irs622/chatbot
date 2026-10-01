@@ -343,6 +343,21 @@ export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { 
   return lead;
 }
 
+export async function createLeadAsync(data: Parameters<typeof createLead>[0]): Promise<Lead> {
+  const lead = createLead(data);
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase.from('leads').upsert(lead);
+      } catch (err) {
+        console.warn('[Supabase Sync Exception in createLeadAsync]', err);
+      }
+    }
+  }
+  return lead;
+}
+
 export function getAllLeads(): Lead[] {
   const db = initDb();
   return db.leads.slice().reverse();
@@ -361,7 +376,7 @@ export async function getAllLeadsAsync(): Promise<Lead[]> {
           .from('leads')
           .select('*')
           .order('created_at', { ascending: false });
-        if (!error && data && data.length > 0) {
+        if (!error && Array.isArray(data)) {
           return data as Lead[];
         }
       } catch (err) {
@@ -392,6 +407,24 @@ export function updateLeadStatus(leadId: string, status?: LeadStatus, notes?: st
   return lead;
 }
 
+export async function updateLeadStatusAsync(leadId: string, status?: LeadStatus, notes?: string): Promise<Lead | null> {
+  const lead = updateLeadStatus(leadId, status, notes);
+  if (lead && isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase
+          .from('leads')
+          .update({ status: lead.status, notes: lead.notes })
+          .eq('id', lead.id);
+      } catch (err) {
+        console.warn('[Supabase Sync Exception in updateLeadStatusAsync]', err);
+      }
+    }
+  }
+  return lead;
+}
+
 export function deleteLead(leadId: string): boolean {
   const db = initDb();
   const initialLength = db.leads.length;
@@ -404,6 +437,21 @@ export function deleteLead(leadId: string): boolean {
     return true;
   }
   return false;
+}
+
+export async function deleteLeadAsync(leadId: string): Promise<boolean> {
+  const ok = deleteLead(leadId);
+  if (ok && isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase.from('leads').delete().eq('id', leadId);
+      } catch (err) {
+        console.warn('[Supabase Sync Exception in deleteLeadAsync]', err);
+      }
+    }
+  }
+  return ok;
 }
 
 // Analytics helpers

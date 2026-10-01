@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateLeadStatus, deleteLead, getLeadById, getMessagesByConversationId, LeadStatus } from '@/lib/db';
+import {
+  updateLeadStatus,
+  updateLeadStatusAsync,
+  deleteLead,
+  deleteLeadAsync,
+  getLeadById,
+  getMessagesByConversationId,
+  LeadStatus
+} from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 
 export async function GET(
@@ -57,7 +65,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Either status or notes must be provided' }, { status: 400 });
     }
 
-    const updated = updateLeadStatus(id, status, notes);
+    const updated = await updateLeadStatusAsync(id, status, notes);
     if (!updated) {
       return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
     }
@@ -81,7 +89,7 @@ export async function DELETE(
     }
 
     const { id } = params;
-    const deleted = deleteLead(id);
+    const deleted = await deleteLeadAsync(id);
 
     if (!deleted) {
       return NextResponse.json({ error: 'Lead not found or already deleted' }, { status: 404 });
