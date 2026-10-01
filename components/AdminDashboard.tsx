@@ -84,7 +84,14 @@ export default function AdminDashboard() {
       const res = await fetch(`/api/leads/${leadId}`);
       const data = await res.json();
       if (data.messages && Array.isArray(data.messages)) {
-        setTranscriptMessages(data.messages);
+        setTranscriptMessages(
+          data.messages.map((m: any) => ({
+            id: m.id,
+            sender: m.sender,
+            text: m.text || m.message || '',
+            created_at: m.created_at
+          }))
+        );
       } else {
         setTranscriptMessages([]);
       }
