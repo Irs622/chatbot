@@ -405,31 +405,31 @@ export async function sendLeadNotification(
       const targetSla = lead.score_breakdown?.target_sla || (tier === 'tier_1' ? '< 2 business hours' : tier === 'tier_2' ? '< 12 business hours' : 'Within 24 business hours');
 
       const tgQualItems = [
-        lead.job_title ? `👔 *Role:* ${escapeTelegramMarkdown(lead.job_title)}` : '',
-        lead.company_scale ? `🏷️ *Scale:* ${escapeTelegramMarkdown(getCompanyScaleLabel(lead.company_scale))}` : '',
-        lead.industry ? `🏭 *Sector:* ${escapeTelegramMarkdown(getIndustryLabel(lead.industry))}` : '',
-        lead.timeline ? `⏳ *Timeline:* ${escapeTelegramMarkdown(getTimelineLabel(lead.timeline))}` : '',
-        lead.diagnostic_summary ? `🔍 *Discovery:* ${escapeTelegramMarkdown(lead.diagnostic_summary)}` : '',
+        lead.job_title ? `👔 <b>Role:</b> ${escapeHtml(lead.job_title)}` : '',
+        lead.company_scale ? `🏷️ <b>Scale:</b> ${escapeHtml(getCompanyScaleLabel(lead.company_scale))}` : '',
+        lead.industry ? `🏭 <b>Sector:</b> ${escapeHtml(getIndustryLabel(lead.industry))}` : '',
+        lead.timeline ? `⏳ <b>Timeline:</b> ${escapeHtml(getTimelineLabel(lead.timeline))}` : '',
+        lead.diagnostic_summary ? `🔍 <b>Discovery:</b> ${escapeHtml(lead.diagnostic_summary)}` : '',
         lead.attribution && (lead.attribution.utm_source || lead.attribution.utm_campaign)
-          ? `🌐 *Attribution:* ${escapeTelegramMarkdown(lead.attribution.utm_source || 'direct')}${lead.attribution.utm_medium ? '/' + escapeTelegramMarkdown(lead.attribution.utm_medium) : ''}${lead.attribution.utm_campaign ? ' (' + escapeTelegramMarkdown(lead.attribution.utm_campaign) + ')' : ''}`
+          ? `🌐 <b>Attribution:</b> ${escapeHtml(lead.attribution.utm_source || 'direct')}${lead.attribution.utm_medium ? '/' + escapeHtml(lead.attribution.utm_medium) : ''}${lead.attribution.utm_campaign ? ' (' + escapeHtml(lead.attribution.utm_campaign) + ')' : ''}`
           : ''
       ].filter(Boolean);
       const tgQualSection = tgQualItems.length > 0 ? `${tgQualItems.join('\n')}\n` : '';
 
       const telegramMessage =
-        `🚨 *NEW CLIENT LEAD (INPARTNER AGENT)*\n\n` +
-        `🔖 *Ref:* \`${escapeTelegramMarkdown(refCode)}\`\n` +
-        `🎯 *Priority:* ${tierEmoji} (Score: *${score}/100*)\n` +
-        `⏱️ *Target SLA:* ${escapeTelegramMarkdown(targetSla)}\n` +
-        `👤 *Name:* ${escapeTelegramMarkdown(lead.name)}\n` +
-        `🏢 *Company:* ${escapeTelegramMarkdown(lead.company || '-')}\n` +
+        `🚨 <b>NEW CLIENT LEAD (INPARTNER AGENT)</b>\n\n` +
+        `🔖 <b>Ref:</b> <code>${escapeHtml(refCode)}</code>\n` +
+        `🎯 <b>Priority:</b> ${tierEmoji} (Score: <b>${score}/100</b>)\n` +
+        `⏱️ <b>Target SLA:</b> ${escapeHtml(targetSla)}\n` +
+        `👤 <b>Name:</b> ${escapeHtml(lead.name)}\n` +
+        `🏢 <b>Company:</b> ${escapeHtml(lead.company || '-')}\n` +
         tgQualSection +
-        `📱 *WhatsApp:* \`${escapeTelegramMarkdown(lead.phone)}\`\n` +
-        `✉️ *Email:* ${escapeTelegramMarkdown(lead.email || '-')}\n` +
-        `💼 *Advisory Need:* ${escapeTelegramMarkdown(lead.business_need)}\n` +
-        `📝 *Notes:* ${escapeTelegramMarkdown(lead.notes || '-')}\n` +
-        `🕒 *Timestamp:* ${escapeTelegramMarkdown(formattedTime)} WIB\n\n` +
-        `👉 [Click to Chat with Client via WhatsApp](${waLink})`;
+        `📱 <b>WhatsApp:</b> <code>${escapeHtml(lead.phone)}</code>\n` +
+        `✉️ <b>Email:</b> ${escapeHtml(lead.email || '-')}\n` +
+        `💼 <b>Advisory Need:</b> ${escapeHtml(lead.business_need)}\n` +
+        `📝 <b>Notes:</b> ${escapeHtml(lead.notes || '-')}\n` +
+        `🕒 <b>Timestamp:</b> ${escapeHtml(formattedTime)} WIB\n\n` +
+        `👉 <a href="${waLink}">Click to Chat with Client via WhatsApp</a>`;
 
       const res = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
         method: 'POST',
@@ -437,7 +437,7 @@ export async function sendLeadNotification(
         body: JSON.stringify({
           chat_id: telegramChatId,
           text: telegramMessage,
-          parse_mode: 'Markdown',
+          parse_mode: 'HTML',
           disable_web_page_preview: true
         })
       });
@@ -604,9 +604,6 @@ export async function sendLeadNotification(
   return result;
 }
 
-function escapeTelegramMarkdown(text: string): string {
-  return text.replace(/([_*\[\]()~`>#+=|{}.!-])/g, '\\$1');
-}
 
 function escapeHtml(str: string): string {
   return str
