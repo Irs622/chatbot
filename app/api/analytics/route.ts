@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAnalyticsSummary, getAnalyticsSummaryAsync, logAnalyticsEvent } from '@/lib/db';
+import { getAnalyticsSummary, getAnalyticsSummaryAsync, logAnalyticsEvent, logAnalyticsEventAsync } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'event_name and session_id are required' }, { status: 400 });
     }
 
-    const event = logAnalyticsEvent({
+    const event = await logAnalyticsEventAsync({
       event_name,
       session_id,
       conversation_id,

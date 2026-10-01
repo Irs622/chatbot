@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   getOrCreateConversation,
+  getOrCreateConversationAsync,
   addMessage,
+  addMessageAsync,
   updateConversationIntent,
-  logAnalyticsEvent
+  updateConversationIntentAsync,
+  logAnalyticsEvent,
+  logAnalyticsEventAsync
 } from '@/lib/db';
 import {
   generateConsultationResponse,
@@ -61,10 +65,10 @@ export async function POST(req: NextRequest) {
     }
 
     const session = sessionId || `sess_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    const conversation = getOrCreateConversation(session, selectedNeed);
+    const conversation = await getOrCreateConversationAsync(session, selectedNeed);
 
-    // Save user message to database immediately
-    addMessage({
+    // Save user message to database immediately and await Supabase persistence
+    await addMessageAsync({
       conversation_id: conversation.id,
       sender: 'user',
       message: message.trim(),
@@ -72,12 +76,12 @@ export async function POST(req: NextRequest) {
     });
 
     // Track analytics: question_asked
-    logAnalyticsEvent({
+    logAnalyticsEventAsync({
       event_name: 'question_asked',
       session_id: session,
       conversation_id: conversation.id,
       metadata: { query: message, selectedNeed }
-    });
+    }).catch(() => {});
 
     // 1. Non-streaming legacy mode (if stream: false requested)
     if (stream === false) {
@@ -87,9 +91,9 @@ export async function POST(req: NextRequest) {
         selectedNeed
       );
 
-      updateConversationIntent(conversation.id, aiResponse.intent);
+      await updateConversationIntentAsync(conversation.id, aiResponse.intent);
 
-      addMessage({
+      await addMessageAsync({
         conversation_id: conversation.id,
         sender: 'bot',
         message: aiResponse.answer,
@@ -103,12 +107,12 @@ export async function POST(req: NextRequest) {
       });
 
       if (aiResponse.isFallback) {
-        logAnalyticsEvent({
+        logAnalyticsEventAsync({
           event_name: 'human_handoff',
           session_id: session,
           conversation_id: conversation.id,
           metadata: { reason: 'fallback_unknown_query' }
-        });
+        }).catch(() => {});
       }
 
       return NextResponse.json({
@@ -154,8 +158,8 @@ export async function POST(req: NextRequest) {
           }
 
           if (finalResponse) {
-            // Save bot message to database upon stream completion
-            addMessage({
+            // Await bot message persistence before closing SSE stream
+            await addMessageAsync({
               conversation_id: conversation.id,
               sender: 'bot',
               message: finalResponse.fullAnswer,
@@ -168,15 +172,15 @@ export async function POST(req: NextRequest) {
               }
             });
 
-            updateConversationIntent(conversation.id, finalResponse.intent);
+            await updateConversationIntentAsync(conversation.id, finalResponse.intent);
 
             if (finalResponse.isFallback) {
-              logAnalyticsEvent({
+              logAnalyticsEventAsync({
                 event_name: 'human_handoff',
                 session_id: session,
                 conversation_id: conversation.id,
                 metadata: { reason: 'fallback_unknown_query' }
-              });
+              }).catch(() => {});
             }
           }
         } catch (err: any) {

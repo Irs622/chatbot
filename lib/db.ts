@@ -210,6 +210,66 @@ export function getOrCreateConversation(sessionId: string, initialIntent?: strin
   return conversation;
 }
 
+export async function getOrCreateConversationAsync(sessionId: string, initialIntent?: string): Promise<Conversation> {
+  const db = initDb();
+  let localConv = db.conversations.find((c) => c.session_id === sessionId && !c.ended_at);
+
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('conversations')
+          .select('*')
+          .eq('session_id', sessionId)
+          .is('ended_at', null)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!error && data) {
+          const conv = data as Conversation;
+          const idx = db.conversations.findIndex((c) => c.id === conv.id);
+          if (idx >= 0) {
+            db.conversations[idx] = conv;
+          } else {
+            db.conversations.push(conv);
+          }
+          saveDb(db);
+          return conv;
+        }
+
+        // Create new conversation in Supabase and local cache
+        const newConv: Conversation = {
+          id: `conv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          session_id: sessionId,
+          started_at: new Date().toISOString(),
+          user_intent: initialIntent || 'service_information',
+          created_at: new Date().toISOString()
+        };
+
+        db.conversations.push(newConv);
+        saveDb(db);
+
+        await supabase.from('conversations').upsert(newConv);
+
+        logAnalyticsEventAsync({
+          event_name: 'conversation_started',
+          session_id: sessionId,
+          conversation_id: newConv.id,
+          metadata: { initial_intent: initialIntent }
+        }).catch(() => {});
+
+        return newConv;
+      } catch (err) {
+        console.warn('[Supabase getOrCreateConversationAsync Exception]', err);
+      }
+    }
+  }
+
+  return getOrCreateConversation(sessionId, initialIntent);
+}
+
 export function updateConversationIntent(conversationId: string, intent: string): void {
   const db = initDb();
   const conv = db.conversations.find((c) => c.id === conversationId);
@@ -217,6 +277,23 @@ export function updateConversationIntent(conversationId: string, intent: string)
     conv.user_intent = intent;
     saveDb(db);
     asyncSupabaseSync((sb) => sb.from('conversations').update({ user_intent: intent }).eq('id', conversationId));
+  }
+}
+
+export async function updateConversationIntentAsync(conversationId: string, intent: string): Promise<void> {
+  updateConversationIntent(conversationId, intent);
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase
+          .from('conversations')
+          .update({ user_intent: intent })
+          .eq('id', conversationId);
+      } catch (err) {
+        console.warn('[Supabase updateConversationIntentAsync Exception]', err);
+      }
+    }
   }
 }
 
@@ -258,6 +335,30 @@ export function addMessage(data: Omit<Message, 'id' | 'created_at'>): Message {
   saveDb(db);
 
   asyncSupabaseSync((sb) => sb.from('messages').insert(msg));
+
+  return msg;
+}
+
+export async function addMessageAsync(data: Omit<Message, 'id' | 'created_at'>): Promise<Message> {
+  const db = initDb();
+  const msg: Message = {
+    ...data,
+    id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    created_at: new Date().toISOString()
+  };
+  db.messages.push(msg);
+  saveDb(db);
+
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase.from('messages').insert(msg);
+      } catch (err) {
+        console.warn('[Supabase addMessageAsync Exception]', err);
+      }
+    }
+  }
 
   return msg;
 }
@@ -558,6 +659,21 @@ export function logAnalyticsEvent(event: Omit<AnalyticsEvent, 'id' | 'created_at
 
   asyncSupabaseSync((sb) => sb.from('analytics_events').insert(newEvent));
 
+  return newEvent;
+}
+
+export async function logAnalyticsEventAsync(event: Omit<AnalyticsEvent, 'id' | 'created_at'>): Promise<AnalyticsEvent> {
+  const newEvent = logAnalyticsEvent(event);
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase.from('analytics_events').insert(newEvent);
+      } catch (err) {
+        console.warn('[Supabase logAnalyticsEventAsync Exception]', err);
+      }
+    }
+  }
   return newEvent;
 }
 
