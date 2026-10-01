@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllLeads, createLead } from '@/lib/db';
-import { sendLeadNotification } from '@/lib/notifications';
+import { sendLeadNotification, generateConsultationRef, generateClientWhatsAppUrl } from '@/lib/notifications';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
 import { checkRateLimit } from '@/lib/rateLimit';
@@ -118,8 +118,14 @@ export async function POST(req: NextRequest) {
       status: 'new'
     });
 
-    // Dispatch real-time lead notifications (Webhook, Telegram, Email)
-    const notificationResult = await sendLeadNotification(lead).catch((err) => {
+    const refCode = generateConsultationRef(lead.id);
+    const clientWhatsAppUrl = generateClientWhatsAppUrl(lead, refCode, body.lang || 'id');
+
+    // Dispatch real-time lead notifications (Webhook, Telegram, Internal Email, Client Confirmation Email)
+    const notificationResult = await sendLeadNotification(lead, {
+      lang: body.lang,
+      refCode
+    }).catch((err) => {
       console.warn('Lead notification background error:', err);
       return null;
     });
@@ -127,6 +133,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Inquiry saved successfully. The Inpartner team will contact you promptly.',
+      ref_code: refCode,
+      whatsapp_url: clientWhatsAppUrl,
       lead,
       notification: notificationResult
     });

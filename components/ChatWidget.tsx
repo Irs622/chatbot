@@ -19,7 +19,9 @@ import {
   ExternalLink,
   Square,
   Globe,
-  Calendar
+  Calendar,
+  Check,
+  Copy
 } from 'lucide-react';
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 import ChatbotIcon from '@/components/ChatbotIcon';
@@ -262,6 +264,13 @@ export default function ChatWidget({
   });
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [leadError, setLeadError] = useState('');
+  const [submittedSuccessInfo, setSubmittedSuccessInfo] = useState<{
+    refCode: string;
+    whatsappUrl: string;
+    clientEmail?: string;
+    name: string;
+  } | null>(null);
+  const [copiedRefCode, setCopiedRefCode] = useState(false);
 
   // Messages state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -353,9 +362,29 @@ export default function ChatWidget({
     if (defaultNeed && !leadForm.businessNeed) {
       setLeadForm((prev) => ({ ...prev, businessNeed: defaultNeed }));
     }
+    setSubmittedSuccessInfo(null);
+    setLeadError('');
     setShowLeadModal(true);
     setShowMenu(false);
     trackEvent('lead_form_opened', { defaultNeed });
+  };
+
+  const handleCloseLeadModal = () => {
+    setShowLeadModal(false);
+    setSubmittedSuccessInfo(null);
+    setLeadError('');
+  };
+
+  const handleCopyRefCode = async (code: string) => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(code);
+        setCopiedRefCode(true);
+        setTimeout(() => setCopiedRefCode(false), 2000);
+      }
+    } catch (err) {
+      console.warn('Failed to copy ref code:', err);
+    }
   };
 
   // Auto-save messages to localStorage
@@ -743,7 +772,8 @@ export default function ChatWidget({
           email: leadForm.email,
           phone: leadForm.phone,
           business_need: leadForm.businessNeed,
-          notes: leadForm.notes
+          notes: leadForm.notes,
+          lang
         })
       });
 
@@ -752,22 +782,39 @@ export default function ChatWidget({
         throw new Error(data.error || (lang === 'id' ? 'Gagal mengirimkan permintaan konsultasi' : lang === 'ko' ? '상담 요청 제출에 실패했습니다.' : 'Failed to submit consultation inquiry'));
       }
 
+      const refCode = data.ref_code || `INP-${Date.now().toString(36).toUpperCase()}`;
+      const waLink = data.whatsapp_url || `https://wa.me/6285934548202?text=${encodeURIComponent(`Halo tim Inpartner, saya telah mengajukan konsultasi di website (No. Ref: ${refCode}) mengenai ${leadForm.businessNeed}.`)}`;
+
+      setSubmittedSuccessInfo({
+        refCode,
+        whatsappUrl: waLink,
+        clientEmail: leadForm.email,
+        name: leadForm.name
+      });
       setLeadSubmitted(true);
-      setShowLeadModal(false);
       trackEvent('lead_captured', {
         need: leadForm.businessNeed,
         has_email: !!leadForm.email,
-        has_phone: !!leadForm.phone
+        has_phone: !!leadForm.phone,
+        ref_code: refCode
       });
+
+      const emailNote = leadForm.email
+        ? lang === 'id'
+          ? `\n\n📩 **Email Tanda Terima:** Rangkuman konsultasi dan kode referensi telah dikirimkan ke **${leadForm.email}**.`
+          : lang === 'ko'
+          ? `\n\n📩 **접수 확인서 발송:** 상담 요약본 및 접수 번호가 **${leadForm.email}**(으)로 발송되었습니다.`
+          : `\n\n📩 **Official Receipt:** A consultation summary and reference code have been dispatched to **${leadForm.email}**.`
+        : '';
 
       const confirmMsg: ChatMessage = {
         id: `sys_lead_${Date.now()}`,
         sender: 'bot',
         text: lang === 'id'
-          ? `✅ **Terima kasih, ${leadForm.name}!**\n\nPermintaan konsultasi Anda telah kami terima. Tim konsultan senior Inpartner akan menganalisis profil bisnis Anda (**${leadForm.company || 'perusahaan Anda'}**) dan menghubungi Anda dalam 1x24 jam kerja.\n\nUntuk respon cepat, Anda juga dapat menghubungi tim kami langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**.`
+          ? `✅ **Pengajuan Konsultasi Berhasil Dicatat!**\n\nNomor Referensi: **\`${refCode}\`**\n\nTerima kasih, **${leadForm.name}**. Tim penasihat senior INPARTNER akan menganalisis profil bisnis **${leadForm.company || 'perusahaan Anda'}** dan menghubungi Anda dalam 1x24 jam kerja.${emailNote}\n\nUntuk respon cepat, Anda dapat melanjutkan diskusi langsung ke WhatsApp tim kami:\n👉 **[Lanjutkan ke WhatsApp dengan No. Ref (${refCode})](${waLink})**`
           : lang === 'ko'
-          ? `✅ **감사합니다, ${leadForm.name}님!**\n\n상담 요청이 성공적으로 접수되었습니다. 인파트너 수석 자문팀이 귀사의 비즈니스 개요(**${leadForm.company || '귀사'}**)를 검토한 후 영업일 기준 1일 이내에 연락드리겠습니다.\n\n빠른 상담을 원하시면 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 즉시 문의하실 수 있습니다.`
-          : `✅ **Thank you, ${leadForm.name}!**\n\nYour consultation inquiry has been received. Our senior advisory team will review your business requirements (**${leadForm.company || 'your enterprise'}**) and contact you promptly.\n\nFor immediate assistance, feel free to reach our team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**.`,
+          ? `✅ **상담 신청이 성공적으로 접수되었습니다!**\n\n접수 번호: **\`${refCode}\`**\n\n감사합니다, **${leadForm.name}**님. 인파트너 수석 자문팀이 귀사(**${leadForm.company || '귀사'}**)의 자문 요청을 검토한 후 영업일 기준 1일 이내에 연락드리겠습니다.${emailNote}\n\n빠른 상담을 원하시면 공식 WhatsApp으로 즉시 문의해 주십시오:\n👉 **[WhatsApp으로 즉시 상담 연결 (접수번호: ${refCode})](${waLink})**`
+          : `✅ **Consultation Inquiry Successfully Logged!**\n\nOfficial Reference: **\`${refCode}\`**\n\nThank you, **${leadForm.name}**. Our senior practice leaders will review your requirements for **${leadForm.company || 'your enterprise'}** and follow up promptly.${emailNote}\n\nFor expedited coordination, connect with our Advisory Team via WhatsApp:\n👉 **[Connect via WhatsApp with Ref Code (${refCode})](${waLink})**`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, confirmMsg]);
@@ -1342,38 +1389,163 @@ export default function ChatWidget({
           {/* Backdrop click to close */}
           <div
             className="absolute inset-0 -z-10"
-            onClick={() => setShowLeadModal(false)}
+            onClick={handleCloseLeadModal}
           />
 
           {/* Dialog Card Container */}
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[94vh] sm:max-h-[88vh] flex flex-col overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 my-auto">
-            {/* Modal Header with #0779D1 Brand Gradient - Shrink-0 ensures it NEVER gets clipped */}
-            <div className="shrink-0 bg-gradient-to-r from-[#0779D1] to-[#055ea3] text-white px-5 py-3.5 sm:px-6 sm:py-4 flex items-center justify-between shadow-md">
-              <div className="flex items-center gap-3 min-w-0 pr-2">
-                <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
-                  <Building2 className="w-4.5 h-4.5 text-white" />
+            {submittedSuccessInfo ? (
+              <div className="flex flex-col flex-1 overflow-hidden">
+                {/* Receipt Header */}
+                <div className="shrink-0 bg-gradient-to-r from-emerald-600 via-[#0779D1] to-[#055ea3] text-white px-5 py-4 sm:px-6 sm:py-5 flex items-center justify-between shadow-md">
+                  <div className="flex items-center gap-3 min-w-0 pr-2">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white shrink-0 shadow-xs">
+                      <Check className="w-5 h-5 text-white stroke-[2.5]" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-base sm:text-lg text-white tracking-tight leading-snug">
+                        {t.successTitle}
+                      </h3>
+                      <p className="text-xs text-emerald-100/90 leading-tight font-normal mt-0.5">
+                        {lang === 'id' ? 'Tanda Terima Resmi Inbound Konsultasi' : lang === 'ko' ? '공식 비즈니스 상담 접수 확인서' : 'Official Consultation Intake Receipt'}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCloseLeadModal}
+                    className="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/15 transition-colors focus:outline-none shrink-0 cursor-pointer"
+                    aria-label="Close"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
-                <div className="min-w-0">
-                  <h3 className="font-bold text-base sm:text-lg text-white tracking-tight leading-snug truncate">
-                    {t.consultationSchedule}
-                  </h3>
-                  <p className="text-xs text-sky-100/90 leading-tight font-normal truncate mt-0.5">
-                    {t.consultationDesc}
-                  </p>
+
+                {/* Receipt Body */}
+                <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 text-slate-800">
+                  {/* Reference Code Card */}
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col items-center text-center shadow-xs">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                      {lang === 'id' ? 'Nomor Referensi Konsultasi' : lang === 'ko' ? '공식 접수 번호' : 'Consultation Reference Code'}
+                    </span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <code className="text-lg sm:text-xl font-mono font-bold text-[#0779D1] bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs select-all">
+                        {submittedSuccessInfo.refCode}
+                      </code>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyRefCode(submittedSuccessInfo.refCode)}
+                        className="p-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                        title={copiedRefCode ? 'Tersalin' : 'Salin Nomor Referensi'}
+                      >
+                        {copiedRefCode ? (
+                          <>
+                            <Check className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+                            <span className="text-xs font-semibold text-emerald-600">{lang === 'id' ? 'Tersalin' : lang === 'ko' ? '복사됨' : 'Copied'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4" />
+                            <span className="text-xs font-medium">{lang === 'id' ? 'Salin' : lang === 'ko' ? '복사' : 'Copy'}</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-2 font-normal">
+                      {lang === 'id'
+                        ? 'Simpan nomor referensi ini untuk kemudahan penelusuran status konsultasi bersama tim penasihat INPARTNER.'
+                        : lang === 'ko'
+                        ? '인파트너 자문팀과의 후속 상담 조회 시 상기 접수 번호를 활용하실 수 있습니다.'
+                        : 'Retain this reference code for seamless consultation status coordination with INPARTNER.'}
+                    </p>
+                  </div>
+
+                  {/* Email Confirmation Notice (if client provided email) */}
+                  {submittedSuccessInfo.clientEmail && (
+                    <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex items-start gap-3 text-xs text-blue-900">
+                      <Mail className="w-4 h-4 text-[#0779D1] shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-semibold block text-blue-950">
+                          {lang === 'id' ? 'Tanda Terima Telah Dikirim ke Email' : lang === 'ko' ? '이메일 확인서 발송 완료' : 'Receipt Confirmation Dispatched'}
+                        </span>
+                        <p className="text-blue-800/90 mt-0.5 font-normal">
+                          {lang === 'id'
+                            ? `Salinan tanda terima resmi beserta nomor referensi telah dikirim ke ${submittedSuccessInfo.clientEmail}. Harap periksa folder inbox atau spam Anda.`
+                            : lang === 'ko'
+                            ? `공식 접수 확인서가 ${submittedSuccessInfo.clientEmail} 로 발송되었습니다. 수신함을 확인해 주십시오.`
+                            : `An official intake receipt has been dispatched to ${submittedSuccessInfo.clientEmail}. Please check your inbox or spam folder.`}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Response SLA Note */}
+                  <div className="text-xs text-slate-600 space-y-1.5 bg-slate-50/60 p-3.5 rounded-xl border border-slate-100">
+                    <div className="flex items-center gap-2 font-semibold text-slate-800">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>{lang === 'id' ? 'SLA Respons: Maksimal 1x24 Jam Kerja' : lang === 'ko' ? '응답 SLA: 영업일 기준 1일 이내' : 'Response SLA: Within 1 Business Day'}</span>
+                    </div>
+                    <p className="text-slate-500 leading-relaxed font-normal">
+                      {lang === 'id'
+                        ? 'Tim Business Development & Senior Advisor INPARTNER sedang menelaah profil kebutuhan bisnis Anda dan akan segera menghubungi Anda untuk koordinasi sesi diagnostik strategis.'
+                        : lang === 'ko'
+                        ? '인파트너 비즈니스 개발팀 및 수석 자문위원이 귀사의 자문 요구사항을 분석하여 남겨주신 연락처로 신속히 회신드리겠습니다.'
+                        : 'Our Business Development & Senior Practice Leaders are reviewing your requirements and will reach out via your provided contact details.'}
+                    </p>
+                  </div>
+
+                  {/* WhatsApp Fast-Track Button */}
+                  <div className="pt-2 space-y-2.5">
+                    <a
+                      href={submittedSuccessInfo.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-[#25D366] hover:bg-[#20ba59] active:scale-[0.99] text-white py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                    >
+                      <Phone className="w-4 h-4 fill-white stroke-none" />
+                      <span>{lang === 'id' ? 'Lanjutkan Chat via WhatsApp Sekarang' : lang === 'ko' ? '공식 WhatsApp으로 즉시 상담' : 'Fast-Track Coordination via WhatsApp'}</span>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={handleCloseLeadModal}
+                      className="w-full py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      {lang === 'id' ? 'Kembali ke Obrolan' : lang === 'ko' ? '대화창으로 돌아가기' : 'Return to Chat'}
+                    </button>
+                  </div>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowLeadModal(false)}
-                className="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/15 transition-colors focus:outline-none shrink-0 cursor-pointer"
-                aria-label="Close form"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            ) : (
+              <>
+                {/* Modal Header with #0779D1 Brand Gradient - Shrink-0 ensures it NEVER gets clipped */}
+                <div className="shrink-0 bg-gradient-to-r from-[#0779D1] to-[#055ea3] text-white px-5 py-3.5 sm:px-6 sm:py-4 flex items-center justify-between shadow-md">
+                  <div className="flex items-center gap-3 min-w-0 pr-2">
+                    <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
+                      <Building2 className="w-4.5 h-4.5 text-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-base sm:text-lg text-white tracking-tight leading-snug truncate">
+                        {t.consultationSchedule}
+                      </h3>
+                      <p className="text-xs text-sky-100/90 leading-tight font-normal truncate mt-0.5">
+                        {t.consultationDesc}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCloseLeadModal}
+                    className="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/15 transition-colors focus:outline-none shrink-0 cursor-pointer"
+                    aria-label="Close form"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
 
-            {/* Scrollable Form Body */}
-            <form onSubmit={handleLeadSubmit} className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5">
+                {/* Scrollable Form Body */}
+                <form onSubmit={handleLeadSubmit} className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5">
               {leadError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -1557,7 +1729,7 @@ export default function ChatWidget({
               <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={() => setShowLeadModal(false)}
+                  onClick={handleCloseLeadModal}
                   className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {t.cancel}
@@ -1578,9 +1750,11 @@ export default function ChatWidget({
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
+    </div>
+  )}
     </>
   );
 }

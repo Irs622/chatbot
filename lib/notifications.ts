@@ -1,24 +1,287 @@
-import { Lead } from './db';
-import { INPARTNER_CONFIG } from './config';
+import type { Lead } from './db.ts';
+import { INPARTNER_CONFIG } from './config.ts';
+import { detectLanguage } from './language.ts';
 
 export interface NotificationResult {
   webhookSent: boolean;
   telegramSent: boolean;
   emailSent: boolean;
+  clientEmailSent?: boolean;
   errors: string[];
 }
 
 /**
- * Dispatches real-time notifications across configured channels (Webhook/Google Sheets, Telegram, Email)
- * when a new business lead is submitted through Inpartner Agent.
+ * Generates an official institutional consultation reference code.
+ * Format: INP-YYYYMMDD-XXXX (e.g. INP-20261001-A9F2)
  */
-export async function sendLeadNotification(lead: Lead): Promise<NotificationResult> {
+export function generateConsultationRef(leadId?: string, date = new Date()): string {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  const suffix = (leadId ? leadId.replace(/[^a-zA-Z0-9]/g, '').slice(-4) : Math.random().toString(36).substring(2, 6)).toUpperCase();
+  return `INP-${yyyy}${mm}${dd}-${suffix}`;
+}
+
+/**
+ * Generates a pre-filled WhatsApp handoff URL pre-populated with consultation reference code.
+ */
+export function generateClientWhatsAppUrl(lead: { name: string; business_need: string }, refCode: string, lang: 'id' | 'en' | 'ko' = 'id'): string {
+  const phone = '6285934548202';
+  let message = '';
+
+  if (lang === 'ko') {
+    message = `안녕하세요 인파트너 자문팀, 웹사이트를 통해 비즈니스 상담(접수번호: ${refCode})을 신청한 ${lead.name}입니다. 분야: ${lead.business_need}. 미팅 일정 안내 부탁드립니다.`;
+  } else if (lang === 'en') {
+    message = `Hello Inpartner Advisory Team, I have submitted a consultation request on the website (Ref: ${refCode}). My name is ${lead.name}, regarding ${lead.business_need}. Please advise on next steps.`;
+  } else {
+    message = `Halo tim penasihat Inpartner, saya ${lead.name} telah mengajukan konsultasi bisnis di website (No. Ref: ${refCode}) mengenai ${lead.business_need}. Mohon informasi jadwal temu/diskusi.`;
+  }
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
+export interface ClientEmailContent {
+  subject: string;
+  html: string;
+  refCode: string;
+  waClientUrl: string;
+  lang: 'id' | 'en' | 'ko';
+}
+
+/**
+ * Builds the official trilingual consultation receipt email content and metadata.
+ */
+export function buildClientConfirmationEmailContent(
+  lead: Lead,
+  options?: { lang?: 'id' | 'en' | 'ko'; refCode?: string }
+): ClientEmailContent {
+  const lang: 'id' | 'en' | 'ko' = options?.lang || detectLanguage(`${lead.name} ${lead.business_need} ${lead.notes || ''}`);
+  const refCode = options?.refCode || generateConsultationRef(lead.id);
+  const waClientUrl = generateClientWhatsAppUrl(lead, refCode, lang);
+
+  const score = lead.score !== undefined ? lead.score : 50;
+  const tier = lead.priority_tier || (score >= 70 ? 'tier_1' : score >= 40 ? 'tier_2' : 'tier_3');
+  const targetSla = lead.score_breakdown?.target_sla || (tier === 'tier_1' ? '< 2 Jam Kerja' : tier === 'tier_2' ? '< 12 Jam Kerja' : '1x24 Jam Kerja');
+
+  // Trilingual content localization
+  let subject = '';
+  let salutation = '';
+  let introP = '';
+  let nextStepsH = '';
+  let nextStepsText = '';
+  let summaryH = '';
+  let labelRef = '';
+  let labelClient = '';
+  let labelCompany = '';
+  let labelScope = '';
+  let labelSla = '';
+  let ctaText = '';
+  let footerConfidentiality = '';
+
+  if (lang === 'ko') {
+    subject = `[INPARTNER] 경영 자문 상담 접수 확인 안내 (${refCode})`;
+    salutation = `${escapeHtml(lead.name)} 귀하,`;
+    introP = `PT Inpartner Optima Integra(INPARTNER)에 문의해 주셔서 대단히 감사합니다. 귀사(<strong>${escapeHtml(lead.company || '귀사')}</strong>)의 경영 및 투자 자문 상담 요청이 공식 접수되었습니다.`;
+    nextStepsH = `향후 진행 절차 안내`;
+    nextStepsText = `인파트너 수석 자문팀이 제출해 주신 사업 개요를 면밀히 검토하고 있습니다. 초기 진단(Exploratory Diagnostic)을 위해 영업일 기준 신속히 회신드리겠습니다.`;
+    summaryH = `접수 내역 요약`;
+    labelRef = `접수 번호`;
+    labelClient = `신청인 성함`;
+    labelCompany = `회사 / 기관명`;
+    labelScope = `자문 요청 분야`;
+    labelSla = `목표 회신 SLA`;
+    ctaText = `공식 WhatsApp으로 신속 문의`;
+    footerConfidentiality = `본 안내는 공인된 경영 컨설팅 업무 절차에 따라 발송되었습니다. 인파트너는 철저한 비밀유지협약(Mutual NDA) 원칙을 준수합니다.`;
+  } else if (lang === 'en') {
+    subject = `[INPARTNER] Official Consultation Inquiry Receipt (${refCode})`;
+    salutation = `Dear ${escapeHtml(lead.name)},`;
+    introP = `Thank you for reaching out to PT Inpartner Optima Integra (INPARTNER). Your corporate advisory consultation inquiry for <strong>${escapeHtml(lead.company || 'your enterprise')}</strong> has been officially logged in our system.`;
+    nextStepsH = `Next Steps & Onboarding`;
+    nextStepsText = `Our senior advisory practice leads are conducting a preliminary review of your stated business challenge. An engagement director will contact you to schedule an initial Exploratory Diagnostic Session.`;
+    summaryH = `Inquiry Summary`;
+    labelRef = `Reference Code`;
+    labelClient = `Client Name`;
+    labelCompany = `Enterprise / Organization`;
+    labelScope = `Advisory Scope`;
+    labelSla = `Target Follow-up SLA`;
+    ctaText = `Connect via WhatsApp Directly`;
+    footerConfidentiality = `INPARTNER operates under rigorous corporate governance and institutional Non-Disclosure Agreement (NDA) standards. All information shared remains strictly confidential.`;
+  } else {
+    subject = `[INPARTNER] Konfirmasi Penerimaan Konsultasi Bisnis (${refCode})`;
+    salutation = `Yth. Bapak/Ibu ${escapeHtml(lead.name)},`;
+    introP = `Terima kasih telah mempercayakan konsultasi bisnis perusahaan Anda kepada PT Inpartner Optima Integra (INPARTNER). Permintaan penasihat bisnis untuk <strong>${escapeHtml(lead.company || 'perusahaan Anda')}</strong> telah kami terima secara resmi.`;
+    nextStepsH = `Langkah Selanjutnya`;
+    nextStepsText = `Tim konsultan senior kami sedang mempelajari ringkasan kebutuhan bisnis yang Anda sampaikan. Seorang Business Development Director / Senior Advisor kami akan menghubungi Anda untuk mengoordinasikan sesi Exploratory Diagnostic Consultation.`;
+    summaryH = `Rincian Pengajuan Konsultasi`;
+    labelRef = `Nomor Referensi`;
+    labelClient = `Nama Klien`;
+    labelCompany = `Nama Perusahaan`;
+    labelScope = `Ruang Lingkup Penasihat`;
+    labelSla = `Target Respon SLA`;
+    ctaText = `Hubungi Tim via WhatsApp Langsung`;
+    footerConfidentiality = `INPARTNER beroperasi di bawah standar tata kelola profesional dan protokol kerahasiaan Perjanjian Kerahasiaan Bersama (Mutual NDA). Seluruh informasi Anda terjamin kerahasiaannya.`;
+  }
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>${escapeHtml(subject)}</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; color: #1e293b;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <!-- Header Banner -->
+        <tr>
+          <td style="background-color: #005DAD; padding: 28px 32px; text-align: left;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">INPARTNER</h1>
+            <p style="color: #bfdbfe; margin: 4px 0 0 0; font-size: 12px; font-weight: 500;">PT Inpartner Optima Integra • Business & Management Consulting</p>
+            <p style="color: #93c5fd; margin: 2px 0 0 0; font-size: 11px; font-style: italic;">"Unleash The Power Of Your Business"</p>
+          </td>
+        </tr>
+
+        <!-- Content Body -->
+        <tr>
+          <td style="padding: 32px;">
+            <div style="display: inline-block; background-color: #ecfeff; border: 1px solid #a5f3fc; color: #0891b2; font-family: monospace; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px;">
+              ${escapeHtml(refCode)}
+            </div>
+
+            <p style="font-size: 15px; margin: 0 0 14px 0; color: #0f172a; font-weight: 600;">${salutation}</p>
+            <p style="font-size: 14px; line-height: 1.6; margin: 0 0 20px 0; color: #334155;">${introP}</p>
+
+            <!-- Summary Table -->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; margin-bottom: 24px; font-size: 13px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <tr>
+                <td colspan="2" style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #005DAD; background-color: #f1f5f9; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                  📋 ${summaryH}
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; width: 140px; border-bottom: 1px solid #e2e8f0;">${labelRef}:</td>
+                <td style="padding: 10px 16px; font-family: monospace; font-weight: bold; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${escapeHtml(refCode)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${labelClient}:</td>
+                <td style="padding: 10px 16px; font-weight: 600; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.name)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${labelCompany}:</td>
+                <td style="padding: 10px 16px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.company || '-')}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${labelScope}:</td>
+                <td style="padding: 10px 16px; font-weight: 600; color: #005DAD; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.business_need)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b;">${labelSla}:</td>
+                <td style="padding: 10px 16px; font-weight: bold; color: #059669;">${escapeHtml(targetSla)}</td>
+              </tr>
+            </table>
+
+            <!-- Next Steps -->
+            <div style="background-color: #ffffff; border-left: 3px solid #005DAD; padding: 12px 16px; margin-bottom: 24px; font-size: 13px; color: #334155; line-height: 1.5;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 4px;">${nextStepsH}</strong>
+              ${nextStepsText}
+            </div>
+
+            <!-- WhatsApp Action Button -->
+            <div style="text-align: center; margin: 28px 0;">
+              <a href="${waClientUrl}" target="_blank" style="display: inline-block; background-color: #059669; color: #ffffff; text-decoration: none; padding: 12px 24px; font-size: 13px; font-weight: bold; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                💬 ${ctaText}
+              </a>
+            </div>
+
+            <!-- Office Details -->
+            <p style="font-size: 12px; color: #64748b; line-height: 1.6; margin: 24px 0 0 0; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+              <strong>PT Inpartner Optima Integra (INPARTNER)</strong><br>
+              Pakuwon Tower, Unit J, Lantai 10, Jl. Raya Casablanca Kav. 88, Jakarta Selatan 12870, Indonesia<br>
+              WhatsApp: +62 859 3454 8202 • Email: info@inpartner.id • Website: inpartner.id
+            </p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background-color: #f1f5f9; padding: 16px 32px; text-align: center; font-size: 11px; color: #64748b;">
+            ${footerConfidentiality}
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+
+  return {
+    subject,
+    html,
+    refCode,
+    waClientUrl,
+    lang
+  };
+}
+
+/**
+ * Sends an automated client-facing consultation receipt confirmation email via Resend.
+ */
+export async function sendClientConfirmationEmail(
+  lead: Lead,
+  options?: { lang?: 'id' | 'en' | 'ko'; refCode?: string }
+): Promise<{ success: boolean; error?: string }> {
+  if (!lead.email) {
+    return { success: false, error: 'No client email provided' };
+  }
+
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    return { success: false, error: 'RESEND_API_KEY environment variable not configured' };
+  }
+
+  const { subject, html } = buildClientConfirmationEmailContent(lead, options);
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'INPARTNER Advisory <notifications@inpartner.id>',
+        to: [lead.email],
+        subject,
+        html
+      })
+    });
+
+    if (res.ok) {
+      return { success: true };
+    } else {
+      const errJson = await res.json().catch(() => ({}));
+      return { success: false, error: `Resend API returned status ${res.status}: ${JSON.stringify(errJson)}` };
+    }
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Dispatches real-time notifications across configured channels (Webhook, Telegram, Internal Email, Client Email).
+ */
+export async function sendLeadNotification(
+  lead: Lead,
+  options?: { lang?: 'id' | 'en' | 'ko'; refCode?: string }
+): Promise<NotificationResult> {
   const result: NotificationResult = {
     webhookSent: false,
     telegramSent: false,
     emailSent: false,
+    clientEmailSent: false,
     errors: []
   };
+
+  const refCode = options?.refCode || generateConsultationRef(lead.id);
 
   const formattedTime = new Date().toLocaleString('en-US', {
     timeZone: 'Asia/Jakarta',
@@ -45,6 +308,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
       const payload = isSlackOrDiscord
         ? {
             text: `🚨 *NEW CONSULTATION LEAD (Inpartner AI Agent)*\n` +
+                  `• *Ref:* \`${refCode}\`\n` +
                   `• *Priority:* ${tierLabel} (Score: ${score}/100)\n` +
                   `• *Target SLA:* ${targetSla}\n` +
                   `• *Name:* ${lead.name}\n` +
@@ -59,8 +323,10 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
             event: 'new_lead',
             timestamp: new Date().toISOString(),
             formatted_time: formattedTime,
+            ref_code: refCode,
             lead: {
               id: lead.id,
+              ref_code: refCode,
               name: lead.name,
               company: lead.company,
               phone: lead.phone,
@@ -105,6 +371,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
 
       const telegramMessage =
         `🚨 *NEW CLIENT LEAD (INPARTNER AGENT)*\n\n` +
+        `🔖 *Ref:* \`${escapeTelegramMarkdown(refCode)}\`\n` +
         `🎯 *Priority:* ${tierEmoji} (Score: *${score}/100*)\n` +
         `⏱️ *Target SLA:* ${escapeTelegramMarkdown(targetSla)}\n` +
         `👤 *Name:* ${escapeTelegramMarkdown(lead.name)}\n` +
@@ -139,7 +406,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
     }
   }
 
-  // 3. Email Notification via Resend (Optional)
+  // 3. Internal Email Notification via Resend (To BD / Management)
   const resendApiKey = process.env.RESEND_API_KEY;
   const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL || INPARTNER_CONFIG.email;
 
@@ -161,7 +428,7 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
         body: JSON.stringify({
           from: 'Inpartner Agent <notifications@inpartner.id>',
           to: [notificationEmail],
-          subject: `[${tier === 'tier_1' ? 'HOT LEAD' : tier === 'tier_2' ? 'WARM LEAD' : 'INQUIRY'}] ${escapeHtml(lead.name)} (${escapeHtml(lead.company || 'Direct')}) - ${escapeHtml(lead.business_need)}`,
+          subject: `[${tier === 'tier_1' ? 'HOT LEAD' : tier === 'tier_2' ? 'WARM LEAD' : 'INQUIRY'}] (${refCode}) ${escapeHtml(lead.name)} - ${escapeHtml(lead.business_need)}`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 15px;">
@@ -171,6 +438,10 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
                 </span>
               </div>
               
+              <div style="background-color: #f1f5f9; border-radius: 6px; padding: 6px 12px; font-family: monospace; font-size: 12px; margin-bottom: 14px;">
+                Ref Code: <strong>${escapeHtml(refCode)}</strong>
+              </div>
+
               <p style="color: #475569; font-size: 13px; margin-top: 0;">A new prospective client submitted a consultation inquiry via Inpartner AI on the website:</p>
               
               <div style="background: ${tierBgColor}; border: 1px solid ${tierBadgeColor}22; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: ${tierBadgeColor};">
@@ -227,6 +498,24 @@ export async function sendLeadNotification(lead: Lead): Promise<NotificationResu
     } catch (err: any) {
       console.error('Failed to send lead email notification:', err);
       result.errors.push(`Email error: ${err.message}`);
+    }
+  }
+
+  // 4. Automated Client Confirmation Email (Direct to Prospective Client)
+  if (lead.email) {
+    try {
+      const clientEmailResult = await sendClientConfirmationEmail(lead, {
+        lang: options?.lang,
+        refCode
+      });
+      if (clientEmailResult.success) {
+        result.clientEmailSent = true;
+      } else if (clientEmailResult.error) {
+        result.errors.push(`Client confirmation email: ${clientEmailResult.error}`);
+      }
+    } catch (err: any) {
+      console.error('Failed to send client confirmation email:', err);
+      result.errors.push(`Client email error: ${err.message}`);
     }
   }
 
