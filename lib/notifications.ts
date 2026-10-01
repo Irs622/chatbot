@@ -257,19 +257,21 @@ export async function sendClientConfirmationEmail(
   const { subject, html } = buildClientConfirmationEmailContent(lead, options);
 
   try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: 'INPARTNER Advisory <notifications@inpartner.id>',
-        to: [lead.email],
-        subject,
-        html
-      })
-    });
+      const fromAddress = process.env.RESEND_FROM_EMAIL || 'INPARTNER Advisory <notifications@inpartner.id>';
+
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: fromAddress,
+          to: [lead.email],
+          subject,
+          html
+        })
+      });
 
     if (res.ok) {
       return { success: true };
@@ -472,7 +474,7 @@ export async function sendLeadNotification(
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'Inpartner Agent <notifications@inpartner.id>',
+          from: process.env.RESEND_FROM_EMAIL || 'Inpartner Agent <notifications@inpartner.id>',
           to: [notificationEmail],
           subject: `[${tier === 'tier_1' ? 'HOT LEAD' : tier === 'tier_2' ? 'WARM LEAD' : 'INQUIRY'}] (${refCode}) ${escapeHtml(lead.name)} - ${escapeHtml(lead.business_need)}`,
           html: `
