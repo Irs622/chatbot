@@ -24,6 +24,7 @@ const suites = [
   { name: 'RAG Knowledge Retrieval & Search', file: 'tests/rag.test.ts', category: 'RAG System' },
   { name: 'Validation, Phone (+62) & Security', file: 'tests/validation-auth.test.ts', category: 'Security' },
   { name: 'Database, CRM & Analytics Pipeline', file: 'tests/db.test.ts', category: 'Data & CRM' },
+  { name: 'Lead Scoring & Prioritization Matrix', file: 'tests/lead-scoring.test.ts', category: 'BD Matrix' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 

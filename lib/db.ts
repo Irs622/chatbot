@@ -26,6 +26,9 @@ export interface Message {
   };
 }
 
+import { calculateLeadScore } from './leadScoring.ts';
+import type { PriorityTier, ScoreFactor } from './leadScoring.ts';
+
 export type LeadStatus = 'new' | 'contacted' | 'in_progress' | 'converted' | 'closed';
 
 export interface Lead {
@@ -39,6 +42,13 @@ export interface Lead {
   notes?: string;
   created_at: string;
   status: LeadStatus;
+  score?: number;
+  priority_tier?: PriorityTier;
+  score_breakdown?: {
+    tier_label: string;
+    target_sla: string;
+    factors: ScoreFactor[];
+  };
 }
 
 export interface AnalyticsEvent {
@@ -217,10 +227,43 @@ export function getMessagesByConversationId(conversationId: string): Message[] {
 // Lead helpers
 export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { status?: LeadStatus }): Lead {
   const db = initDb();
+  
+  // Calculate automated lead score and priority tier if not provided
+  let score = data.score;
+  let priority_tier = data.priority_tier;
+  let score_breakdown = data.score_breakdown;
+
+  if (score === undefined || priority_tier === undefined) {
+    const conversationMsgs = data.conversation_id
+      ? db.messages.filter((m) => m.conversation_id === data.conversation_id)
+      : [];
+
+    const scoringResult = calculateLeadScore({
+      name: data.name,
+      company: data.company,
+      email: data.email,
+      phone: data.phone,
+      business_need: data.business_need,
+      notes: data.notes,
+      conversation_messages: conversationMsgs
+    });
+
+    score = scoringResult.score;
+    priority_tier = scoringResult.priority_tier;
+    score_breakdown = {
+      tier_label: scoringResult.tier_label,
+      target_sla: scoringResult.target_sla,
+      factors: scoringResult.factors
+    };
+  }
+
   const lead: Lead = {
     id: `lead_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     created_at: new Date().toISOString(),
     status: data.status || 'new',
+    score,
+    priority_tier,
+    score_breakdown,
     ...data
   };
   db.leads.push(lead);
@@ -233,7 +276,13 @@ export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { 
       event_name: 'lead_submitted',
       session_id: conv?.session_id || 'unknown',
       conversation_id: lead.conversation_id,
-      metadata: { lead_id: lead.id, business_need: lead.business_need, company: lead.company }
+      metadata: {
+        lead_id: lead.id,
+        business_need: lead.business_need,
+        company: lead.company,
+        score: lead.score,
+        priority_tier: lead.priority_tier
+      }
     });
   }
 
