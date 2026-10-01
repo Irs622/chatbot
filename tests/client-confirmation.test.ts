@@ -80,7 +80,8 @@ test('Automated Client Inbound Receipt Confirmation & WhatsApp Handoff Suite', a
         target_sla: '< 2 Jam Kerja',
         factors: []
       },
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      status: 'new'
     };
 
     const email = buildClientConfirmationEmailContent(lead, { lang: 'id', refCode: 'INP-20261015-T001' });
@@ -118,7 +119,8 @@ test('Automated Client Inbound Receipt Confirmation & WhatsApp Handoff Suite', a
         target_sla: '< 2 Jam Kerja',
         factors: []
       },
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      status: 'new'
     };
 
     const email = buildClientConfirmationEmailContent(lead, { lang: 'en', refCode: 'INP-20261015-ENG1' });
@@ -140,6 +142,7 @@ test('Automated Client Inbound Receipt Confirmation & WhatsApp Handoff Suite', a
       email: 'jhpark@korean-energy.kr',
       phone: '+821012345678',
       business_need: 'Investment & Project Advisory',
+      status: 'new',
       created_at: new Date().toISOString()
     };
 
@@ -158,8 +161,10 @@ test('Automated Client Inbound Receipt Confirmation & WhatsApp Handoff Suite', a
     const noEmailLead: Lead = {
       id: 'lead_no_email',
       name: 'Tanpa Email',
+      email: '',
       phone: '08123456789',
       business_need: 'General Advisory',
+      status: 'new',
       created_at: new Date().toISOString()
     };
 
@@ -175,7 +180,9 @@ test('Automated Client Inbound Receipt Confirmation & WhatsApp Handoff Suite', a
         id: 'lead_with_email',
         name: 'Ada Email',
         email: 'client@example.com',
+        phone: '08123456789',
         business_need: 'General Advisory',
+        status: 'new',
         created_at: new Date().toISOString()
       };
       const noKeyResult = await sendClientConfirmationEmail(leadWithEmail);

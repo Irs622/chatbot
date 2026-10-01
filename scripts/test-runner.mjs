@@ -27,6 +27,7 @@ const suites = [
   { name: 'Lead Scoring & Prioritization Matrix', file: 'tests/lead-scoring.test.ts', category: 'BD Matrix' },
   { name: 'Dynamic Analytics & Conversion Funnel', file: 'tests/analytics.test.ts', category: 'Analytics' },
   { name: 'Client Confirmation & WhatsApp Handoff', file: 'tests/client-confirmation.test.ts', category: 'Automation' },
+  { name: 'Enterprise Qualification & Schema UX', file: 'tests/enterprise-qualification.test.ts', category: 'Qualification' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 

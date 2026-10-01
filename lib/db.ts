@@ -29,6 +29,9 @@ export interface Message {
 import { calculateLeadScore } from './leadScoring.ts';
 import type { PriorityTier, ScoreFactor } from './leadScoring.ts';
 import { computeDynamicAnalytics } from './analyticsEngine.ts';
+import type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification } from './qualification.ts';
+
+export type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification };
 
 export type LeadStatus = 'new' | 'contacted' | 'in_progress' | 'converted' | 'closed';
 
@@ -37,6 +40,10 @@ export interface Lead {
   conversation_id?: string;
   name: string;
   company?: string;
+  job_title?: string;
+  company_scale?: CompanyScale;
+  industry?: IndustrySector;
+  timeline?: ProjectTimeline;
   email: string;
   phone: string;
   business_need: string;
@@ -46,6 +53,8 @@ export interface Lead {
   score?: number;
   priority_tier?: PriorityTier;
   score_breakdown?: {
+    score?: number;
+    priority_tier?: PriorityTier;
     tier_label: string;
     target_sla: string;
     factors: ScoreFactor[];
@@ -242,6 +251,10 @@ export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { 
     const scoringResult = calculateLeadScore({
       name: data.name,
       company: data.company,
+      job_title: data.job_title,
+      company_scale: data.company_scale,
+      industry: data.industry,
+      timeline: data.timeline,
       email: data.email,
       phone: data.phone,
       business_need: data.business_need,

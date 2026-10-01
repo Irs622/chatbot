@@ -26,6 +26,11 @@ import {
 import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
 import ChatbotIcon from '@/components/ChatbotIcon';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
+import {
+  COMPANY_SCALE_OPTIONS,
+  INDUSTRY_OPTIONS,
+  TIMELINE_OPTIONS
+} from '@/lib/qualification';
 
 interface ChatMessage {
   id: string;
@@ -110,6 +115,15 @@ export default function ChatWidget({
     consultationDesc: 'Sampaikan profil bisnis Anda agar konsultan senior Inpartner dapat mengagendakan sesi diagnostik awal.',
     fullName: 'Nama Lengkap',
     companyName: 'Nama Perusahaan',
+    jobTitle: 'Jabatan / Peran Pengambil Keputusan',
+    jobTitlePlaceholder: 'contoh: Direktur Utama / CFO / VP Strategy',
+    companyScale: 'Klasifikasi Skala Entitas',
+    selectCompanyScale: '-- Pilih Skala Entitas (Opsional) --',
+    industrySector: 'Sektor Industri',
+    selectIndustry: '-- Pilih Sektor Industri (Opsional) --',
+    targetTimeline: 'Target Linimasa Penugasan',
+    selectTimeline: '-- Pilih Linimasa (Opsional) --',
+    enterpriseSectionTitle: 'Kualifikasi Korporat (Opsional)',
     phone: 'WhatsApp / Telepon',
     phoneFormatHint: 'Format: 08xx atau internasional dengan + (10-14 digit)',
     email: 'Email Kantor / Bisnis',
@@ -164,6 +178,15 @@ export default function ChatWidget({
     consultationDesc: '기업 개요와 주요 과제를 남겨주시면 인파트너 수석 파트너가 사전 진단 세션을 준비합니다.',
     fullName: '성함',
     companyName: '회사명',
+    jobTitle: '직책 / 역할',
+    jobTitlePlaceholder: '예: 대표이사 / CFO / 전략기획실장',
+    companyScale: '기업 규모 분류',
+    selectCompanyScale: '-- 기업 규모 선택 (선택 사항) --',
+    industrySector: '산업 분야',
+    selectIndustry: '-- 산업 분야 선택 (선택 사항) --',
+    targetTimeline: '목표 자문 일정',
+    selectTimeline: '-- 목표 일정 선택 (선택 사항) --',
+    enterpriseSectionTitle: '기업 프로필 및 자문 요건 (선택 사항)',
     phone: 'WhatsApp / 연락처',
     phoneFormatHint: '예: 010-xxxx-xxxx 또는 국가번호 포함 (+82...)',
     email: '회사 이메일',
@@ -218,6 +241,15 @@ export default function ChatWidget({
     consultationDesc: 'Share your corporate details so Inpartner senior partners can prepare an initial diagnostic session.',
     fullName: 'Full Name',
     companyName: 'Company Name',
+    jobTitle: 'Job Title / Decision-Maker Role',
+    jobTitlePlaceholder: 'e.g. CEO / Managing Director / VP Strategy',
+    companyScale: 'Enterprise Classification',
+    selectCompanyScale: '-- Select Enterprise Scale (Optional) --',
+    industrySector: 'Industry Sector',
+    selectIndustry: '-- Select Industry Sector (Optional) --',
+    targetTimeline: 'Target Engagement Timeframe',
+    selectTimeline: '-- Select Timeframe (Optional) --',
+    enterpriseSectionTitle: 'Enterprise Profile & Qualification (Optional)',
     phone: 'WhatsApp / Phone',
     phoneFormatHint: 'Format: 08xx or international format with + (10-14 digits)',
     email: 'Business Email',
@@ -256,6 +288,10 @@ export default function ChatWidget({
   const [leadForm, setLeadForm] = useState({
     name: '',
     company: '',
+    jobTitle: '',
+    companyScale: '',
+    industry: '',
+    timeline: '',
     email: '',
     phone: '',
     businessNeed: '',
@@ -769,6 +805,10 @@ export default function ChatWidget({
           conversation_id: conversationId || undefined,
           name: leadForm.name,
           company: leadForm.company,
+          job_title: leadForm.jobTitle || undefined,
+          company_scale: leadForm.companyScale || undefined,
+          industry: leadForm.industry || undefined,
+          timeline: leadForm.timeline || undefined,
           email: leadForm.email,
           phone: leadForm.phone,
           business_need: leadForm.businessNeed,
@@ -796,6 +836,9 @@ export default function ChatWidget({
         need: leadForm.businessNeed,
         has_email: !!leadForm.email,
         has_phone: !!leadForm.phone,
+        company_scale: leadForm.companyScale || 'unspecified',
+        industry: leadForm.industry || 'unspecified',
+        timeline: leadForm.timeline || 'unspecified',
         ref_code: refCode
       });
 
@@ -1553,6 +1596,7 @@ export default function ChatWidget({
                 </div>
               )}
 
+              {/* Row 1: Full Name & Job Title */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
                   <label htmlFor="lead-full-name" className="block text-xs font-semibold text-slate-700 mb-1">
@@ -1571,6 +1615,25 @@ export default function ChatWidget({
                   />
                 </div>
                 <div>
+                  <label htmlFor="lead-job-title" className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t.jobTitle}
+                  </label>
+                  <input
+                    id="lead-job-title"
+                    name="jobTitle"
+                    type="text"
+                    autoComplete="organization-title"
+                    value={leadForm.jobTitle}
+                    onChange={(e) => setLeadForm({ ...leadForm, jobTitle: e.target.value })}
+                    placeholder={t.jobTitlePlaceholder}
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Company Name & Company Scale */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                <div>
                   <label htmlFor="lead-company-name" className="block text-xs font-semibold text-slate-700 mb-1">
                     {t.companyName}
                   </label>
@@ -1584,6 +1647,67 @@ export default function ChatWidget({
                     placeholder={lang === 'id' ? 'contoh: PT Maju Bersama' : lang === 'ko' ? '예: (주)한국상사' : 'e.g. Acme Corp / Enterprise Ltd'}
                     className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all placeholder:text-slate-400 placeholder:font-normal text-slate-900"
                   />
+                </div>
+                <div>
+                  <label htmlFor="lead-company-scale" className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t.companyScale}
+                  </label>
+                  <select
+                    id="lead-company-scale"
+                    name="companyScale"
+                    value={leadForm.companyScale}
+                    onChange={(e) => setLeadForm({ ...leadForm, companyScale: e.target.value })}
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
+                  >
+                    <option value="">{t.selectCompanyScale}</option>
+                    {COMPANY_SCALE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label[lang] || opt.label.id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 3: Industry Sector & Target Timeline */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                <div>
+                  <label htmlFor="lead-industry-sector" className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t.industrySector}
+                  </label>
+                  <select
+                    id="lead-industry-sector"
+                    name="industry"
+                    value={leadForm.industry}
+                    onChange={(e) => setLeadForm({ ...leadForm, industry: e.target.value })}
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
+                  >
+                    <option value="">{t.selectIndustry}</option>
+                    {INDUSTRY_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label[lang] || opt.label.id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="lead-target-timeline" className="block text-xs font-semibold text-slate-700 mb-1">
+                    {t.targetTimeline}
+                  </label>
+                  <select
+                    id="lead-target-timeline"
+                    name="timeline"
+                    value={leadForm.timeline}
+                    onChange={(e) => setLeadForm({ ...leadForm, timeline: e.target.value })}
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-[#0779D1] focus:ring-2 focus:ring-[#0779D1]/15 focus:outline-none transition-all text-slate-900 cursor-pointer"
+                  >
+                    <option value="">{t.selectTimeline}</option>
+                    {TIMELINE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label[lang] || opt.label.id}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

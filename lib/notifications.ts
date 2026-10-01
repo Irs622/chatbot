@@ -1,6 +1,7 @@
 import type { Lead } from './db.ts';
 import { INPARTNER_CONFIG } from './config.ts';
 import { detectLanguage } from './language.ts';
+import { getCompanyScaleLabel, getIndustryLabel, getTimelineLabel } from './qualification.ts';
 
 export interface NotificationResult {
   webhookSent: boolean;
@@ -170,6 +171,16 @@ export function buildClientConfirmationEmailContent(
                 <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${labelCompany}:</td>
                 <td style="padding: 10px 16px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.company || '-')}</td>
               </tr>
+              ${lead.job_title ? `
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${lang === 'id' ? 'Jabatan / Peran' : lang === 'ko' ? '직책' : 'Job Title'}:</td>
+                <td style="padding: 10px 16px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.job_title)}</td>
+              </tr>` : ''}
+              ${lead.timeline ? `
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${lang === 'id' ? 'Target Linimasa' : lang === 'ko' ? '목표 일정' : 'Target Timeline'}:</td>
+                <td style="padding: 10px 16px; color: #059669; font-weight: bold; border-bottom: 1px solid #e2e8f0;">${escapeHtml(getTimelineLabel(lead.timeline, lang))}</td>
+              </tr>` : ''}
               <tr>
                 <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${labelScope}:</td>
                 <td style="padding: 10px 16px; font-weight: 600; color: #005DAD; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.business_need)}</td>
@@ -305,6 +316,14 @@ export async function sendLeadNotification(
       const tierLabel = lead.score_breakdown?.tier_label || (tier === 'tier_1' ? 'Tier 1 (Hot / Urgent)' : tier === 'tier_2' ? 'Tier 2 (Warm / Strategic)' : 'Tier 3 (Standard)');
       const targetSla = lead.score_breakdown?.target_sla || (tier === 'tier_1' ? '< 2 business hours' : tier === 'tier_2' ? '< 12 business hours' : 'Within 24 business hours');
 
+      const qualItems = [
+        lead.job_title ? `• *Role / Title:* ${lead.job_title}` : '',
+        lead.company_scale ? `• *Enterprise Scale:* ${getCompanyScaleLabel(lead.company_scale)}` : '',
+        lead.industry ? `• *Industry Sector:* ${getIndustryLabel(lead.industry)}` : '',
+        lead.timeline ? `• *Target Timeline:* ${getTimelineLabel(lead.timeline)}` : ''
+      ].filter(Boolean);
+      const qualSection = qualItems.length > 0 ? `\n${qualItems.join('\n')}` : '';
+
       const payload = isSlackOrDiscord
         ? {
             text: `🚨 *NEW CONSULTATION LEAD (Inpartner AI Agent)*\n` +
@@ -313,6 +332,7 @@ export async function sendLeadNotification(
                   `• *Target SLA:* ${targetSla}\n` +
                   `• *Name:* ${lead.name}\n` +
                   `• *Company:* ${lead.company || '-'}\n` +
+                  qualSection + '\n' +
                   `• *WhatsApp:* ${lead.phone} (<${waLink}|WhatsApp Chat>)\n` +
                   `• *Email:* ${lead.email || '-'}\n` +
                   `• *Advisory Need:* ${lead.business_need}\n` +
@@ -329,6 +349,10 @@ export async function sendLeadNotification(
               ref_code: refCode,
               name: lead.name,
               company: lead.company,
+              job_title: lead.job_title,
+              company_scale: lead.company_scale ? getCompanyScaleLabel(lead.company_scale) : undefined,
+              industry: lead.industry ? getIndustryLabel(lead.industry) : undefined,
+              timeline: lead.timeline ? getTimelineLabel(lead.timeline) : undefined,
               phone: lead.phone,
               email: lead.email,
               business_need: lead.business_need,
@@ -369,6 +393,14 @@ export async function sendLeadNotification(
       const tierEmoji = tier === 'tier_1' ? '🔥 [TIER 1 - HOT]' : tier === 'tier_2' ? '⚡ [TIER 2 - STRATEGIC]' : '📋 [TIER 3 - STANDARD]';
       const targetSla = lead.score_breakdown?.target_sla || (tier === 'tier_1' ? '< 2 business hours' : tier === 'tier_2' ? '< 12 business hours' : 'Within 24 business hours');
 
+      const tgQualItems = [
+        lead.job_title ? `👔 *Role:* ${escapeTelegramMarkdown(lead.job_title)}` : '',
+        lead.company_scale ? `🏷️ *Scale:* ${escapeTelegramMarkdown(getCompanyScaleLabel(lead.company_scale))}` : '',
+        lead.industry ? `🏭 *Sector:* ${escapeTelegramMarkdown(getIndustryLabel(lead.industry))}` : '',
+        lead.timeline ? `⏳ *Timeline:* ${escapeTelegramMarkdown(getTimelineLabel(lead.timeline))}` : ''
+      ].filter(Boolean);
+      const tgQualSection = tgQualItems.length > 0 ? `${tgQualItems.join('\n')}\n` : '';
+
       const telegramMessage =
         `🚨 *NEW CLIENT LEAD (INPARTNER AGENT)*\n\n` +
         `🔖 *Ref:* \`${escapeTelegramMarkdown(refCode)}\`\n` +
@@ -376,6 +408,7 @@ export async function sendLeadNotification(
         `⏱️ *Target SLA:* ${escapeTelegramMarkdown(targetSla)}\n` +
         `👤 *Name:* ${escapeTelegramMarkdown(lead.name)}\n` +
         `🏢 *Company:* ${escapeTelegramMarkdown(lead.company || '-')}\n` +
+        tgQualSection +
         `📱 *WhatsApp:* \`${escapeTelegramMarkdown(lead.phone)}\`\n` +
         `✉️ *Email:* ${escapeTelegramMarkdown(lead.email || '-')}\n` +
         `💼 *Advisory Need:* ${escapeTelegramMarkdown(lead.business_need)}\n` +
@@ -453,10 +486,30 @@ export async function sendLeadNotification(
                   <td style="padding: 9px 0; color: #64748b; width: 140px;">Full Name:</td>
                   <td style="padding: 9px 0; font-weight: bold; color: #0f172a;">${escapeHtml(lead.name)}</td>
                 </tr>
+                ${lead.job_title ? `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 9px 0; color: #64748b;">Job Title / Role:</td>
+                  <td style="padding: 9px 0; color: #0f172a; font-weight: 600;">${escapeHtml(lead.job_title)}</td>
+                </tr>` : ''}
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 9px 0; color: #64748b;">Company:</td>
                   <td style="padding: 9px 0; color: #0f172a;">${escapeHtml(lead.company || '-')}</td>
                 </tr>
+                ${lead.company_scale ? `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 9px 0; color: #64748b;">Enterprise Scale:</td>
+                  <td style="padding: 9px 0; color: #0f172a;">${escapeHtml(getCompanyScaleLabel(lead.company_scale))}</td>
+                </tr>` : ''}
+                ${lead.industry ? `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 9px 0; color: #64748b;">Industry Sector:</td>
+                  <td style="padding: 9px 0; color: #0f172a;">${escapeHtml(getIndustryLabel(lead.industry))}</td>
+                </tr>` : ''}
+                ${lead.timeline ? `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 9px 0; color: #64748b;">Target Timeline:</td>
+                  <td style="padding: 9px 0; color: #059669; font-weight: bold;">${escapeHtml(getTimelineLabel(lead.timeline))}</td>
+                </tr>` : ''}
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 9px 0; color: #64748b;">WhatsApp / Phone:</td>
                   <td style="padding: 9px 0; color: #005DAD; font-weight: bold;">

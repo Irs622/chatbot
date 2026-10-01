@@ -3,6 +3,8 @@
  * PT Inpartner Optima Integra • Business Development Matrix
  */
 
+import type { CompanyScale, IndustrySector, ProjectTimeline } from './qualification.ts';
+
 export type PriorityTier = 'tier_1' | 'tier_2' | 'tier_3';
 
 export interface ScoreFactor {
@@ -23,6 +25,10 @@ export interface LeadScoreResult {
 export interface LeadScoringInput {
   name?: string;
   company?: string;
+  job_title?: string;
+  company_scale?: CompanyScale;
+  industry?: IndustrySector;
+  timeline?: ProjectTimeline;
   email?: string;
   phone?: string;
   business_need?: string;
@@ -237,6 +243,66 @@ export function calculateLeadScore(input: LeadScoringInput): LeadScoreResult {
     description: contactDesc
   });
   totalScore += contactScore;
+
+  // 7. Enterprise Scale, Decision-Maker Authority & Urgency (Max: 25 pts)
+  let enterpriseScore = 0;
+  const enterpriseNotes: string[] = [];
+
+  // 7a. Decision-Maker Seniority & Authority
+  const rawJobTitle = (input.job_title || '').trim().toLowerCase();
+  if (rawJobTitle) {
+    if (/\b(c-level|cxo|ceo|cfo|coo|cto|cmo|cro|direktur|director|presiden|president|komisaris|commissioner|founder|owner|pemilik|partner)\b/i.test(rawJobTitle)) {
+      enterpriseScore += 10;
+      enterpriseNotes.push(`Executive C-Level / Director authority ("${input.job_title}")`);
+    } else if (/\b(vp|vice president|head|gm|general manager|manager|manajer|lead|kadiv|kepala divisi)\b/i.test(rawJobTitle)) {
+      enterpriseScore += 7;
+      enterpriseNotes.push(`Senior practice management authority ("${input.job_title}")`);
+    } else {
+      enterpriseScore += 3;
+      enterpriseNotes.push(`Corporate title stated ("${input.job_title}")`);
+    }
+  }
+
+  // 7b. Enterprise Classification Scale
+  if (input.company_scale) {
+    if (input.company_scale === 'large_enterprise' || input.company_scale === 'multinational') {
+      enterpriseScore += 10;
+      enterpriseNotes.push('Large conglomerate or multinational FDI sponsor');
+    } else if (input.company_scale === 'state_owned') {
+      enterpriseScore += 9;
+      enterpriseNotes.push('State-Owned Enterprise (BUMN) or public institution');
+    } else if (input.company_scale === 'mid_market') {
+      enterpriseScore += 7;
+      enterpriseNotes.push('Established mid-market commercial corporation');
+    } else if (input.company_scale === 'msme') {
+      enterpriseScore += 4;
+      enterpriseNotes.push('Emerging enterprise / growth company');
+    }
+  }
+
+  // 7c. Target Engagement Timeline Urgency
+  if (input.timeline) {
+    if (input.timeline === 'immediate') {
+      enterpriseScore += 5;
+      enterpriseNotes.push('Immediate urgency (< 1 Month execution window)');
+    } else if (input.timeline === '1_to_3_months') {
+      enterpriseScore += 3;
+      enterpriseNotes.push('Near-term engagement (1 - 3 Months)');
+    } else if (input.timeline === 'gt_3_months_planning') {
+      enterpriseScore += 1;
+      enterpriseNotes.push('Annual strategic planning horizon (> 3 Months)');
+    }
+  }
+
+  if (enterpriseNotes.length > 0) {
+    factors.push({
+      factor: 'Enterprise Profile & Commercial Urgency',
+      score: enterpriseScore,
+      max: 25,
+      description: enterpriseNotes.join('; ')
+    });
+    totalScore += enterpriseScore;
+  }
 
   // Cap total score within 0 - 100
   const finalScore = Math.min(100, Math.max(0, totalScore));

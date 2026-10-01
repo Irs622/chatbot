@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 import { calculateLeadScore, getPriorityBadgeInfo, PriorityTier, LeadScoreResult } from '@/lib/leadScoring';
+import { getCompanyScaleLabel, getIndustryLabel, getTimelineLabel } from '@/lib/qualification';
 
 function formatPhone(phone: string): string {
   if (!phone) return '-';
@@ -463,9 +464,19 @@ export default function AdminDashboard() {
                               </span>
                             )}
                           </div>
-                          <div className="text-[11px] text-slate-500 truncate max-w-[150px]">
+                          {lead.job_title && (
+                            <div className="text-[10px] text-slate-500 font-medium truncate max-w-[160px]">
+                              {lead.job_title}
+                            </div>
+                          )}
+                          <div className="text-[11px] text-slate-600 truncate max-w-[160px]">
                             {lead.company || formatPhone(lead.phone)}
                           </div>
+                          {lead.company_scale && (
+                            <span className="inline-block text-[9px] px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded font-medium mt-0.5">
+                              {getCompanyScaleLabel(lead.company_scale)}
+                            </span>
+                          )}
                         </td>
 
                         <td className="py-3 px-2 text-center whitespace-nowrap">
@@ -693,6 +704,41 @@ export default function AdminDashboard() {
                     </div>
                   )}
                 </div>
+
+                {/* Enterprise Qualification Dossier Card */}
+                {(selectedLead.job_title || selectedLead.company_scale || selectedLead.industry || selectedLead.timeline) && (
+                  <div className="space-y-1.5 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                      Enterprise Qualification Profile
+                    </span>
+                    <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      {selectedLead.job_title && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Decision-Maker Role:</span>
+                          <span className="font-semibold text-slate-800">{selectedLead.job_title}</span>
+                        </div>
+                      )}
+                      {selectedLead.company_scale && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Classification:</span>
+                          <span className="font-semibold text-slate-800">{getCompanyScaleLabel(selectedLead.company_scale)}</span>
+                        </div>
+                      )}
+                      {selectedLead.industry && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Industry Sector:</span>
+                          <span className="font-semibold text-slate-800">{getIndustryLabel(selectedLead.industry)}</span>
+                        </div>
+                      )}
+                      {selectedLead.timeline && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Target Timeline:</span>
+                          <span className="font-bold text-emerald-700">{getTimelineLabel(selectedLead.timeline)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Advisory Topic Box */}
                 <div>

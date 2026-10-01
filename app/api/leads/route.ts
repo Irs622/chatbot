@@ -44,6 +44,10 @@ export async function POST(req: NextRequest) {
       conversation_id,
       name,
       company,
+      job_title,
+      company_scale,
+      industry,
+      timeline,
       email,
       phone,
       business_need,
@@ -61,6 +65,13 @@ export async function POST(req: NextRequest) {
     if (company && typeof company === 'string' && company.trim().length > 120) {
       return NextResponse.json(
         { error: 'Company name cannot exceed 120 characters.' },
+        { status: 400 }
+      );
+    }
+
+    if (job_title && typeof job_title === 'string' && job_title.trim().length > 100) {
+      return NextResponse.json(
+        { error: 'Job title / designation cannot exceed 100 characters.' },
         { status: 400 }
       );
     }
@@ -111,6 +122,10 @@ export async function POST(req: NextRequest) {
       conversation_id,
       name: name.trim(),
       company: company?.trim() || '',
+      job_title: job_title && typeof job_title === 'string' && job_title.trim() ? job_title.trim() : undefined,
+      company_scale: company_scale && typeof company_scale === 'string' && company_scale.trim() ? (company_scale as any) : undefined,
+      industry: industry && typeof industry === 'string' && industry.trim() ? (industry as any) : undefined,
+      timeline: timeline && typeof timeline === 'string' && timeline.trim() ? (timeline as any) : undefined,
       email: email?.trim() || '',
       phone: validatedPhone || phone?.trim() || '',
       business_need: business_need.trim(),
