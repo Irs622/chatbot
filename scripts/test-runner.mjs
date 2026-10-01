@@ -25,6 +25,7 @@ const suites = [
   { name: 'Validation, Phone (+62) & Security', file: 'tests/validation-auth.test.ts', category: 'Security' },
   { name: 'Database, CRM & Analytics Pipeline', file: 'tests/db.test.ts', category: 'Data & CRM' },
   { name: 'Lead Scoring & Prioritization Matrix', file: 'tests/lead-scoring.test.ts', category: 'BD Matrix' },
+  { name: 'Dynamic Analytics & Conversion Funnel', file: 'tests/analytics.test.ts', category: 'Analytics' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 
