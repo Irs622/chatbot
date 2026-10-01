@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllConversations } from '@/lib/db';
+import { getAllConversations, getAllConversationsAsync } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const list = getAllConversations();
+    const list = await getAllConversationsAsync();
     return NextResponse.json({ success: true, count: list.length, conversations: list });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

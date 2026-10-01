@@ -323,6 +323,39 @@ export function getAllConversations(): {
     });
 }
 
+export async function getAllConversationsAsync(): Promise<{
+  conversation: Conversation;
+  messages: Message[];
+  lead?: Lead;
+}[]> {
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        const [cRes, mRes, lRes] = await Promise.all([
+          supabase.from('conversations').select('*').order('created_at', { ascending: false }),
+          supabase.from('messages').select('*').order('created_at', { ascending: true }),
+          supabase.from('leads').select('*')
+        ]);
+
+        if (!cRes.error && !mRes.error && !lRes.error && Array.isArray(cRes.data)) {
+          const allMessages = (mRes.data || []) as Message[];
+          const allLeads = (lRes.data || []) as Lead[];
+
+          return (cRes.data as Conversation[]).map((conv) => {
+            const msgs = allMessages.filter((m) => m.conversation_id === conv.id);
+            const lead = allLeads.find((l) => l.conversation_id === conv.id);
+            return { conversation: conv, messages: msgs, lead };
+          });
+        }
+      } catch (err) {
+        console.warn('[Supabase getAllConversationsAsync Exception]', err);
+      }
+    }
+  }
+  return getAllConversations();
+}
+
 // Message helpers
 export function addMessage(data: Omit<Message, 'id' | 'created_at'>): Message {
   const db = initDb();
