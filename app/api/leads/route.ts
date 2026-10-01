@@ -53,7 +53,8 @@ export async function POST(req: NextRequest) {
       business_need,
       notes,
       diagnostic_summary,
-      diagnostic_data
+      diagnostic_data,
+      attribution
     } = body;
 
     // Field length safety limits
@@ -134,6 +135,16 @@ export async function POST(req: NextRequest) {
       notes: notes?.trim() || '',
       diagnostic_summary: diagnostic_summary && typeof diagnostic_summary === 'string' && diagnostic_summary.trim() ? diagnostic_summary.trim().slice(0, 1000) : undefined,
       diagnostic_data: diagnostic_data && typeof diagnostic_data === 'object' ? diagnostic_data : undefined,
+      attribution: attribution && typeof attribution === 'object' ? {
+        utm_source: typeof attribution.utm_source === 'string' ? attribution.utm_source.slice(0, 100) : undefined,
+        utm_medium: typeof attribution.utm_medium === 'string' ? attribution.utm_medium.slice(0, 100) : undefined,
+        utm_campaign: typeof attribution.utm_campaign === 'string' ? attribution.utm_campaign.slice(0, 150) : undefined,
+        utm_term: typeof attribution.utm_term === 'string' ? attribution.utm_term.slice(0, 150) : undefined,
+        utm_content: typeof attribution.utm_content === 'string' ? attribution.utm_content.slice(0, 150) : undefined,
+        referrer_url: typeof attribution.referrer_url === 'string' ? attribution.referrer_url.slice(0, 500) : undefined,
+        landing_page: typeof attribution.landing_page === 'string' ? attribution.landing_page.slice(0, 500) : undefined,
+        captured_at: typeof attribution.captured_at === 'string' ? attribution.captured_at : new Date().toISOString()
+      } : undefined,
       status: 'new'
     });
 

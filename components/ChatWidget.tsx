@@ -32,6 +32,8 @@ import {
   recordVisitorSession,
   getNudgeMessage
 } from '@/lib/proactiveNudge';
+import { captureMarketingAttribution } from '@/lib/attribution';
+import type { AttributionData } from '@/lib/db';
 import ChatbotIcon from '@/components/ChatbotIcon';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
 import {
@@ -109,6 +111,7 @@ export default function ChatWidget({
   const [nudgeType, setNudgeType] = useState<NudgeTriggerType>('dwell_time');
   const [isReturningVisitor, setIsReturningVisitor] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [attribution, setAttribution] = useState<AttributionData | null>(null);
   const [lang, setLang] = useState<'id' | 'en' | 'ko'>('id');
 
   // Trilingual UI Translations (ID / EN / KO)
@@ -569,6 +572,14 @@ export default function ChatWidget({
       try {
         const { isReturning } = recordVisitorSession(window.localStorage);
         setIsReturningVisitor(isReturning);
+
+        // Capture marketing attribution telemetry (UTM parameters, referrer, landing page)
+        const attr = captureMarketingAttribution(
+          window.location.href,
+          document.referrer,
+          window.sessionStorage
+        );
+        setAttribution(attr);
       } catch {}
     }
   }, []);
@@ -1034,6 +1045,7 @@ export default function ChatWidget({
             scoping_summary: activeDiagnostic.scopingSummary,
             completed_at: new Date().toISOString()
           } : undefined,
+          attribution: attribution || undefined,
           lang
         })
       });

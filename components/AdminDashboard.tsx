@@ -26,6 +26,7 @@ import {
   Award,
   AlertTriangle,
   Compass,
+  Globe,
   Table as TableIcon,
   Kanban as KanbanIcon,
   ArrowRight,
@@ -37,6 +38,7 @@ import { calculateLeadScore, getPriorityBadgeInfo, PriorityTier, LeadScoreResult
 import { getCompanyScaleLabel, getIndustryLabel, getTimelineLabel } from '@/lib/qualification';
 import { PIPELINE_STAGES, checkLeadSlaStatus, getLeadStatusLabel, PipelineStageConfig } from '@/lib/crmPipeline';
 import { generateLeadsCsv } from '@/lib/exportCsv';
+import { formatAttributionBadge } from '@/lib/attribution';
 
 function formatPhone(phone: string): string {
   if (!phone) return '-';
@@ -587,6 +589,71 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* Marketing Attribution & Acquisition Telemetry Card */}
+          {selectedLead.attribution && (
+            <div className="space-y-2 bg-gradient-to-br from-indigo-50/70 via-sky-50/40 to-slate-50 p-3 rounded-xl border border-indigo-200/80 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-indigo-600" />
+                  Marketing Attribution &amp; Acquisition Channel
+                </span>
+                <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-indigo-100/90 text-indigo-800 rounded-full border border-indigo-200">
+                  {formatAttributionBadge(selectedLead.attribution)}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                <div className="bg-white/90 p-2 rounded-lg border border-slate-100">
+                  <span className="text-slate-400 block text-[9.5px]">Traffic Source / Medium:</span>
+                  <span className="font-semibold text-slate-800 font-mono text-[10.5px]">
+                    {selectedLead.attribution.utm_source || 'organic'} / {selectedLead.attribution.utm_medium || 'direct'}
+                  </span>
+                </div>
+                {selectedLead.attribution.utm_campaign && (
+                  <div className="bg-white/90 p-2 rounded-lg border border-slate-100">
+                    <span className="text-slate-400 block text-[9.5px]">Campaign:</span>
+                    <span className="font-semibold text-indigo-700 font-mono text-[10.5px]">
+                      {selectedLead.attribution.utm_campaign}
+                    </span>
+                  </div>
+                )}
+                {selectedLead.attribution.utm_term && (
+                  <div className="bg-white/90 p-2 rounded-lg border border-slate-100">
+                    <span className="text-slate-400 block text-[9.5px]">Search Term:</span>
+                    <span className="font-medium text-slate-700 font-mono text-[10px]">
+                      {selectedLead.attribution.utm_term}
+                    </span>
+                  </div>
+                )}
+                {selectedLead.attribution.utm_content && (
+                  <div className="bg-white/90 p-2 rounded-lg border border-slate-100">
+                    <span className="text-slate-400 block text-[9.5px]">Ad Creative / Content:</span>
+                    <span className="font-medium text-slate-700 font-mono text-[10px]">
+                      {selectedLead.attribution.utm_content}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {(selectedLead.attribution.landing_page || selectedLead.attribution.referrer_url) && (
+                <div className="space-y-1 pt-1 text-[10px] text-slate-500 bg-white/60 p-2 rounded-lg border border-slate-100">
+                  {selectedLead.attribution.landing_page && (
+                    <div className="truncate" title={selectedLead.attribution.landing_page}>
+                      <span className="font-medium text-slate-400">Landing Page: </span>
+                      <span className="font-mono text-slate-600">{selectedLead.attribution.landing_page}</span>
+                    </div>
+                  )}
+                  {selectedLead.attribution.referrer_url && (
+                    <div className="truncate" title={selectedLead.attribution.referrer_url}>
+                      <span className="font-medium text-slate-400">Referrer: </span>
+                      <span className="font-mono text-slate-600">{selectedLead.attribution.referrer_url}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Advisory Topic Box */}
           <div>
             <span className="text-slate-500 block mb-1 font-medium">Advisory Scope Requested:</span>
@@ -931,6 +998,15 @@ export default function AdminDashboard() {
                                 {getCompanyScaleLabel(lead.company_scale)}
                               </span>
                             )}
+                            {lead.attribution && (
+                              <span
+                                className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded font-medium mt-0.5 ml-1"
+                                title={`Acquisition: ${formatAttributionBadge(lead.attribution)}`}
+                              >
+                                <Globe className="w-2.5 h-2.5 text-indigo-500 shrink-0" />
+                                <span>{formatAttributionBadge(lead.attribution)}</span>
+                              </span>
+                            )}
                           </td>
 
                           <td className="py-3 px-2 text-center whitespace-nowrap">
@@ -1158,6 +1234,15 @@ export default function AdminDashboard() {
                                 <span className="px-1.5 py-0.2 bg-rose-50 text-rose-700 border border-rose-100 rounded font-bold flex items-center gap-0.5">
                                   <Flame className="w-2.5 h-2.5 text-rose-600" />
                                   HOT
+                                </span>
+                              )}
+                              {lead.attribution && (
+                                <span
+                                  className="px-1.5 py-0.2 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded font-medium flex items-center gap-0.5 truncate max-w-[120px]"
+                                  title={`Source: ${formatAttributionBadge(lead.attribution)}`}
+                                >
+                                  <Globe className="w-2.5 h-2.5 text-indigo-500 shrink-0" />
+                                  <span className="truncate">{formatAttributionBadge(lead.attribution)}</span>
                                 </span>
                               )}
                             </div>

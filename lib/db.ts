@@ -36,6 +36,17 @@ export type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualifica
 
 export type LeadStatus = 'new' | 'contacted' | 'in_progress' | 'proposal' | 'converted' | 'closed';
 
+export interface AttributionData {
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  referrer_url?: string;
+  landing_page?: string;
+  captured_at?: string;
+}
+
 export interface Lead {
   id: string;
   conversation_id?: string;
@@ -51,6 +62,7 @@ export interface Lead {
   notes?: string;
   diagnostic_summary?: string;
   diagnostic_data?: DiagnosticDataRecord;
+  attribution?: AttributionData;
   created_at: string;
   status: LeadStatus;
   score?: number;

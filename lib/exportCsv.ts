@@ -62,6 +62,11 @@ export function generateLeadsCsv(leads: Lead[]): string {
     'Diagnostic Step 1',
     'Diagnostic Step 2',
     'Diagnostic Summary',
+    'UTM Source',
+    'UTM Medium',
+    'UTM Campaign',
+    'Referrer URL',
+    'Landing Page',
     'Lead Score',
     'Priority Tier',
     'Target SLA',
@@ -108,6 +113,11 @@ export function generateLeadsCsv(leads: Lead[]): string {
       escapeCsvField(step1Detail),
       escapeCsvField(step2Detail),
       escapeCsvField(lead.diagnostic_summary || '-'),
+      escapeCsvField(lead.attribution?.utm_source || '-'),
+      escapeCsvField(lead.attribution?.utm_medium || '-'),
+      escapeCsvField(lead.attribution?.utm_campaign || '-'),
+      escapeCsvField(lead.attribution?.referrer_url || '-'),
+      escapeCsvField(lead.attribution?.landing_page || '-'),
       escapeCsvField(scoreVal),
       escapeCsvField(tierVal),
       escapeCsvField(slaVal),
@@ -118,3 +128,4 @@ export function generateLeadsCsv(leads: Lead[]): string {
 
   return '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
 }
+

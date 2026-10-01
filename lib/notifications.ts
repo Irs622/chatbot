@@ -369,6 +369,7 @@ export async function sendLeadNotification(
               score: lead.score,
               priority_tier: lead.priority_tier,
               score_breakdown: lead.score_breakdown,
+              attribution: lead.attribution,
               whatsapp_link: waLink
             }
           };
@@ -406,7 +407,10 @@ export async function sendLeadNotification(
         lead.company_scale ? `🏷️ *Scale:* ${escapeTelegramMarkdown(getCompanyScaleLabel(lead.company_scale))}` : '',
         lead.industry ? `🏭 *Sector:* ${escapeTelegramMarkdown(getIndustryLabel(lead.industry))}` : '',
         lead.timeline ? `⏳ *Timeline:* ${escapeTelegramMarkdown(getTimelineLabel(lead.timeline))}` : '',
-        lead.diagnostic_summary ? `🔍 *Discovery:* ${escapeTelegramMarkdown(lead.diagnostic_summary)}` : ''
+        lead.diagnostic_summary ? `🔍 *Discovery:* ${escapeTelegramMarkdown(lead.diagnostic_summary)}` : '',
+        lead.attribution && (lead.attribution.utm_source || lead.attribution.utm_campaign)
+          ? `🌐 *Attribution:* ${escapeTelegramMarkdown(lead.attribution.utm_source || 'direct')}${lead.attribution.utm_medium ? '/' + escapeTelegramMarkdown(lead.attribution.utm_medium) : ''}${lead.attribution.utm_campaign ? ' (' + escapeTelegramMarkdown(lead.attribution.utm_campaign) + ')' : ''}`
+          : ''
       ].filter(Boolean);
       const tgQualSection = tgQualItems.length > 0 ? `${tgQualItems.join('\n')}\n` : '';
 
@@ -538,6 +542,15 @@ export async function sendLeadNotification(
                   <td style="padding: 9px 0; color: #64748b;">Advisory Need:</td>
                   <td style="padding: 9px 0; font-weight: bold; color: #0f172a;">${escapeHtml(lead.business_need)}</td>
                 </tr>
+                ${lead.attribution ? `
+                <tr style="border-bottom: 1px solid #f1f5f9; background-color: #f8fafc;">
+                  <td style="padding: 9px 0; color: #475569; font-weight: bold;">Marketing Attribution:</td>
+                  <td style="padding: 9px 0; color: #0369a1; font-weight: 600;">
+                    ${escapeHtml(lead.attribution.utm_source || 'direct')}${lead.attribution.utm_medium ? ' / ' + escapeHtml(lead.attribution.utm_medium) : ''}
+                    ${lead.attribution.utm_campaign ? '<br/><span style="font-size: 11px; color: #64748b; font-weight: normal;">Campaign: ' + escapeHtml(lead.attribution.utm_campaign) + '</span>' : ''}
+                    ${lead.attribution.referrer_url ? '<br/><span style="font-size: 11px; color: #64748b; font-weight: normal;">Referrer: ' + escapeHtml(lead.attribution.referrer_url) + '</span>' : ''}
+                  </td>
+                </tr>` : ''}
                 <tr>
                   <td style="padding: 9px 0; color: #64748b;">Submitted Notes:</td>
                   <td style="padding: 9px 0; color: #334155;">${escapeHtml(lead.notes || '-')}</td>

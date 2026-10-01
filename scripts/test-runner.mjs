@@ -31,6 +31,7 @@ const suites = [
   { name: 'Consultative Diagnostic & Discovery Flow', file: 'tests/consultative-diagnostic.test.ts', category: 'Consultative' },
   { name: 'CRM Kanban Pipeline & Data Export', file: 'tests/crm-kanban-export.test.ts', category: 'CRM Kanban' },
   { name: 'Proactive Advisory Triggers & Exit-Intent', file: 'tests/proactive-nudge.test.ts', category: 'Engagement' },
+  { name: 'Marketing Attribution & UTM Telemetry', file: 'tests/marketing-attribution.test.ts', category: 'Attribution' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 
