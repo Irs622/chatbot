@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllLeads, createLead } from '@/lib/db';
+import { getAllLeads, getAllLeadsAsync, createLead } from '@/lib/db';
 import { sendLeadNotification, generateConsultationRef, generateClientWhatsAppUrl } from '@/lib/notifications';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const leads = getAllLeads();
+    const leads = await getAllLeadsAsync();
     return NextResponse.json({ success: true, count: leads.length, leads });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

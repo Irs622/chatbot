@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllLeads } from '@/lib/db';
+import { getAllLeads, getAllLeadsAsync } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { filterLeadsForExport, generateLeadsCsv } from '@/lib/exportCsv';
 
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status') || undefined;
     const priority = searchParams.get('priority') || undefined;
 
-    const allLeads = getAllLeads();
+    const allLeads = await getAllLeadsAsync();
     const filteredLeads = filterLeadsForExport(allLeads, {
       startDate,
       endDate,

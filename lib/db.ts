@@ -31,6 +31,7 @@ import type { PriorityTier, ScoreFactor } from './leadScoring.ts';
 import { computeDynamicAnalytics } from './analyticsEngine.ts';
 import type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification } from './qualification.ts';
 import type { DiagnosticDataRecord, DiagnosticPillarKey } from './diagnostic.ts';
+import { getSupabase, isSupabaseConfigured } from './supabaseClient.ts';
 
 export type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification, DiagnosticDataRecord, DiagnosticPillarKey };
 
@@ -169,6 +170,15 @@ function saveDb(data: DatabaseSchema): void {
   }
 }
 
+function asyncSupabaseSync(syncFn: (supabase: NonNullable<ReturnType<typeof getSupabase>>) => PromiseLike<any>): void {
+  if (!isSupabaseConfigured()) return;
+  const supabase = getSupabase();
+  if (!supabase) return;
+  Promise.resolve(syncFn(supabase)).catch((err) => {
+    console.warn('[Supabase Sync Exception]', err);
+  });
+}
+
 // Conversation helpers
 export function getOrCreateConversation(sessionId: string, initialIntent?: string): Conversation {
   const db = initDb();
@@ -192,6 +202,9 @@ export function getOrCreateConversation(sessionId: string, initialIntent?: strin
       conversation_id: conversation.id,
       metadata: { initial_intent: initialIntent }
     });
+
+    const createdConv = conversation;
+    asyncSupabaseSync((sb) => sb.from('conversations').upsert(createdConv));
   }
 
   return conversation;
@@ -203,6 +216,7 @@ export function updateConversationIntent(conversationId: string, intent: string)
   if (conv) {
     conv.user_intent = intent;
     saveDb(db);
+    asyncSupabaseSync((sb) => sb.from('conversations').update({ user_intent: intent }).eq('id', conversationId));
   }
 }
 
@@ -212,6 +226,7 @@ export function updateConversationSummary(conversationId: string, summary: strin
   if (conv) {
     conv.summary = summary;
     saveDb(db);
+    asyncSupabaseSync((sb) => sb.from('conversations').update({ summary }).eq('id', conversationId));
   }
 }
 
@@ -241,6 +256,9 @@ export function addMessage(data: Omit<Message, 'id' | 'created_at'>): Message {
   };
   db.messages.push(msg);
   saveDb(db);
+
+  asyncSupabaseSync((sb) => sb.from('messages').insert(msg));
+
   return msg;
 }
 
@@ -300,6 +318,9 @@ export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { 
   db.leads.push(lead);
   saveDb(db);
 
+  // Sync to Supabase in background
+  asyncSupabaseSync((sb) => sb.from('leads').upsert(lead));
+
   // Track analytics: lead_submitted
   if (lead.conversation_id) {
     const conv = db.conversations.find((c) => c.id === lead.conversation_id);
@@ -327,6 +348,30 @@ export function getAllLeads(): Lead[] {
   return db.leads.slice().reverse();
 }
 
+/**
+ * Asynchronously retrieves leads from Supabase PostgreSQL if online,
+ * automatically falling back to local memory database.
+ */
+export async function getAllLeadsAsync(): Promise<Lead[]> {
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('leads')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          return data as Lead[];
+        }
+      } catch (err) {
+        console.warn('[Supabase Fetch Exception] Falling back to local db:', err);
+      }
+    }
+  }
+  return getAllLeads();
+}
+
 export function getLeadById(leadId: string): Lead | null {
   const db = initDb();
   return db.leads.find((l) => l.id === leadId) || null;
@@ -339,6 +384,11 @@ export function updateLeadStatus(leadId: string, status?: LeadStatus, notes?: st
   if (status) lead.status = status;
   if (notes !== undefined) lead.notes = notes;
   saveDb(db);
+
+  asyncSupabaseSync((sb) =>
+    sb.from('leads').update({ status: lead.status, notes: lead.notes }).eq('id', lead.id)
+  );
+
   return lead;
 }
 
@@ -348,6 +398,9 @@ export function deleteLead(leadId: string): boolean {
   db.leads = db.leads.filter((l) => l.id !== leadId);
   if (db.leads.length !== initialLength) {
     saveDb(db);
+
+    asyncSupabaseSync((sb) => sb.from('leads').delete().eq('id', leadId));
+
     return true;
   }
   return false;
@@ -363,6 +416,9 @@ export function logAnalyticsEvent(event: Omit<AnalyticsEvent, 'id' | 'created_at
   };
   db.analytics_events.push(newEvent);
   saveDb(db);
+
+  asyncSupabaseSync((sb) => sb.from('analytics_events').insert(newEvent));
+
   return newEvent;
 }
 
