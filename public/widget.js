@@ -80,21 +80,21 @@
     '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">' +
       '<div style="display:flex; align-items:center; gap:6px;">' +
         '<span style="width:7px; height:7px; border-radius:50%; background:#10b981; display:inline-block; box-shadow:0 0 0 2px rgba(16,185,129,0.25);"></span>' +
-        '<span style="font-weight:700; font-size:11.5px; color:#005DAD; letter-spacing:-0.01em;">Inpartner AI Assistant</span>' +
+        '<span id="inpartner-teaser-badge" style="font-weight:700; font-size:11.5px; color:#005DAD; letter-spacing:-0.01em;">Inpartner AI Advisory</span>' +
       '</div>' +
       '<button id="inpartner-teaser-close" aria-label="Dismiss greeting" style="background:none; border:none; color:#94a3b8; font-size:13px; line-height:1; cursor:pointer; padding:3px 5px; border-radius:6px;">✕</button>' +
     '</div>' +
-    '<div style="font-weight:700; font-size:13px; color:#0f172a; line-height:1.35; margin-bottom:4px;">' +
-      'Need Strategic Advisory or Profit Optimization?' +
+    '<div id="inpartner-teaser-title" style="font-weight:700; font-size:13px; color:#0f172a; line-height:1.35; margin-bottom:4px;">' +
+      'Evaluating Strategic Options?' +
     '</div>' +
-    '<div style="font-size:11.5px; color:#64748b; line-height:1.4; margin-bottom:10px;">' +
-      'Get executive diagnostic & 4-pillar advisory insights in 2 minutes.' +
+    '<div id="inpartner-teaser-body" style="font-size:11.5px; color:#64748b; line-height:1.4; margin-bottom:10px;">' +
+      'Evaluating strategic corporate options or market expansion plans? Our advisory team is available for preliminary discussion.' +
     '</div>' +
     '<div style="display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid #f1f5f9;">' +
-      '<span style="font-size:11.5px; font-weight:700; color:#005DAD; display:flex; align-items:center; gap:4px;">' +
+      '<span id="inpartner-teaser-cta" style="font-size:11.5px; font-weight:700; color:#005DAD; display:flex; align-items:center; gap:4px;">' +
         'Start Consultation &rarr;' +
       '</span>' +
-      '<span style="font-size:10.5px; color:#94a3b8; font-weight:500;">Online 24/7 • Complimentary</span>' +
+      '<span style="font-size:10.5px; color:#94a3b8; font-weight:500;">Online 24/7 • Confidential</span>' +
     '</div>';
 
   // Create iframe container
@@ -164,12 +164,38 @@
     }
   }
 
-  function showTeaser() {
+  function setTeaserContent(type) {
+    var titleEl = teaser.querySelector('#inpartner-teaser-title');
+    var bodyEl = teaser.querySelector('#inpartner-teaser-body');
+    var badgeEl = teaser.querySelector('#inpartner-teaser-badge');
+    var ctaEl = teaser.querySelector('#inpartner-teaser-cta');
+
+    if (type === 'exit_intent') {
+      if (badgeEl) badgeEl.textContent = 'Strategic Opportunity';
+      if (titleEl) titleEl.textContent = 'Before You Leave';
+      if (bodyEl) bodyEl.textContent = 'Explore strategic corporate partnerships or business optimization with an Inpartner advisor before you leave.';
+      if (ctaEl) ctaEl.innerHTML = 'Quick Consultation &rarr;';
+    } else if (type === 'return_visitor') {
+      if (badgeEl) badgeEl.textContent = 'Welcome Back';
+      if (titleEl) titleEl.textContent = 'Continue Your Consultation';
+      if (bodyEl) bodyEl.textContent = 'Glad to see you again. Would you like to continue our advisory discussion or schedule a diagnostic assessment?';
+      if (ctaEl) ctaEl.innerHTML = 'Continue Session &rarr;';
+    } else {
+      if (badgeEl) badgeEl.textContent = 'Inpartner AI Advisory';
+      if (titleEl) titleEl.textContent = 'Evaluating Strategic Options?';
+      if (bodyEl) bodyEl.textContent = 'Evaluating strategic corporate options or market expansion plans? Our advisory team is available for preliminary discussion.';
+      if (ctaEl) ctaEl.innerHTML = 'Start Consultation &rarr;';
+    }
+  }
+
+  function showTeaser(type) {
     if (isOpen) return;
     try {
-      if (sessionStorage.getItem('inpartner_teaser_dismissed')) return;
+      if (sessionStorage.getItem('inpartner_nudge_dismissed') || sessionStorage.getItem('inpartner_nudge_shown')) return;
+      sessionStorage.setItem('inpartner_nudge_shown', 'true');
     } catch (e) {}
 
+    setTeaserContent(type || 'dwell_time');
     teaser.style.display = 'block';
     setTimeout(function () {
       teaser.style.opacity = '1';
@@ -180,7 +206,7 @@
   function hideTeaser(permanently) {
     if (permanently) {
       try {
-        sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
+        sessionStorage.setItem('inpartner_nudge_dismissed', 'true');
       } catch (e) {}
     }
     teaser.style.opacity = '0';
@@ -261,10 +287,35 @@
     };
   }
 
-  // Trigger proactive teaser after 8 seconds of browsing
-  setTimeout(function () {
-    showTeaser();
-  }, 8000);
+  // Return visitor detection
+  var isReturning = false;
+  try {
+    var rawVisits = localStorage.getItem('inpartner_visitor_profile');
+    var visitCount = 1;
+    if (rawVisits) {
+      var prof = JSON.parse(rawVisits);
+      visitCount = (prof.visitCount || 1) + 1;
+      isReturning = true;
+    }
+    localStorage.setItem('inpartner_visitor_profile', JSON.stringify({ visitCount: visitCount, lastVisit: new Date().toISOString() }));
+  } catch (e) {}
+
+  // 1. Dwell time trigger: 25 seconds for new visitors, 10 seconds for returning visitors
+  var dwellDelay = isReturning ? 10000 : 25000;
+  var dwellTimer = setTimeout(function () {
+    if (!isOpen) {
+      showTeaser(isReturning ? 'return_visitor' : 'dwell_time');
+    }
+  }, dwellDelay);
+
+  // 2. Desktop exit-intent trigger: mouseleave towards address bar / tab bar
+  if (typeof document !== 'undefined') {
+    document.addEventListener('mouseleave', function (e) {
+      if (e.clientY <= 15 && window.innerWidth >= 768 && !isOpen) {
+        showTeaser('exit_intent');
+      }
+    });
+  }
 
   // Listen for postMessage from inside iframe (e.g. ChatWidget close button clicked)
   window.addEventListener('message', function (event) {

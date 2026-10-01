@@ -30,6 +30,7 @@ const suites = [
   { name: 'Enterprise Qualification & Schema UX', file: 'tests/enterprise-qualification.test.ts', category: 'Qualification' },
   { name: 'Consultative Diagnostic & Discovery Flow', file: 'tests/consultative-diagnostic.test.ts', category: 'Consultative' },
   { name: 'CRM Kanban Pipeline & Data Export', file: 'tests/crm-kanban-export.test.ts', category: 'CRM Kanban' },
+  { name: 'Proactive Advisory Triggers & Exit-Intent', file: 'tests/proactive-nudge.test.ts', category: 'Engagement' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 
@@ -56,13 +57,13 @@ function runSuite(suite) {
 
     proc.on('close', (code) => {
       const duration = Date.now() - start;
-      const passMatch = stdout.match(/pass\s+(\d+)/);
-      const failMatch = stdout.match(/fail\s+(\d+)/);
-      const totalMatch = stdout.match(/tests\s+(\d+)/);
+      const passMatches = [...stdout.matchAll(/pass\s+(\d+)/g)];
+      const failMatches = [...stdout.matchAll(/fail\s+(\d+)/g)];
+      const totalMatches = [...stdout.matchAll(/tests\s+(\d+)/g)];
 
-      const pass = passMatch ? parseInt(passMatch[1], 10) : 0;
-      const fail = failMatch ? parseInt(failMatch[1], 10) : 0;
-      const total = totalMatch ? parseInt(totalMatch[1], 10) : pass + fail;
+      const pass = passMatches.length > 0 ? parseInt(passMatches[passMatches.length - 1][1], 10) : 0;
+      const fail = failMatches.length > 0 ? parseInt(failMatches[failMatches.length - 1][1], 10) : 0;
+      const total = totalMatches.length > 0 ? parseInt(totalMatches[totalMatches.length - 1][1], 10) : pass + fail;
 
       resolve({
         ...suite,

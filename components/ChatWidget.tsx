@@ -23,7 +23,15 @@ import {
   Check,
   Copy
 } from 'lucide-react';
-import { INPARTNER_CONFIG, getWhatsAppUrl } from '@/lib/config';
+import { INPARTNER_CONFIG, getWhatsAppUrl, PROACTIVE_TRIGGER_CONFIG } from '@/lib/config';
+import {
+  NudgeTriggerType,
+  canShowProactiveNudge,
+  markNudgeDismissed,
+  markNudgeShown,
+  recordVisitorSession,
+  getNudgeMessage
+} from '@/lib/proactiveNudge';
 import ChatbotIcon from '@/components/ChatbotIcon';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
 import {
@@ -98,6 +106,9 @@ export default function ChatWidget({
   const [selectedNeed, setSelectedNeed] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
+  const [nudgeType, setNudgeType] = useState<NudgeTriggerType>('dwell_time');
+  const [isReturningVisitor, setIsReturningVisitor] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [lang, setLang] = useState<'id' | 'en' | 'ko'>('id');
 
   // Trilingual UI Translations (ID / EN / KO)
@@ -552,21 +563,77 @@ export default function ChatWidget({
     }
   }, [showMenu]);
 
-  // Proactive Teaser Bubble timer (trigger after 8 seconds)
+  // Initialize visitor session & return visitor recognition on mount
   useEffect(() => {
-    if (embeddedMode || isOpen) return;
-    try {
-      if (sessionStorage.getItem('inpartner_teaser_dismissed')) return;
-    } catch {}
+    if (typeof window !== 'undefined') {
+      try {
+        const { isReturning } = recordVisitorSession(window.localStorage);
+        setIsReturningVisitor(isReturning);
+      } catch {}
+    }
+  }, []);
 
-    const timer = setTimeout(() => {
-      if (!isOpen) {
+  // Proactive Advisory Engagement & Exit-Intent Triggers (Issue #8)
+  useEffect(() => {
+    if (embeddedMode || isOpen || hasUserInteracted) return;
+    if (!PROACTIVE_TRIGGER_CONFIG.enabled) return;
+
+    const canTrigger = canShowProactiveNudge({
+      isOpen,
+      hasInteracted: hasUserInteracted,
+      sessionStorage: typeof window !== 'undefined' ? window.sessionStorage : null
+    });
+    if (!canTrigger) return;
+
+    // 1. Dwell Time Trigger: Configured dwell time (default 25s; 10s for recognized return visitors)
+    const dwellSeconds = isReturningVisitor
+      ? PROACTIVE_TRIGGER_CONFIG.returnVisitorDwellSeconds
+      : PROACTIVE_TRIGGER_CONFIG.dwellTimeSeconds;
+
+    const dwellTimer = setTimeout(() => {
+      const stillEligible = canShowProactiveNudge({
+        isOpen,
+        hasInteracted: hasUserInteracted,
+        sessionStorage: typeof window !== 'undefined' ? window.sessionStorage : null
+      });
+
+      if (stillEligible && !isOpen) {
+        setNudgeType(isReturningVisitor ? 'return_visitor' : 'dwell_time');
         setShowTeaser(true);
+        markNudgeShown(typeof window !== 'undefined' ? window.sessionStorage : null);
       }
-    }, 8000);
+    }, dwellSeconds * 1000);
 
-    return () => clearTimeout(timer);
-  }, [isOpen, embeddedMode]);
+    // 2. Desktop Exit-Intent Trigger: Detect cursor movement towards tab closure/address bar
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (!PROACTIVE_TRIGGER_CONFIG.exitIntentEnabled) return;
+      // Exit intent condition: cursor moves towards top boundary of window (y <= 15) on desktop
+      if (e.clientY <= 15 && typeof window !== 'undefined' && window.innerWidth >= 768) {
+        const eligibleForExit = canShowProactiveNudge({
+          isOpen,
+          hasInteracted: hasUserInteracted,
+          sessionStorage: window.sessionStorage
+        });
+
+        if (eligibleForExit && !isOpen) {
+          setNudgeType('exit_intent');
+          setShowTeaser(true);
+          markNudgeShown(window.sessionStorage);
+        }
+      }
+    };
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
+      clearTimeout(dwellTimer);
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, [isOpen, embeddedMode, isReturningVisitor, hasUserInteracted]);
 
   // Track chatbot open
   useEffect(() => {
@@ -1044,28 +1111,27 @@ export default function ChatWidget({
             <div
               onClick={() => {
                 setShowTeaser(false);
-                try {
-                  sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
-                } catch {}
+                setHasUserInteracted(true);
+                markNudgeDismissed(typeof window !== 'undefined' ? window.sessionStorage : null);
                 setIsOpen(true);
               }}
-              className="pointer-events-auto max-w-[310px] w-full bg-white rounded-2xl p-4 shadow-2xl border border-[#005DAD]/20 animate-in fade-in slide-in-from-bottom-3 duration-300 cursor-pointer hover:shadow-3xl hover:border-[#005DAD]/40 transition-all group"
+              className="pointer-events-auto max-w-[320px] w-full bg-white rounded-2xl p-4 shadow-2xl border border-[#005DAD]/20 animate-in fade-in slide-in-from-bottom-3 duration-300 cursor-pointer hover:shadow-3xl hover:border-[#005DAD]/40 transition-all group"
             >
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span className="font-bold text-[11.5px] text-[#0779D1]">Inpartner AI Assistant</span>
+                  <span className="font-bold text-[11px] text-[#0779D1]">
+                    {getNudgeMessage(nudgeType, lang).badge}
+                  </span>
                 </div>
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowTeaser(false);
-                    try {
-                      sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
-                    } catch {}
+                    markNudgeDismissed(typeof window !== 'undefined' ? window.sessionStorage : null);
                   }}
-                  className="text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                   aria-label="Close teaser"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -1073,26 +1139,18 @@ export default function ChatWidget({
               </div>
 
               <h4 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-[#0779D1] transition-colors">
-                {lang === 'id'
-                  ? 'Butuh Konsultasi Strategi Bisnis atau Optimasi Profit?'
-                  : lang === 'ko'
-                  ? '비즈니스 전략 자문 또는 수익성 최적화가 필요하신가요?'
-                  : 'Looking for Strategic Business Advisory or Profit Optimization?'}
+                {getNudgeMessage(nudgeType, lang).title}
               </h4>
               <p className="text-xs text-slate-600 mt-1 leading-relaxed font-normal">
-                {lang === 'id'
-                  ? 'Dapatkan diagnosa eksekutif & peta jalan 4 pilar advisory dalam 2 menit.'
-                  : lang === 'ko'
-                  ? '2분 안에 경영진 진단 및 4대 핵심 자문 로드맵을 확인하세요.'
-                  : 'Receive an executive diagnostic & 4-pillar advisory roadmap in under 2 minutes.'}
+                {getNudgeMessage(nudgeType, lang).body}
               </p>
 
               <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span className="font-bold text-[#0779D1] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                  {lang === 'id' ? 'Mulai Konsultasi →' : lang === 'ko' ? '상담 시작하기 →' : 'Start Consultation →'}
+                  {getNudgeMessage(nudgeType, lang).cta}
                 </span>
-                <span className="text-[11px] text-slate-400">
-                  {lang === 'id' ? 'Online 24/7 • Gratis' : lang === 'ko' ? '24시간 상시 운영 • 무료' : 'Online 24/7 • Complimentary'}
+                <span className="text-[10px] text-slate-400">
+                  {lang === 'id' ? 'Online 24/7 • Rahasia' : lang === 'ko' ? '24시간 상시 운영 • 비밀보장' : '24/7 • Confidential'}
                 </span>
               </div>
             </div>
@@ -1104,9 +1162,8 @@ export default function ChatWidget({
               <button
                 onClick={() => {
                   setShowTeaser(false);
-                  try {
-                    sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
-                  } catch {}
+                  setHasUserInteracted(true);
+                  markNudgeDismissed(typeof window !== 'undefined' ? window.sessionStorage : null);
                   setIsOpen(true);
                 }}
                 className="hidden sm:flex items-center gap-2 bg-white text-slate-800 text-xs font-semibold px-3.5 py-2.5 rounded-full shadow-lg border border-slate-200/80 hover:shadow-xl transition-all cursor-pointer"
@@ -1118,9 +1175,8 @@ export default function ChatWidget({
             <button
               onClick={() => {
                 setShowTeaser(false);
-                try {
-                  sessionStorage.setItem('inpartner_teaser_dismissed', 'true');
-                } catch {}
+                setHasUserInteracted(true);
+                markNudgeDismissed(typeof window !== 'undefined' ? window.sessionStorage : null);
                 setIsOpen(!isOpen);
               }}
               aria-label={isOpen ? 'Close Chatbot' : `Open ${agentConfig.name}`}
