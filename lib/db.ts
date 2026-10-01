@@ -424,6 +424,14 @@ export async function getLeadByIdAsync(leadId: string): Promise<Lead | null> {
           .eq('id', leadId)
           .maybeSingle();
         if (!error && data) {
+          const db = initDb();
+          const localIdx = db.leads.findIndex((l) => l.id === leadId);
+          if (localIdx >= 0) {
+            db.leads[localIdx] = { ...db.leads[localIdx], ...(data as Lead) };
+          } else {
+            db.leads.unshift(data as Lead);
+          }
+          saveDb(db);
           return data as Lead;
         }
       } catch (err) {
@@ -450,21 +458,41 @@ export function updateLeadStatus(leadId: string, status?: LeadStatus, notes?: st
 }
 
 export async function updateLeadStatusAsync(leadId: string, status?: LeadStatus, notes?: string): Promise<Lead | null> {
-  const lead = updateLeadStatus(leadId, status, notes);
-  if (lead && isSupabaseConfigured()) {
+  if (isSupabaseConfigured()) {
     const supabase = getSupabase();
     if (supabase) {
       try {
-        await supabase
-          .from('leads')
-          .update({ status: lead.status, notes: lead.notes })
-          .eq('id', lead.id);
+        const updatePayload: Record<string, any> = {};
+        if (status !== undefined) updatePayload.status = status;
+        if (notes !== undefined) updatePayload.notes = notes;
+
+        if (Object.keys(updatePayload).length > 0) {
+          const { data, error } = await supabase
+            .from('leads')
+            .update(updatePayload)
+            .eq('id', leadId)
+            .select('*')
+            .maybeSingle();
+
+          if (!error && data) {
+            // Synchronize with local memory database
+            const db = initDb();
+            const localIdx = db.leads.findIndex((l) => l.id === leadId);
+            if (localIdx >= 0) {
+              db.leads[localIdx] = { ...db.leads[localIdx], ...(data as Lead) };
+            } else {
+              db.leads.unshift(data as Lead);
+            }
+            saveDb(db);
+            return data as Lead;
+          }
+        }
       } catch (err) {
         console.warn('[Supabase Sync Exception in updateLeadStatusAsync]', err);
       }
     }
   }
-  return lead;
+  return updateLeadStatus(leadId, status, notes);
 }
 
 export function deleteLead(leadId: string): boolean {
@@ -482,18 +510,39 @@ export function deleteLead(leadId: string): boolean {
 }
 
 export async function deleteLeadAsync(leadId: string): Promise<boolean> {
-  const ok = deleteLead(leadId);
-  if (ok && isSupabaseConfigured()) {
+  let localDeleted = false;
+  try {
+    const db = initDb();
+    const initialLength = db.leads.length;
+    db.leads = db.leads.filter((l) => l.id !== leadId);
+    localDeleted = db.leads.length !== initialLength;
+    if (localDeleted) {
+      saveDb(db);
+    }
+  } catch (err) {
+    console.warn('[Local deleteLead in deleteLeadAsync error]', err);
+  }
+
+  if (isSupabaseConfigured()) {
     const supabase = getSupabase();
     if (supabase) {
       try {
-        await supabase.from('leads').delete().eq('id', leadId);
+        const { data, error } = await supabase
+          .from('leads')
+          .delete()
+          .eq('id', leadId)
+          .select('id');
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          return true;
+        }
       } catch (err) {
         console.warn('[Supabase Sync Exception in deleteLeadAsync]', err);
       }
     }
   }
-  return ok;
+
+  return localDeleted;
 }
 
 // Analytics helpers
