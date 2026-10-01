@@ -181,6 +181,11 @@ export function buildClientConfirmationEmailContent(
                 <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${lang === 'id' ? 'Target Linimasa' : lang === 'ko' ? '목표 일정' : 'Target Timeline'}:</td>
                 <td style="padding: 10px 16px; color: #059669; font-weight: bold; border-bottom: 1px solid #e2e8f0;">${escapeHtml(getTimelineLabel(lead.timeline, lang))}</td>
               </tr>` : ''}
+              ${lead.diagnostic_summary ? `
+              <tr>
+                <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${lang === 'id' ? 'Diagnostik Awal' : lang === 'ko' ? '사전 진단 요약' : 'Discovery Scoping'}:</td>
+                <td style="padding: 10px 16px; color: #0284c7; font-weight: 600; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.diagnostic_summary)}</td>
+              </tr>` : ''}
               <tr>
                 <td style="padding: 10px 16px; color: #64748b; border-bottom: 1px solid #e2e8f0;">${labelScope}:</td>
                 <td style="padding: 10px 16px; font-weight: 600; color: #005DAD; border-bottom: 1px solid #e2e8f0;">${escapeHtml(lead.business_need)}</td>
@@ -320,7 +325,8 @@ export async function sendLeadNotification(
         lead.job_title ? `• *Role / Title:* ${lead.job_title}` : '',
         lead.company_scale ? `• *Enterprise Scale:* ${getCompanyScaleLabel(lead.company_scale)}` : '',
         lead.industry ? `• *Industry Sector:* ${getIndustryLabel(lead.industry)}` : '',
-        lead.timeline ? `• *Target Timeline:* ${getTimelineLabel(lead.timeline)}` : ''
+        lead.timeline ? `• *Target Timeline:* ${getTimelineLabel(lead.timeline)}` : '',
+        lead.diagnostic_summary ? `• *Discovery Scoping:* ${lead.diagnostic_summary}` : ''
       ].filter(Boolean);
       const qualSection = qualItems.length > 0 ? `\n${qualItems.join('\n')}` : '';
 
@@ -353,6 +359,8 @@ export async function sendLeadNotification(
               company_scale: lead.company_scale ? getCompanyScaleLabel(lead.company_scale) : undefined,
               industry: lead.industry ? getIndustryLabel(lead.industry) : undefined,
               timeline: lead.timeline ? getTimelineLabel(lead.timeline) : undefined,
+              diagnostic_summary: lead.diagnostic_summary,
+              diagnostic_data: lead.diagnostic_data,
               phone: lead.phone,
               email: lead.email,
               business_need: lead.business_need,
@@ -397,7 +405,8 @@ export async function sendLeadNotification(
         lead.job_title ? `👔 *Role:* ${escapeTelegramMarkdown(lead.job_title)}` : '',
         lead.company_scale ? `🏷️ *Scale:* ${escapeTelegramMarkdown(getCompanyScaleLabel(lead.company_scale))}` : '',
         lead.industry ? `🏭 *Sector:* ${escapeTelegramMarkdown(getIndustryLabel(lead.industry))}` : '',
-        lead.timeline ? `⏳ *Timeline:* ${escapeTelegramMarkdown(getTimelineLabel(lead.timeline))}` : ''
+        lead.timeline ? `⏳ *Timeline:* ${escapeTelegramMarkdown(getTimelineLabel(lead.timeline))}` : '',
+        lead.diagnostic_summary ? `🔍 *Discovery:* ${escapeTelegramMarkdown(lead.diagnostic_summary)}` : ''
       ].filter(Boolean);
       const tgQualSection = tgQualItems.length > 0 ? `${tgQualItems.join('\n')}\n` : '';
 
@@ -509,6 +518,11 @@ export async function sendLeadNotification(
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 9px 0; color: #64748b;">Target Timeline:</td>
                   <td style="padding: 9px 0; color: #059669; font-weight: bold;">${escapeHtml(getTimelineLabel(lead.timeline))}</td>
+                </tr>` : ''}
+                ${lead.diagnostic_summary ? `
+                <tr style="border-bottom: 1px solid #f1f5f9; background-color: #f0fdf4;">
+                  <td style="padding: 9px 0; color: #15803d; font-weight: bold;">Discovery Scoping:</td>
+                  <td style="padding: 9px 0; color: #166534; font-weight: 600;">${escapeHtml(lead.diagnostic_summary)}</td>
                 </tr>` : ''}
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                   <td style="padding: 9px 0; color: #64748b;">WhatsApp / Phone:</td>

@@ -33,6 +33,8 @@ export interface LeadScoringInput {
   phone?: string;
   business_need?: string;
   notes?: string;
+  diagnostic_summary?: string;
+  has_completed_diagnostic?: boolean;
   conversation_messages?: Array<{ sender: string; message?: string; text?: string }>;
 }
 
@@ -201,7 +203,10 @@ export function calculateLeadScore(input: LeadScoringInput): LeadScoreResult {
   const msgCount = input.conversation_messages?.length || 0;
   const notesLength = (input.notes || '').trim().length;
 
-  if (msgCount >= 4) {
+  if (input.has_completed_diagnostic || (input.diagnostic_summary && input.diagnostic_summary.trim())) {
+    depthScore = 10;
+    depthDesc = 'Completed structured consultative discovery diagnostic';
+  } else if (msgCount >= 4) {
     depthScore = 10;
     depthDesc = `Deep consultation engagement (${msgCount} messages exchanged)`;
   } else if (msgCount >= 2) {

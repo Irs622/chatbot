@@ -30,8 +30,9 @@ import { calculateLeadScore } from './leadScoring.ts';
 import type { PriorityTier, ScoreFactor } from './leadScoring.ts';
 import { computeDynamicAnalytics } from './analyticsEngine.ts';
 import type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification } from './qualification.ts';
+import type { DiagnosticDataRecord, DiagnosticPillarKey } from './diagnostic.ts';
 
-export type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification };
+export type { CompanyScale, IndustrySector, ProjectTimeline, EnterpriseQualification, DiagnosticDataRecord, DiagnosticPillarKey };
 
 export type LeadStatus = 'new' | 'contacted' | 'in_progress' | 'converted' | 'closed';
 
@@ -48,6 +49,8 @@ export interface Lead {
   phone: string;
   business_need: string;
   notes?: string;
+  diagnostic_summary?: string;
+  diagnostic_data?: DiagnosticDataRecord;
   created_at: string;
   status: LeadStatus;
   score?: number;
@@ -259,6 +262,8 @@ export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { 
       phone: data.phone,
       business_need: data.business_need,
       notes: data.notes,
+      diagnostic_summary: data.diagnostic_summary,
+      has_completed_diagnostic: Boolean(data.diagnostic_data || data.diagnostic_summary),
       conversation_messages: conversationMsgs
     });
 
@@ -295,7 +300,9 @@ export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { 
         business_need: lead.business_need,
         company: lead.company,
         score: lead.score,
-        priority_tier: lead.priority_tier
+        priority_tier: lead.priority_tier,
+        has_diagnostic: Boolean(lead.diagnostic_data || lead.diagnostic_summary),
+        diagnostic_pillar: lead.diagnostic_data?.pillar
       }
     });
   }

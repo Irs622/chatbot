@@ -28,6 +28,7 @@ const suites = [
   { name: 'Dynamic Analytics & Conversion Funnel', file: 'tests/analytics.test.ts', category: 'Analytics' },
   { name: 'Client Confirmation & WhatsApp Handoff', file: 'tests/client-confirmation.test.ts', category: 'Automation' },
   { name: 'Enterprise Qualification & Schema UX', file: 'tests/enterprise-qualification.test.ts', category: 'Qualification' },
+  { name: 'Consultative Diagnostic & Discovery Flow', file: 'tests/consultative-diagnostic.test.ts', category: 'Consultative' },
   { name: 'End-to-End Client Journey Simulation', file: 'tests/e2e-simulation.test.ts', category: 'E2E Flow' }
 ];
 

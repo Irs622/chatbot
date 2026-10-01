@@ -31,6 +31,25 @@ import {
   INDUSTRY_OPTIONS,
   TIMELINE_OPTIONS
 } from '@/lib/qualification';
+import {
+  DiagnosticPillarKey,
+  DiagnosticPillarTree,
+  DiagnosticOption,
+  getDiagnosticTree,
+  getAllDiagnosticPillars,
+  detectDiagnosticPillar,
+  generateScopingSummary
+} from '@/lib/diagnostic';
+
+export interface ActiveDiagnosticSession {
+  pillarKey: DiagnosticPillarKey;
+  currentStep: 1 | 2 | 'completed';
+  step1ChoiceId?: string;
+  step1ChoiceLabel?: string;
+  step2ChoiceId?: string;
+  step2ChoiceLabel?: string;
+  scopingSummary?: string;
+}
 
 interface ChatMessage {
   id: string;
@@ -44,6 +63,7 @@ interface ChatMessage {
   quickActions?: string[];
   isFallback?: boolean;
   isStreaming?: boolean;
+  diagnosticPillar?: DiagnosticPillarKey;
 }
 
 interface ChatWidgetProps {
@@ -143,7 +163,16 @@ export default function ChatWidget({
     service: 'Layanan:',
     generating: 'Menyusun analisis...',
     interestedCta: 'Tertarik dengan Konsultasi Strategis Lebih Lanjut?',
-    interestedDesc: 'Tinggalkan kontak bisnis Anda, dan konsultan senior Inpartner akan menghubungi Anda untuk analisis diagnostik mendalam.'
+    interestedDesc: 'Tinggalkan kontak bisnis Anda, dan konsultan senior Inpartner akan menghubungi Anda untuk analisis diagnostik mendalam.',
+    diagnosticBadge: 'Diagnostik Penjajakan Kebutuhan Bisnis',
+    diagnosticStep1: 'Langkah 1/2',
+    diagnosticStep2: 'Langkah 2/2',
+    diagnosticCompletedBadge: 'Scoping Diagnostik Selesai',
+    diagnosticBookWithScoping: 'Jadwalkan Konsultasi dengan Hasil Diagnostik Ini',
+    diagnosticWaWithScoping: 'Konsultasi via WhatsApp',
+    diagnosticChangeStep1: 'Ubah Pilihan Langkah 1',
+    diagnosticRestart: 'Ulangi Diagnostik',
+    diagnosticGeneralPrompt: 'Pilih Pilar Layanan untuk Memulai Diagnostik Terpandu:'
   } : lang === 'ko' ? {
     onlineStatus: '온라인 • 실시간 상담 가능',
     newChat: '새 대화 시작',
@@ -206,7 +235,16 @@ export default function ChatWidget({
     service: '추천 서비스:',
     generating: '분석 내용 생성 중...',
     interestedCta: '심층 비즈니스 자문이 필요하십니까?',
-    interestedDesc: '연락처를 남겨주시면 인파트너 수석 컨설턴트가 1:1 맞춤형 진단 상담을 제공해 드립니다.'
+    interestedDesc: '연락처를 남겨주시면 인파트너 수석 컨설턴트가 1:1 맞춤형 진단 상담을 제공해 드립니다.',
+    diagnosticBadge: '맞춤형 기업 사전 진단 (Consultative Discovery)',
+    diagnosticStep1: '1단계 / 2단계',
+    diagnosticStep2: '2단계 / 2단계',
+    diagnosticCompletedBadge: '사전 진단 요약 완료',
+    diagnosticBookWithScoping: '진단 결과로 경영 상담 예약하기',
+    diagnosticWaWithScoping: '수석 파트너 WhatsApp 실시간 문의',
+    diagnosticChangeStep1: '1단계 선택 변경',
+    diagnosticRestart: '진단 다시 시작하기',
+    diagnosticGeneralPrompt: '사전 진단을 시작할 주요 자문 분야를 선택해 주세요:'
   } : {
     onlineStatus: 'Online • Ready to assist',
     newChat: 'New conversation',
@@ -269,7 +307,16 @@ export default function ChatWidget({
     service: 'Service:',
     generating: 'Generating response...',
     interestedCta: 'Interested in Further Corporate Advisory?',
-    interestedDesc: 'Leave your business contact details, and an Inpartner senior consultant will connect with you for an in-depth needs analysis.'
+    interestedDesc: 'Leave your business contact details, and an Inpartner senior consultant will connect with you for an in-depth needs analysis.',
+    diagnosticBadge: 'Consultative Discovery Diagnostic',
+    diagnosticStep1: 'Step 1 of 2',
+    diagnosticStep2: 'Step 2 of 2',
+    diagnosticCompletedBadge: 'Preliminary Scoping Complete',
+    diagnosticBookWithScoping: 'Schedule Consultation with this Scoping',
+    diagnosticWaWithScoping: 'Fast-Track WhatsApp Discussion',
+    diagnosticChangeStep1: 'Change Step 1 Choice',
+    diagnosticRestart: 'Restart Diagnostic',
+    diagnosticGeneralPrompt: 'Select an Advisory Pillar to Begin Consultative Scoping:'
   };
 
   // Inpartner Agent Configuration derived from active language
@@ -307,6 +354,7 @@ export default function ChatWidget({
     name: string;
   } | null>(null);
   const [copiedRefCode, setCopiedRefCode] = useState(false);
+  const [activeDiagnostic, setActiveDiagnostic] = useState<ActiveDiagnosticSession | null>(null);
 
   // Messages state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -358,6 +406,16 @@ export default function ChatWidget({
       const savedLeadSubmitted = localStorage.getItem(`inpartner_lead_submitted_${sess}`);
       if (savedLeadSubmitted === 'true') {
         setLeadSubmitted(true);
+      }
+
+      const savedDiagStr = localStorage.getItem(`inpartner_diagnostic_${sess}`);
+      if (savedDiagStr) {
+        try {
+          const parsedDiag = JSON.parse(savedDiagStr);
+          if (parsedDiag && parsedDiag.pillarKey) {
+            setActiveDiagnostic(parsedDiag);
+          }
+        } catch {}
       }
     } catch (err) {
       console.warn('Could not restore chat state from localStorage:', err);
@@ -466,6 +524,20 @@ export default function ChatWidget({
       }
     } catch {}
   }, [leadSubmitted, sessionId, mounted]);
+
+  // Auto-save activeDiagnostic
+  useEffect(() => {
+    if (!mounted || !sessionId) return;
+    try {
+      if (activeDiagnostic) {
+        localStorage.setItem(`inpartner_diagnostic_${sessionId}`, JSON.stringify(activeDiagnostic));
+      } else {
+        localStorage.removeItem(`inpartner_diagnostic_${sessionId}`);
+      }
+    } catch (err) {
+      console.warn('Failed to save active diagnostic to localStorage:', err);
+    }
+  }, [activeDiagnostic, sessionId, mounted]);
 
   // Close dropdown menu when clicking outside
   useEffect(() => {
@@ -650,6 +722,7 @@ export default function ChatWidget({
                 if (event.recommendedService) {
                   trackEvent('service_viewed', { service: event.recommendedService });
                 }
+                const detectedPillar = detectDiagnosticPillar(event.intent || event.recommendedService || finalAnswer);
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === botMsgId
@@ -662,7 +735,8 @@ export default function ChatWidget({
                           suggestLeadCapture: event.suggestLeadCapture,
                           followUpQuestions: event.followUpQuestions,
                           quickActions: event.quickActions,
-                          isFallback: event.isFallback
+                          isFallback: event.isFallback,
+                          diagnosticPillar: detectedPillar || undefined
                         }
                       : m
                   )
@@ -692,6 +766,7 @@ export default function ChatWidget({
           }
         }
 
+        const detectedPillar = detectDiagnosticPillar(data.intent || data.recommendedService || data.answer);
         const botMsg: ChatMessage = {
           id: botMsgId,
           sender: 'bot',
@@ -703,7 +778,8 @@ export default function ChatWidget({
           followUpQuestions: data.followUpQuestions,
           quickActions: data.quickActions,
           isFallback: data.isFallback,
-          isStreaming: false
+          isStreaming: false,
+          diagnosticPillar: detectedPillar || undefined
         };
 
         setMessages((prev) => [...prev, botMsg]);
@@ -741,6 +817,7 @@ export default function ChatWidget({
         localStorage.removeItem(`inpartner_conv_id_${sessionId}`);
         localStorage.removeItem(`inpartner_selected_need_${sessionId}`);
         localStorage.removeItem(`inpartner_lead_submitted_${sessionId}`);
+        localStorage.removeItem(`inpartner_diagnostic_${sessionId}`);
       } catch (err) {
         console.warn('Could not clear session storage:', err);
       }
@@ -752,9 +829,73 @@ export default function ChatWidget({
     setConversationId(null);
     setSelectedNeed(null);
     setLeadSubmitted(false);
+    setActiveDiagnostic(null);
     setShowLeadModal(false);
     setMessages([]);
     setShowMenu(false);
+  };
+
+  const handleSelectDiagnosticOption = (
+    pillarKey: DiagnosticPillarKey,
+    stepNum: 1 | 2,
+    option: DiagnosticOption
+  ) => {
+    const tree = getDiagnosticTree(pillarKey);
+    if (!tree) return;
+
+    const optLabel = lang === 'ko' ? option.label_ko : lang === 'en' ? option.label_en : option.label_id;
+
+    if (stepNum === 1) {
+      setActiveDiagnostic({
+        pillarKey,
+        currentStep: 2,
+        step1ChoiceId: option.id,
+        step1ChoiceLabel: optLabel
+      });
+      trackEvent('diagnostic_step_completed', {
+        pillar: pillarKey,
+        step: 1,
+        choice_id: option.id,
+        choice_label: optLabel
+      });
+    } else if (stepNum === 2) {
+      const s1Id = (activeDiagnostic?.pillarKey === pillarKey && activeDiagnostic.step1ChoiceId) ? activeDiagnostic.step1ChoiceId : tree.step1.options[0].id;
+      const s1Label = (activeDiagnostic?.pillarKey === pillarKey && activeDiagnostic.step1ChoiceLabel) ? activeDiagnostic.step1ChoiceLabel : (lang === 'ko' ? tree.step1.options[0].label_ko : lang === 'en' ? tree.step1.options[0].label_en : tree.step1.options[0].label_id);
+      
+      const synthesis = generateScopingSummary(pillarKey, s1Id, option.id, lang);
+
+      const completedState: ActiveDiagnosticSession = {
+        pillarKey,
+        currentStep: 'completed',
+        step1ChoiceId: s1Id,
+        step1ChoiceLabel: s1Label,
+        step2ChoiceId: option.id,
+        step2ChoiceLabel: optLabel,
+        scopingSummary: synthesis.scopingSummary
+      };
+
+      setActiveDiagnostic(completedState);
+
+      // Pre-populate lead form
+      setLeadForm((prev) => ({
+        ...prev,
+        businessNeed: synthesis.pillarName,
+        notes: prev.notes && !prev.notes.startsWith('[') ? `${synthesis.scopingSummary}\n\n${prev.notes}` : synthesis.scopingSummary
+      }));
+
+      trackEvent('diagnostic_completed', {
+        pillar: pillarKey,
+        scoping_summary: synthesis.scopingSummary
+      });
+    }
+  };
+
+  const handleResetDiagnostic = (pillarKey: DiagnosticPillarKey) => {
+    setActiveDiagnostic({
+      pillarKey,
+      currentStep: 1
+    });
+    trackEvent('diagnostic_reset', { pillar: pillarKey });
   };
 
   const phoneValidation = validatePhoneNumber(leadForm.phone);
@@ -813,6 +954,19 @@ export default function ChatWidget({
           phone: leadForm.phone,
           business_need: leadForm.businessNeed,
           notes: leadForm.notes,
+          diagnostic_summary: activeDiagnostic?.scopingSummary,
+          diagnostic_data: activeDiagnostic?.currentStep === 'completed' && activeDiagnostic.scopingSummary ? {
+            pillar: activeDiagnostic.pillarKey,
+            pillar_name: getDiagnosticTree(activeDiagnostic.pillarKey)?.[`serviceName_${lang}`] || activeDiagnostic.pillarKey,
+            step1_id: activeDiagnostic.step1ChoiceId || '',
+            step1_question: getDiagnosticTree(activeDiagnostic.pillarKey)?.step1[`question_${lang}`] || '',
+            step1_answer: activeDiagnostic.step1ChoiceLabel || '',
+            step2_id: activeDiagnostic.step2ChoiceId || '',
+            step2_question: getDiagnosticTree(activeDiagnostic.pillarKey)?.step2[`question_${lang}`] || '',
+            step2_answer: activeDiagnostic.step2ChoiceLabel || '',
+            scoping_summary: activeDiagnostic.scopingSummary,
+            completed_at: new Date().toISOString()
+          } : undefined,
           lang
         })
       });
@@ -839,6 +993,7 @@ export default function ChatWidget({
         company_scale: leadForm.companyScale || 'unspecified',
         industry: leadForm.industry || 'unspecified',
         timeline: leadForm.timeline || 'unspecified',
+        has_diagnostic: Boolean(activeDiagnostic?.scopingSummary),
         ref_code: refCode
       });
 
@@ -1289,6 +1444,182 @@ export default function ChatWidget({
                         <span>{msg.timestamp}</span>
                       </div>
                     </div>
+
+                    {/* Interactive Consultative Discovery Module */}
+                    {msg.diagnosticPillar && !msg.isStreaming && (() => {
+                      const tree = getDiagnosticTree(msg.diagnosticPillar);
+                      if (!tree) return null;
+
+                      const currentDiagState = (activeDiagnostic && activeDiagnostic.pillarKey === msg.diagnosticPillar)
+                        ? activeDiagnostic
+                        : { pillarKey: msg.diagnosticPillar, currentStep: 1 as const };
+
+                      const isCompleted = currentDiagState.currentStep === 'completed';
+                      const isStep1 = currentDiagState.currentStep === 1;
+                      const isStep2 = currentDiagState.currentStep === 2;
+
+                      const currentStepTitle = isCompleted
+                        ? t.diagnosticCompletedBadge
+                        : isStep1
+                        ? `${t.diagnosticStep1}: ${tree.step1[`title_${lang}`]}`
+                        : `${t.diagnosticStep2}: ${tree.step2[`title_${lang}`]}`;
+
+                      return (
+                        <div className="mt-3 w-full sm:w-[94%] bg-gradient-to-br from-white via-sky-50/40 to-[#0779D1]/5 border border-[#0779D1]/25 rounded-2xl p-4 shadow-xs">
+                          {/* Module Header */}
+                          <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2.5 mb-3">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0779D1] to-[#055ea3] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                                <Compass className="w-4 h-4 text-white stroke-[2.2]" />
+                              </div>
+                              <div className="min-w-0">
+                                <span className="text-[10px] font-bold text-[#0779D1] uppercase tracking-wider block truncate">
+                                  {t.diagnosticBadge}
+                                </span>
+                                <span className="text-xs font-semibold text-slate-800 block truncate">
+                                  {tree[`serviceName_${lang}`]}
+                                </span>
+                              </div>
+                            </div>
+                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 ${
+                              isCompleted
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : 'bg-sky-50 text-[#0779D1] border-sky-200'
+                            }`}>
+                              {currentStepTitle}
+                            </span>
+                          </div>
+
+                          {/* Step 1 State */}
+                          {isStep1 && (
+                            <div className="space-y-2.5">
+                              <p className="text-xs sm:text-[13px] font-semibold text-slate-900 leading-snug">
+                                {tree.step1[`question_${lang}`]}
+                              </p>
+                              <div className="space-y-1.5 pt-1">
+                                {tree.step1.options.map((opt) => (
+                                  <button
+                                    key={opt.id}
+                                    type="button"
+                                    onClick={() => handleSelectDiagnosticOption(tree.pillarKey, 1, opt)}
+                                    className="w-full text-left p-2.5 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-[#0779D1] hover:bg-[#0779D1]/5 transition-all shadow-2xs group flex items-start gap-2.5 cursor-pointer active:scale-[0.99]"
+                                  >
+                                    <div className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-[#0779D1]/10 text-slate-500 group-hover:text-[#0779D1] flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                                      <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <span className="font-bold text-xs sm:text-sm text-slate-800 group-hover:text-[#0779D1] block leading-snug">
+                                        {opt[`label_${lang}`]}
+                                      </span>
+                                      {opt[`detail_${lang}`] && (
+                                        <span className="text-[11px] text-slate-500 mt-0.5 block leading-tight font-normal">
+                                          {opt[`detail_${lang}`]}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Step 2 State */}
+                          {isStep2 && (
+                            <div className="space-y-2.5">
+                              {/* Confirmed Step 1 Choice Chip */}
+                              <div className="flex items-center justify-between bg-sky-50/80 border border-sky-200/80 rounded-xl px-3 py-1.5 text-xs text-slate-700">
+                                <span className="truncate pr-2 font-medium">
+                                  <span className="text-slate-400 font-semibold mr-1">{t.diagnosticStep1}:</span>
+                                  <strong>{currentDiagState.step1ChoiceLabel}</strong>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleResetDiagnostic(tree.pillarKey)}
+                                  className="text-[#0779D1] hover:underline font-semibold text-[11px] shrink-0 cursor-pointer"
+                                >
+                                  {t.diagnosticChangeStep1}
+                                </button>
+                              </div>
+
+                              <p className="text-xs sm:text-[13px] font-semibold text-slate-900 leading-snug">
+                                {tree.step2[`question_${lang}`]}
+                              </p>
+                              <div className="space-y-1.5 pt-1">
+                                {tree.step2.options.map((opt) => (
+                                  <button
+                                    key={opt.id}
+                                    type="button"
+                                    onClick={() => handleSelectDiagnosticOption(tree.pillarKey, 2, opt)}
+                                    className="w-full text-left p-2.5 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-[#0779D1] hover:bg-[#0779D1]/5 transition-all shadow-2xs group flex items-start gap-2.5 cursor-pointer active:scale-[0.99]"
+                                  >
+                                    <div className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-[#0779D1]/10 text-slate-500 group-hover:text-[#0779D1] flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                                      <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <span className="font-bold text-xs sm:text-sm text-slate-800 group-hover:text-[#0779D1] block leading-snug">
+                                        {opt[`label_${lang}`]}
+                                      </span>
+                                      {opt[`detail_${lang}`] && (
+                                        <span className="text-[11px] text-slate-500 mt-0.5 block leading-tight font-normal">
+                                          {opt[`detail_${lang}`]}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Completed Scoping State */}
+                          {isCompleted && (
+                            <div className="space-y-3">
+                              <div className="p-3 bg-emerald-50/70 border border-emerald-200/90 rounded-xl space-y-1">
+                                <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
+                                  {lang === 'id' ? 'Hasil Scoping Diagnostik Awal' : lang === 'ko' ? '사전 진단 요약 결과' : 'Preliminary Scoping Synthesis'}
+                                </span>
+                                <p className="text-xs sm:text-sm font-semibold text-emerald-950 leading-relaxed">
+                                  {currentDiagState.scopingSummary}
+                                </p>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-2 pt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenLeadModal(tree[`serviceName_${lang}`])}
+                                  className="bg-[#0779D1] hover:bg-[#055ea3] text-white text-xs font-bold px-3.5 py-2.5 rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                                >
+                                  <Building2 className="w-3.5 h-3.5" />
+                                  <span>{t.diagnosticBookWithScoping}</span>
+                                </button>
+                                <a
+                                  href={getWhatsAppUrl(
+                                    lang === 'ko'
+                                      ? `안녕하세요 인파트너 자문팀, 사전 진단을 완료하고 상담을 요청합니다: ${currentDiagState.scopingSummary}`
+                                      : lang === 'en'
+                                      ? `Hello Inpartner Advisory Team, I have completed the preliminary scoping diagnostic: ${currentDiagState.scopingSummary}. Please advise on consultation booking.`
+                                      : `Halo tim konsultan INPARTNER, saya telah melakukan scoping diagnostik awal: ${currentDiagState.scopingSummary}. Mohon info jadwal konsultasi lebih lanjut.`
+                                  )}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => trackEvent('contact_clicked', { channel: 'whatsapp', location: 'diagnostic_complete' })}
+                                  className="bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-1 shadow-2xs hover:shadow-xs transition-all"
+                                >
+                                  <Phone className="w-3.5 h-3.5" /> {t.diagnosticWaWithScoping}
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => handleResetDiagnostic(tree.pillarKey)}
+                                  className="text-slate-500 hover:text-slate-700 text-xs font-medium px-2 py-1 transition-colors cursor-pointer"
+                                >
+                                  {t.diagnosticRestart}
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
 
                     {/* Follow-up Questions Suggestions */}
                     {msg.followUpQuestions && msg.followUpQuestions.length > 0 && !msg.isStreaming && (

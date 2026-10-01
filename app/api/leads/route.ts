@@ -51,7 +51,9 @@ export async function POST(req: NextRequest) {
       email,
       phone,
       business_need,
-      notes
+      notes,
+      diagnostic_summary,
+      diagnostic_data
     } = body;
 
     // Field length safety limits
@@ -130,6 +132,8 @@ export async function POST(req: NextRequest) {
       phone: validatedPhone || phone?.trim() || '',
       business_need: business_need.trim(),
       notes: notes?.trim() || '',
+      diagnostic_summary: diagnostic_summary && typeof diagnostic_summary === 'string' && diagnostic_summary.trim() ? diagnostic_summary.trim().slice(0, 1000) : undefined,
+      diagnostic_data: diagnostic_data && typeof diagnostic_data === 'object' ? diagnostic_data : undefined,
       status: 'new'
     });
 

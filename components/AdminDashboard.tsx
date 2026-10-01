@@ -24,7 +24,8 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
-  AlertTriangle
+  AlertTriangle,
+  Compass
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 import { calculateLeadScore, getPriorityBadgeInfo, PriorityTier, LeadScoreResult } from '@/lib/leadScoring';
@@ -493,7 +494,15 @@ export default function AdminDashboard() {
                         </td>
 
                         <td className="py-3 px-3 text-slate-600">
-                          <span className="line-clamp-1 max-w-[140px]">{lead.business_need}</span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="line-clamp-1 max-w-[150px] font-medium text-slate-800">{lead.business_need}</span>
+                            {lead.diagnostic_summary && (
+                              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-semibold" title={lead.diagnostic_summary}>
+                                <Compass className="w-3 h-3 text-emerald-600 shrink-0" />
+                                <span>Scoped</span>
+                              </span>
+                            )}
+                          </div>
                         </td>
 
                         <td className="py-3 px-3 whitespace-nowrap">
@@ -737,6 +746,46 @@ export default function AdminDashboard() {
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
+
+                {/* Consultative Discovery Scoping Card */}
+                {(selectedLead.diagnostic_summary || selectedLead.diagnostic_data) && (
+                  <div className="space-y-2 bg-gradient-to-br from-emerald-50/70 via-sky-50/40 to-slate-50 p-3 rounded-xl border border-emerald-200/80 shadow-2xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-emerald-600" />
+                        Consultative Discovery Scoping
+                      </span>
+                      <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-emerald-100/90 text-emerald-800 rounded-full border border-emerald-200">
+                        Verified Scoping
+                      </span>
+                    </div>
+                    {selectedLead.diagnostic_summary && (
+                      <p className="font-semibold text-slate-800 text-xs bg-white p-2.5 rounded-lg border border-slate-200/80 shadow-2xs leading-relaxed">
+                        {selectedLead.diagnostic_summary}
+                      </p>
+                    )}
+                    {selectedLead.diagnostic_data && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
+                        <div className="bg-white/90 p-2 rounded-lg border border-slate-100">
+                          <span className="text-slate-400 block text-[9px] uppercase font-semibold">
+                            {selectedLead.diagnostic_data.step1_question || 'Step 1 Focus'}
+                          </span>
+                          <span className="font-bold text-slate-800 mt-0.5 block">
+                            {selectedLead.diagnostic_data.step1_answer}
+                          </span>
+                        </div>
+                        <div className="bg-white/90 p-2 rounded-lg border border-slate-100">
+                          <span className="text-slate-400 block text-[9px] uppercase font-semibold">
+                            {selectedLead.diagnostic_data.step2_question || 'Step 2 Scope'}
+                          </span>
+                          <span className="font-bold text-slate-800 mt-0.5 block">
+                            {selectedLead.diagnostic_data.step2_answer}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
