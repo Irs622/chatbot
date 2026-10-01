@@ -267,6 +267,27 @@ export function getMessagesByConversationId(conversationId: string): Message[] {
   return db.messages.filter((m) => m.conversation_id === conversationId);
 }
 
+export async function getMessagesByConversationIdAsync(conversationId: string): Promise<Message[]> {
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('conversation_id', conversationId)
+          .order('created_at', { ascending: true });
+        if (!error && Array.isArray(data)) {
+          return data as Message[];
+        }
+      } catch (err) {
+        console.warn('[Supabase getMessagesByConversationIdAsync Exception]', err);
+      }
+    }
+  }
+  return getMessagesByConversationId(conversationId);
+}
+
 // Lead helpers
 export function createLead(data: Omit<Lead, 'id' | 'created_at' | 'status'> & { status?: LeadStatus }): Lead {
   const db = initDb();
@@ -392,6 +413,27 @@ export function getLeadById(leadId: string): Lead | null {
   return db.leads.find((l) => l.id === leadId) || null;
 }
 
+export async function getLeadByIdAsync(leadId: string): Promise<Lead | null> {
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('leads')
+          .select('*')
+          .eq('id', leadId)
+          .maybeSingle();
+        if (!error && data) {
+          return data as Lead;
+        }
+      } catch (err) {
+        console.warn('[Supabase getLeadByIdAsync Exception]', err);
+      }
+    }
+  }
+  return getLeadById(leadId);
+}
+
 export function updateLeadStatus(leadId: string, status?: LeadStatus, notes?: string): Lead | null {
   const db = initDb();
   const lead = db.leads.find((l) => l.id === leadId);
@@ -473,4 +515,33 @@ export function logAnalyticsEvent(event: Omit<AnalyticsEvent, 'id' | 'created_at
 export function getAnalyticsSummary() {
   const db = initDb();
   return computeDynamicAnalytics(db);
+}
+
+export async function getAnalyticsSummaryAsync() {
+  if (isSupabaseConfigured()) {
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        const [cRes, mRes, lRes, eRes] = await Promise.all([
+          supabase.from('conversations').select('*'),
+          supabase.from('messages').select('*').order('created_at', { ascending: true }),
+          supabase.from('leads').select('*').order('created_at', { ascending: false }),
+          supabase.from('analytics_events').select('*').order('created_at', { ascending: false }).limit(300)
+        ]);
+
+        if (!cRes.error && !mRes.error && !lRes.error && !eRes.error) {
+          const cloudDb: DatabaseSchema = {
+            conversations: cRes.data || [],
+            messages: mRes.data || [],
+            leads: lRes.data || [],
+            analytics_events: eRes.data || []
+          };
+          return computeDynamicAnalytics(cloudDb);
+        }
+      } catch (err) {
+        console.warn('[Supabase getAnalyticsSummaryAsync Exception]', err);
+      }
+    }
+  }
+  return getAnalyticsSummary();
 }

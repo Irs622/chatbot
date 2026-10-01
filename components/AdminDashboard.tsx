@@ -105,8 +105,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const fetchLeads = useCallback(async () => {
-    setIsLoading(true);
+  const fetchLeads = useCallback(async (isInitial = false) => {
+    if (isInitial) setIsLoading(true);
     try {
       const res = await fetch('/api/leads');
       const data = await res.json();
@@ -132,12 +132,16 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error('Error fetching leads:', err);
     } finally {
-      setIsLoading(false);
+      if (isInitial) setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchLeads();
+    fetchLeads(true);
+    const timer = setInterval(() => {
+      fetchLeads(false);
+    }, 10000);
+    return () => clearInterval(timer);
   }, [fetchLeads]);
 
   // Optimistic lead status updater with backend persistence
@@ -816,8 +820,13 @@ export default function AdminDashboard() {
             </button>
           </div>
 
+          <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Live Sync (10s)</span>
+          </span>
+
           <button
-            onClick={fetchLeads}
+            onClick={() => fetchLeads(true)}
             disabled={isLoading}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
           >

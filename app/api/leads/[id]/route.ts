@@ -5,7 +5,9 @@ import {
   deleteLead,
   deleteLeadAsync,
   getLeadById,
+  getLeadByIdAsync,
   getMessagesByConversationId,
+  getMessagesByConversationIdAsync,
   LeadStatus
 } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
@@ -23,14 +25,14 @@ export async function GET(
     }
 
     const { id } = params;
-    const lead = getLeadById(id);
+    const lead = await getLeadByIdAsync(id);
 
     if (!lead) {
       return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
     }
 
     const messages = lead.conversation_id
-      ? getMessagesByConversationId(lead.conversation_id)
+      ? await getMessagesByConversationIdAsync(lead.conversation_id)
       : [];
 
     return NextResponse.json({ success: true, lead, messages });

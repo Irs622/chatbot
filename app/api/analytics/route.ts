@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAnalyticsSummary, logAnalyticsEvent } from '@/lib/db';
+import { getAnalyticsSummary, getAnalyticsSummaryAsync, logAnalyticsEvent } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const summary = getAnalyticsSummary();
+    const summary = await getAnalyticsSummaryAsync();
     return NextResponse.json({ success: true, ...summary });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

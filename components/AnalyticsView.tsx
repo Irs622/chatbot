@@ -104,8 +104,8 @@ export default function AnalyticsView() {
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const fetchAnalytics = async () => {
-    setIsLoading(true);
+  const fetchAnalytics = async (isInitial = false) => {
+    if (isInitial) setIsLoading(true);
     try {
       const res = await fetch('/api/analytics');
       const json = await res.json();
@@ -113,12 +113,16 @@ export default function AnalyticsView() {
     } catch (err) {
       console.error('Error fetching analytics:', err);
     } finally {
-      setIsLoading(false);
+      if (isInitial) setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAnalytics();
+    fetchAnalytics(true);
+    const timer = setInterval(() => {
+      fetchAnalytics(false);
+    }, 10000);
+    return () => clearInterval(timer);
   }, []);
 
   const handleCopyQuestion = (text: string, id: string) => {
@@ -196,13 +200,19 @@ export default function AnalyticsView() {
           </p>
         </div>
 
-        <button
-          onClick={fetchAnalytics}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors cursor-pointer self-start sm:self-auto shadow-2xs"
-        >
-          <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
-          <span>Refresh Data</span>
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Live Sync (10s)</span>
+          </span>
+          <button
+            onClick={() => fetchAnalytics(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors cursor-pointer shadow-2xs"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-slate-400 ${isLoading ? 'animate-spin' : ''}`} />
+            <span>Refresh Data</span>
+          </button>
+        </div>
       </div>
 
       {/* ============================================================== */}
