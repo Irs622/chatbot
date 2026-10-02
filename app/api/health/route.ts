@@ -11,7 +11,7 @@ export async function GET() {
     status: 'ok',
     hasGeminiKey,
     configuredModel: geminiModel,
-    activeCandidates: [geminiModel, 'gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest'].filter(
+    activeCandidates: [geminiModel, 'gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'].filter(
       (m, idx, arr) => arr.indexOf(m) === idx
     ),
     timestamp: new Date().toISOString()

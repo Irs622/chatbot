@@ -283,8 +283,8 @@ export async function* generateConsultationResponseStream(
         new Set(
           [
             process.env.GEMINI_MODEL,
-            'gemini-3.8-flash',
             'gemini-3.5-flash',
+            'gemini-3.8-flash',
             'gemini-flash-latest'
           ].filter(Boolean) as string[]
         )
@@ -344,16 +344,18 @@ ${cleanUserMessage}
 
       for (const mName of candidateModels) {
         try {
+          let candidateText = '';
           const model = genAI.getGenerativeModel({ model: mName });
           const result = await model.generateContentStream(prompt);
           for await (const chunk of result.stream) {
             const piece = chunk.text();
             if (piece) {
-              fullText += piece;
+              candidateText += piece;
               yield { type: 'chunk', text: piece };
             }
           }
-          if (fullText.length > 0) {
+          if (candidateText.length > 0) {
+            fullText = candidateText;
             streamSucceeded = true;
             activeModelUsed = mName;
             break;
@@ -377,6 +379,7 @@ ${cleanUserMessage}
 
   // 2. If Gemini API was not used or failed, use grounded offline RAG or fallback
   if (!streamSucceeded) {
+    fullText = ''; // Ensure clean slate if all models failed or stream interrupted
     if (geminiApiKey) {
       console.warn('[AI Service Fallback] All Gemini API candidate models failed or rate-limited. Seamlessly responding via Grounded Offline RAG Engine.');
     }
