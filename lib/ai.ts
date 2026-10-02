@@ -345,7 +345,7 @@ ${cleanUserMessage}
       for (const mName of candidateModels) {
         try {
           let candidateText = '';
-          const model = genAI.getGenerativeModel({ model: mName });
+          const model = genAI.getGenerativeModel({ model: mName }, { timeout: 12000 });
           const result = await model.generateContentStream(prompt);
           for await (const chunk of result.stream) {
             const piece = chunk.text();
