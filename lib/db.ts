@@ -23,6 +23,8 @@ export interface Message {
     sources?: string[];
     suggest_lead_capture?: boolean;
     quick_actions?: string[];
+    provider?: string;
+    model?: string;
   };
 }
 

@@ -12,6 +12,8 @@ export interface AIResponse {
   quickActions: string[];
   followUpQuestions: string[];
   isFallback: boolean;
+  provider?: 'gemini' | 'grounded_rag';
+  model?: string;
 }
 
 import { detectLanguage } from './language';
@@ -60,6 +62,8 @@ export type AIStreamEvent =
       recommendedService?: string;
       sources: string[];
       isFallback: boolean;
+      provider?: 'gemini' | 'grounded_rag';
+      model?: string;
     }
   | {
       type: 'chunk';
@@ -76,6 +80,8 @@ export type AIStreamEvent =
       quickActions: string[];
       followUpQuestions: string[];
       isFallback: boolean;
+      provider?: 'gemini' | 'grounded_rag';
+      model?: string;
     };
 
 export async function* generateConsultationResponseStream(
@@ -266,19 +272,23 @@ export async function* generateConsultationResponseStream(
 
   let fullText = '';
   let streamSucceeded = false;
+  let activeModelUsed = '';
 
   // 1. Try real Gemini API streaming if key is set in environment
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (geminiApiKey) {
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey);
-      const candidateModels = [
-        process.env.GEMINI_MODEL,
-        'gemini-1.5-flash',
-        'gemini-1.5-flash-latest',
-        'gemini-2.0-flash',
-        'gemini-1.5-pro'
-      ].filter(Boolean) as string[];
+      const candidateModels = Array.from(
+        new Set(
+          [
+            process.env.GEMINI_MODEL,
+            'gemini-3.8-flash',
+            'gemini-3.5-flash',
+            'gemini-flash-latest'
+          ].filter(Boolean) as string[]
+        )
+      );
 
       const contextText = retrievedChunks
         .map((c, i) => `[Source ${i + 1}: ${c.title} (${c.sourceFile})]\n${c.content}`)
@@ -345,19 +355,31 @@ ${cleanUserMessage}
           }
           if (fullText.length > 0) {
             streamSucceeded = true;
+            activeModelUsed = mName;
             break;
           }
-        } catch (mErr) {
-          console.warn(`Gemini model ${mName} streaming failed, trying next candidate:`, mErr);
+        } catch (mErr: any) {
+          console.error(`[Gemini API Error] Model candidate failed: ${mName}`, {
+            message: mErr?.message,
+            status: mErr?.status,
+            cause: mErr?.cause
+          });
         }
       }
-    } catch (err) {
-      console.warn('Gemini streaming call failed, falling back to offline RAG engine:', err);
+    } catch (err: any) {
+      console.error('[Gemini API Fatal Error] Gemini initialization or streaming pipeline failed:', {
+        message: err?.message,
+        status: err?.status,
+        cause: err?.cause
+      });
     }
   }
 
   // 2. If Gemini API was not used or failed, use grounded offline RAG or fallback
   if (!streamSucceeded) {
+    if (geminiApiKey) {
+      console.warn('[AI Service Fallback] All Gemini API candidate models failed or rate-limited. Seamlessly responding via Grounded Offline RAG Engine.');
+    }
     const targetAnswer = isQueryUnclear
       ? (lang === 'id'
           ? `Mohon maaf, saya belum memiliki informasi resmi yang memadai mengenai pertanyaan spesifik tersebut di basis pengetahuan Inpartner.
@@ -438,7 +460,9 @@ You can:
               'Would you like our advisory team to contact you directly on WhatsApp?'
             ])
       : followUpQuestions,
-    isFallback: isQueryUnclear
+    isFallback: isQueryUnclear,
+    provider: streamSucceeded ? 'gemini' : 'grounded_rag',
+    model: streamSucceeded ? activeModelUsed : 'grounded_rag'
   };
 }
 
@@ -456,7 +480,9 @@ export async function generateConsultationResponse(
     suggestLeadCapture: false,
     quickActions: [],
     followUpQuestions: [],
-    isFallback: false
+    isFallback: false,
+    provider: 'grounded_rag',
+    model: 'grounded_rag'
   };
 
   for await (const event of stream) {
@@ -470,7 +496,9 @@ export async function generateConsultationResponse(
         suggestLeadCapture: event.suggestLeadCapture,
         quickActions: event.quickActions,
         followUpQuestions: event.followUpQuestions,
-        isFallback: event.isFallback
+        isFallback: event.isFallback,
+        provider: event.provider,
+        model: event.model
       };
     }
   }

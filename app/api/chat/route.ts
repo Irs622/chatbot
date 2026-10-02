@@ -102,7 +102,9 @@ export async function POST(req: NextRequest) {
           recommended_service: aiResponse.recommendedService,
           sources: aiResponse.sources,
           suggest_lead_capture: aiResponse.suggestLeadCapture,
-          quick_actions: aiResponse.quickActions
+          quick_actions: aiResponse.quickActions,
+          provider: aiResponse.provider,
+          model: aiResponse.model
         }
       });
 
@@ -168,7 +170,9 @@ export async function POST(req: NextRequest) {
                 recommended_service: finalResponse.recommendedService,
                 sources: finalResponse.sources,
                 suggest_lead_capture: finalResponse.suggestLeadCapture,
-                quick_actions: finalResponse.quickActions
+                quick_actions: finalResponse.quickActions,
+                provider: finalResponse.provider,
+                model: finalResponse.model
               }
             });
 
