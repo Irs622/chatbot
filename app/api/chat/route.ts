@@ -15,19 +15,20 @@ import {
   AIStreamEvent
 } from '@/lib/ai';
 
-import { checkRateLimit } from '@/lib/rateLimit';
+import { checkRateLimitAsync } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Rate Limiting Protection (Max 30 inquiries per minute per IP)
-    const rateLimit = checkRateLimit(req, {
+    // 1. Rate Limiting Protection (Max 30 inquiries per minute per IP - distributed async)
+    const rateLimit = await checkRateLimitAsync(req, {
       identifier: 'chat_api',
       limit: 30,
       windowMs: 60 * 1000
     });
+
 
     if (!rateLimit.isAllowed) {
       return NextResponse.json(

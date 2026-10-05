@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   validateAdminPassword,
   generateAdminSessionToken,
+  recordAdminSessionAsync,
   setAdminCookie
 } from '@/lib/auth';
-import { checkRateLimit } from '@/lib/rateLimit';
+import { checkRateLimitAsync, getClientIp } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   try {
-    // Admin Login Brute-Force Limiter (Max 5 attempts per 15 minutes per IP)
-    const rateLimit = checkRateLimit(req, {
+    // Admin Login Brute-Force Limiter (Max 5 attempts per 15 minutes per IP - distributed async)
+    const rateLimit = await checkRateLimitAsync(req, {
       identifier: 'admin_login',
       limit: 5,
       windowMs: 15 * 60 * 1000
@@ -50,6 +51,11 @@ export async function POST(req: NextRequest) {
     // Generate secure signed session token
     const token = generateAdminSessionToken();
 
+    // Persist session to PostgreSQL admin_sessions table
+    const ip = getClientIp(req);
+    const userAgent = req.headers.get('user-agent') || undefined;
+    await recordAdminSessionAsync(token, ip, userAgent);
+
     const response = NextResponse.json({
       success: true,
       message: 'Admin authentication successful.'
@@ -59,6 +65,7 @@ export async function POST(req: NextRequest) {
     setAdminCookie(response, token);
 
     return response;
+
   } catch (error: any) {
     console.error('Error in /api/admin/login:', error);
     return NextResponse.json(

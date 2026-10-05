@@ -3,7 +3,7 @@ import { getAllLeads, getAllLeadsAsync, createLead, createLeadAsync } from '@/li
 import { sendLeadNotification, generateConsultationRef, generateClientWhatsAppUrl } from '@/lib/notifications';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
-import { checkRateLimit } from '@/lib/rateLimit';
+import { checkRateLimitAsync } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,12 +27,13 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // Lead Submission Rate Limiter (Max 5 submissions per 10 minutes per IP)
-    const rateLimit = checkRateLimit(req, {
+    // Lead Submission Rate Limiter (Max 5 submissions per 10 minutes per IP - distributed async)
+    const rateLimit = await checkRateLimitAsync(req, {
       identifier: 'leads_submit',
       limit: 5,
       windowMs: 10 * 60 * 1000
     });
+
 
     if (!rateLimit.isAllowed) {
       return NextResponse.json(

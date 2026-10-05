@@ -120,8 +120,9 @@ export function checkRateLimit(req: NextRequest, options: RateLimitOptions): Rat
 }
 
 /**
- * Distributed rate limiter check supporting Upstash Redis REST if configured,
- * with automatic transparent fallback to in-memory store.
+ * Distributed fixed-window rate limiter with TTL.
+ * Supports Upstash Redis REST when UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN
+ * are configured, with automatic graceful fallback to the local runtime memory store.
  */
 export async function checkRateLimitAsync(req: NextRequest, options: RateLimitOptions): Promise<RateLimitResult> {
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
@@ -133,7 +134,7 @@ export async function checkRateLimitAsync(req: NextRequest, options: RateLimitOp
       const key = `ratelimit:${options.identifier || 'default'}:${ip}`;
       const windowSec = Math.ceil(options.windowMs / 1000);
 
-      // Increment key via Upstash REST API
+      // Fixed-window counter with TTL (EXPIRE NX ensures window is not reset on every hit)
       const res = await fetch(`${redisUrl}/pipeline`, {
         method: 'POST',
         headers: {
@@ -142,7 +143,7 @@ export async function checkRateLimitAsync(req: NextRequest, options: RateLimitOp
         },
         body: JSON.stringify([
           ['INCR', key],
-          ['EXPIRE', key, windowSec]
+          ['EXPIRE', key, windowSec, 'NX']
         ])
       });
 
@@ -165,3 +166,4 @@ export async function checkRateLimitAsync(req: NextRequest, options: RateLimitOp
 
   return checkRateLimit(req, options);
 }
+

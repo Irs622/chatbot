@@ -24,6 +24,8 @@ const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 // In-memory session revocation store (TTL-managed)
 const revokedSessionIds = new Set<string>();
 
+import { getSupabase } from './supabaseClient.ts';
+
 /**
  * Creates an HMAC-SHA256 signature for a payload
  */
@@ -46,6 +48,40 @@ export function generateAdminSessionToken(sessionId?: string): string {
 }
 
 /**
+ * Records an active admin session into Supabase PostgreSQL (admin_sessions table)
+ */
+export async function recordAdminSessionAsync(
+  token: string,
+  ipAddress?: string,
+  userAgent?: string
+): Promise<void> {
+  const parts = token.split('.');
+  if (parts.length < 2) return;
+  const sid = parts.length === 3 ? parts[0] : parts[1];
+  const expiresAt = new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000).toISOString();
+
+  const client = getSupabase();
+  if (client) {
+    try {
+      const { error } = await client.from('admin_sessions').insert({
+        id: `sess_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`,
+        session_token_id: sid,
+        created_at: new Date().toISOString(),
+        expires_at: expiresAt,
+        revoked_at: null,
+        ip_address: ipAddress || null,
+        user_agent: userAgent || null
+      });
+      if (error) {
+        console.warn('[Admin Sessions] Could not persist session to PostgreSQL:', error.message);
+      }
+    } catch (err: any) {
+      console.warn('[Admin Sessions] Exception persisting session:', err?.message || err);
+    }
+  }
+}
+
+/**
  * Explicitly revokes an admin session token (server-side invalidation on logout)
  */
 export function revokeAdminSession(token?: string | null): void {
@@ -61,7 +97,34 @@ export function revokeAdminSession(token?: string | null): void {
 }
 
 /**
- * Checks if a session has been revoked
+ * Asynchronously revokes an admin session both in-memory and persistently in PostgreSQL (admin_sessions table)
+ */
+export async function revokeAdminSessionAsync(token?: string | null): Promise<void> {
+  if (!token) return;
+  revokeAdminSession(token); // Update memory cache immediately
+
+  const parts = token.split('.');
+  const sid = parts.length === 3 ? parts[0] : parts.length === 2 ? parts[1] : token;
+
+  const client = getSupabase();
+  if (client) {
+    try {
+      const { error } = await client
+        .from('admin_sessions')
+        .update({ revoked_at: new Date().toISOString() })
+        .eq('session_token_id', sid);
+
+      if (error) {
+        console.warn('[Admin Sessions] Could not update revocation in PostgreSQL:', error.message);
+      }
+    } catch (err: any) {
+      console.warn('[Admin Sessions] Exception revoking session in PostgreSQL:', err?.message || err);
+    }
+  }
+}
+
+/**
+ * Checks if a session has been revoked in local memory
  */
 export function isSessionRevoked(token: string): boolean {
   const parts = token.split('.');
@@ -72,6 +135,45 @@ export function isSessionRevoked(token: string): boolean {
   }
   return false;
 }
+
+/**
+ * Asynchronously checks if a session has been revoked against PostgreSQL admin_sessions store
+ */
+export async function isSessionRevokedAsync(token: string): Promise<boolean> {
+  if (isSessionRevoked(token)) {
+    return true;
+  }
+
+  const parts = token.split('.');
+  const sid = parts.length === 3 ? parts[0] : parts.length === 2 ? parts[1] : token;
+
+  const client = getSupabase();
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from('admin_sessions')
+        .select('revoked_at, expires_at')
+        .eq('session_token_id', sid)
+        .maybeSingle();
+
+      if (!error && data) {
+        if (data.revoked_at) {
+          revokedSessionIds.add(sid); // Warm local memory cache
+          return true;
+        }
+        if (new Date(data.expires_at).getTime() < Date.now()) {
+          revokedSessionIds.add(sid);
+          return true;
+        }
+      }
+    } catch {
+      // Fallback to local memory validation
+    }
+  }
+
+  return false;
+}
+
 
 /**
  * Verifies if a given session token is valid, cryptographically intact, not expired, and not revoked
@@ -169,7 +271,7 @@ export function validateAdminPassword(inputPassword: string): boolean {
 }
 
 /**
- * Checks whether an incoming HTTP request is authenticated as admin
+ * Checks whether an incoming HTTP request is authenticated as admin (synchronous check)
  */
 export function isAdminAuthenticated(req: NextRequest): boolean {
   const cookie = req.cookies.get(ADMIN_COOKIE_NAME);
@@ -177,8 +279,29 @@ export function isAdminAuthenticated(req: NextRequest): boolean {
 }
 
 /**
+ * Asynchronously verifies if a given session token is valid, cryptographically intact, not expired,
+ * and checked against the PostgreSQL admin_sessions persistent store.
+ */
+export async function verifyAdminSessionTokenAsync(token?: string | null): Promise<boolean> {
+  if (!token) return false;
+  if (!verifyAdminSessionToken(token)) return false;
+  const revoked = await isSessionRevokedAsync(token);
+  return !revoked;
+}
+
+/**
+ * Asynchronously checks whether an incoming HTTP request is authenticated as admin
+ * with server-side PostgreSQL admin_sessions revocation verification.
+ */
+export async function isAdminAuthenticatedAsync(req: NextRequest): Promise<boolean> {
+  const cookie = req.cookies.get(ADMIN_COOKIE_NAME);
+  return verifyAdminSessionTokenAsync(cookie?.value);
+}
+
+/**
  * Sets the admin session cookie on a NextResponse
  */
+
 export function setAdminCookie(res: NextResponse, token: string): void {
   const isProduction = process.env.NODE_ENV === 'production';
 

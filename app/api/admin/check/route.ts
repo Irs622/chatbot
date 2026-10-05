@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isAdminAuthenticated } from '@/lib/auth';
+import { isAdminAuthenticatedAsync } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const authenticated = isAdminAuthenticated(req);
+  const authenticated = await isAdminAuthenticatedAsync(req);
+
 
   return NextResponse.json({
     authenticated,

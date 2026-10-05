@@ -140,22 +140,67 @@ CREATE INDEX IF NOT EXISTS idx_analytics_event_name ON public.analytics_events(e
 
 ---
 
-## 🔒 4. Keamanan & Row-Level Security (RLS)
+## 🔒 4. Keamanan, Row-Level Security (RLS) & Migrasi Policy Lama
 
-Seluruh tabel publik dilindungi dengan **Row-Level Security (RLS)** yang aktif.
+Semua tabel CRM publik dilindungi dengan **Row-Level Security (RLS)** yang di-*force* di level PostgreSQL:
 
 ```sql
+-- 1. Drop Kebijakan Permisif Lama (Wajib dijalankan jika pernah deploy schema awal)
+DROP POLICY IF EXISTS "Allow public insert on leads" ON public.leads;
+DROP POLICY IF EXISTS "Allow full access for service key and anon" ON public.leads;
+DROP POLICY IF EXISTS "Allow public insert on conversations" ON public.conversations;
+DROP POLICY IF EXISTS "Allow full access on conversations" ON public.conversations;
+DROP POLICY IF EXISTS "Allow public insert on messages" ON public.messages;
+DROP POLICY IF EXISTS "Allow full access on messages" ON public.messages;
+DROP POLICY IF EXISTS "Allow public insert on analytics_events" ON public.analytics_events;
+DROP POLICY IF EXISTS "Allow full access on analytics_events" ON public.analytics_events;
+DROP POLICY IF EXISTS "Allow full access for service key and anon on admin_sessions" ON public.admin_sessions;
+
+-- 2. Force RLS pada seluruh tabel
 ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.leads FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conversations FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.analytics_events FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_sessions FORCE ROW LEVEL SECURITY;
+
+-- 3. Cabut seluruh hak akses langsung dari anon dan authenticated
+REVOKE ALL ON TABLE public.leads FROM anon, authenticated;
+REVOKE ALL ON TABLE public.conversations FROM anon, authenticated;
+REVOKE ALL ON TABLE public.messages FROM anon, authenticated;
+REVOKE ALL ON TABLE public.analytics_events FROM anon, authenticated;
+REVOKE ALL ON TABLE public.admin_sessions FROM anon, authenticated;
+
+-- 4. Berikan izin eksklusif kepada service_role
+GRANT ALL ON TABLE public.leads TO service_role;
+GRANT ALL ON TABLE public.conversations TO service_role;
+GRANT ALL ON TABLE public.messages TO service_role;
+GRANT ALL ON TABLE public.analytics_events TO service_role;
+GRANT ALL ON TABLE public.admin_sessions TO service_role;
 ```
 
-### Praktik Terbaik Keamanan:
-- **Arsitektur API Gateway Backend:** Browser/Client tidak pernah berinteraksi langsung ke Supabase REST Data API. Seluruh interaksi disaring melalui API backend Next.js (`/api/chat`, `/api/leads`).
-- **Anon Direct Access Revoked:** Peran publik `anon` dicabut seluruh izinnya (`REVOKE ALL`) pada tabel CRM publik untuk mencegah ekstraksi data massal melalui client-side REST endpoint.
-- **Admin & Backend Operations:** Operasi database di backend dijalankan menggunakan `SUPABASE_SERVICE_ROLE_KEY` setelah validasi skema, sanitasi input, dan otorisasi sesi admin internal.
-- **Pencegahan Kebocoran Kunci:** Kunci `SUPABASE_SERVICE_ROLE_KEY` hanya diletakkan di environment backend server dan **wajib tidak** diawali dengan `NEXT_PUBLIC_`.
+### Kueri Verifikasi di Supabase SQL Editor:
+Pastikan tidak ada policy yang tersisa untuk `anon`:
+```sql
+SELECT tablename, policyname, roles, cmd, qual, with_check 
+FROM pg_policies 
+WHERE schemaname = 'public' 
+  AND tablename IN ('leads', 'conversations', 'messages', 'analytics_events', 'admin_sessions')
+ORDER BY tablename, policyname;
+```
+
+Dan pastikan `anon` tidak memiliki grant di tabel-tabel tersebut:
+```sql
+SELECT grantee, table_name, privilege_type 
+FROM information_schema.role_table_grants 
+WHERE table_schema = 'public' 
+  AND grantee = 'anon'
+  AND table_name IN ('leads', 'conversations', 'messages', 'analytics_events', 'admin_sessions');
+```
 
 ---
 
@@ -169,12 +214,16 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_or_anon_key
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_or_anon_key
 
-# 2. Wajib untuk Produksi: Kunci Service Role Backend (Server-Side Persistence):
+# 2. Wajib untuk Produksi: Kunci Service Role Backend (Server-Side Persistence & CRM):
 SUPABASE_SERVICE_ROLE_KEY=your_secret_service_role_key
 
-# 3. Kredensial Keamanan Admin CRM:
+# 3. Kredensial Keamanan Admin CRM & Session Secret:
 ADMIN_PASSWORD=your_secure_admin_password
-AUTH_SECRET=your_high_entropy_secret_key
+AUTH_SECRET=your_high_entropy_32_char_secret_key
+
+# 4. Distributed Rate Limiter (Optional - Upstash Redis REST):
+UPSTASH_REDIS_REST_URL=https://your-upstash-redis.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your_upstash_token_here
 ```
 
 ---
@@ -182,23 +231,9 @@ AUTH_SECRET=your_high_entropy_secret_key
 ## 🛠️ 6. Tooling & Skrip Perawatan Database
 
 ### 1. Pengecekan Konektivitas Database (`npm run db:check`)
-Memeriksa status keterhubungan ke ke-4 tabel secara otomatis dan mencetak jumlah baris serta latensi jaringan:
+Memeriksa status keterhubungan ke tabel secara otomatis:
 ```bash
 npm run db:check
-```
-*Output sukses yang diharapkan:*
-```text
-============================================================
-  🔍 INPARTNER AI — SUPABASE DATABASE CONNECTIVITY CHECK
-============================================================
-Endpoint Target : https://your-project.supabase.co
-API Key Format  : sb_publishable...
-✅ [Table: leads           ] Connected (120ms) | Total records: 10
-✅ [Table: conversations   ] Connected (85ms)  | Total records: 39
-✅ [Table: messages        ] Connected (90ms)  | Total records: 126
-✅ [Table: analytics_events] Connected (75ms)  | Total records: 255
-============================================================
-🎉 STATUS: ALL SUPABASE TABLES OPERATIONAL & VERIFIED!
 ```
 
 ### 2. Migrasi Data Lokal ke Supabase (`npm run db:migrate`)
@@ -207,27 +242,18 @@ Jika Anda memiliki data cadangan lokal pada `data/db.json` dan ingin memindahkan
 npm run db:migrate
 ```
 
-### 3. Pemantauan Real-time via Health API (`/api/health`)
-Endpoint publik `/api/health` menyediakan status kesiapan database untuk monitoring uptime (seperti UptimeRobot atau status page):
-```bash
-curl http://localhost:3000/api/health
-```
-*Contoh respon:*
-```json
-{
-  "status": "ok",
-  "hasGeminiKey": false,
-  "configuredModel": "gemini-3.8-flash",
-  "database": {
-    "provider": "supabase",
-    "configured": true,
-    "connected": true,
-    "latencyMs": 142,
-    "url": "https://your-project.supabase.co"
-  },
-  "timestamp": "2026-10-05T10:30:00.000Z"
-}
-```
+### 3. Pemantauan via Health API
+- **Public Health Check (`/api/health`):**
+  Mengembalikan status minimal yang aman untuk public uptime monitoring (UptimeRobot, status page) tanpa membocorkan infrastruktur internal:
+  ```json
+  {
+    "status": "healthy",
+    "timestamp": "2026-10-05T16:30:00.000Z"
+  }
+  ```
+- **Authenticated Diagnostic Telemetry (`/api/admin/health`):**
+  Memerlukan autentikasi admin. Mengembalikan metrik latensi database Supabase, penggunaan memori (RSS), status model AI, dan uptime sistem.
+
 
 ---
 

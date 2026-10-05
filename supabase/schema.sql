@@ -82,14 +82,25 @@ CREATE INDEX IF NOT EXISTS idx_analytics_event_name ON public.analytics_events(e
 CREATE INDEX IF NOT EXISTS idx_admin_sessions_token ON public.admin_sessions(session_token_id);
 
 -- =========================================================================
--- ROW LEVEL SECURITY (RLS) POLICIES
+-- ROW LEVEL SECURITY (RLS) POLICIES & MIGRATION CLEANUP
 -- Architecture Model:
 --   - Browser/Client talks exclusively to Next.js API Gateway.
 --   - Next.js Server uses SUPABASE_SERVICE_ROLE_KEY to perform CRM operations.
---   - Public 'anon' role is strictly denied SELECT, UPDATE, DELETE on all CRM tables.
+--   - Public 'anon' and 'authenticated' roles are strictly denied all direct access.
 -- =========================================================================
 
--- Enable and Force RLS
+-- Step 1: Explicitly drop ALL legacy permissive policies from previous schemas
+DROP POLICY IF EXISTS "Allow public insert on leads" ON public.leads;
+DROP POLICY IF EXISTS "Allow full access for service key and anon" ON public.leads;
+DROP POLICY IF EXISTS "Allow public insert on conversations" ON public.conversations;
+DROP POLICY IF EXISTS "Allow full access on conversations" ON public.conversations;
+DROP POLICY IF EXISTS "Allow public insert on messages" ON public.messages;
+DROP POLICY IF EXISTS "Allow full access on messages" ON public.messages;
+DROP POLICY IF EXISTS "Allow public insert on analytics_events" ON public.analytics_events;
+DROP POLICY IF EXISTS "Allow full access on analytics_events" ON public.analytics_events;
+DROP POLICY IF EXISTS "Allow full access for service key and anon on admin_sessions" ON public.admin_sessions;
+
+-- Step 2: Enable and FORCE Row Level Security on all CRM tables
 ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
@@ -102,9 +113,33 @@ ALTER TABLE public.messages FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics_events FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_sessions FORCE ROW LEVEL SECURITY;
 
--- Revoke all direct privileges on sensitive CRM tables from anon
-REVOKE ALL ON public.leads FROM anon;
-REVOKE ALL ON public.conversations FROM anon;
-REVOKE ALL ON public.messages FROM anon;
-REVOKE ALL ON public.analytics_events FROM anon;
-REVOKE ALL ON public.admin_sessions FROM anon;
+-- Step 3: Revoke all table-level permissions from anon and authenticated roles
+REVOKE ALL ON TABLE public.leads FROM anon, authenticated;
+REVOKE ALL ON TABLE public.conversations FROM anon, authenticated;
+REVOKE ALL ON TABLE public.messages FROM anon, authenticated;
+REVOKE ALL ON TABLE public.analytics_events FROM anon, authenticated;
+REVOKE ALL ON TABLE public.admin_sessions FROM anon, authenticated;
+
+-- Step 4: Grant full privileges exclusively to service_role (used by Next.js server)
+GRANT ALL ON TABLE public.leads TO service_role;
+GRANT ALL ON TABLE public.conversations TO service_role;
+GRANT ALL ON TABLE public.messages TO service_role;
+GRANT ALL ON TABLE public.analytics_events TO service_role;
+GRANT ALL ON TABLE public.admin_sessions TO service_role;
+
+-- =========================================================================
+-- VERIFICATION QUERIES (Execute in Supabase SQL Editor to confirm lockdown)
+-- =========================================================================
+-- 1. Check that NO permissive policies exist for anon:
+-- SELECT tablename, policyname, roles, cmd, qual, with_check 
+-- FROM pg_policies 
+-- WHERE schemaname = 'public' 
+--   AND tablename IN ('leads', 'conversations', 'messages', 'analytics_events', 'admin_sessions');
+--
+-- 2. Confirm anon has NO grants on CRM tables:
+-- SELECT grantee, table_name, privilege_type 
+-- FROM information_schema.role_table_grants 
+-- WHERE table_schema = 'public' 
+--   AND grantee = 'anon'
+--   AND table_name IN ('leads', 'conversations', 'messages', 'analytics_events', 'admin_sessions');
+

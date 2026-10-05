@@ -81,19 +81,21 @@ flowchart TD
 - Prospek consultation data exported to CSV (`/api/admin/export`) is sanitized to neutralize malicious command execution in Microsoft Excel and Google Sheets.
 - Cell values starting with dangerous formula characters (`=`, `+`, `-`, `@`, `\t`, `\r`) are automatically prepended with a single quote (`'`), ensuring they render purely as harmless textual data.
 
-### C. Sliding-Window & Edge Rate Limiting
-- Built-in sliding window rate limiter protects public entry points from denial-of-service (DoS) and brute-force attacks:
+### C. Distributed Fixed-Window & Edge Rate Limiting
+- Built-in fixed-window rate limiter with TTL protects public entry points from denial-of-service (DoS) and brute-force attacks:
   - `/api/chat`: Max 30 requests per IP per minute.
   - `/api/leads`: Max 5 submissions per IP per 10 minutes.
   - `/api/admin/login`: Max 5 authentication attempts per IP per 15 minutes.
+  - `/api/analytics`: Max 60 events per IP per minute with strict event name allowlist and 4KB metadata size bounding.
 - Client IP resolution resolves edge proxy headers (`CF-Connecting-IP`, `True-Client-IP`, `X-Real-IP`, sanitized `X-Forwarded-For`).
-- Optional distributed rate limiting via Upstash Redis REST (`UPSTASH_REDIS_REST_URL`) for serverless deployments.
+- Distributed rate limiting via Upstash Redis REST (`UPSTASH_REDIS_REST_URL` & `UPSTASH_REDIS_REST_TOKEN`) ensures synchronized quota enforcement across multi-instance serverless deployments with automatic local fallback.
 
 ### D. Session & Authentication Security
 - **Admin CRM Access:** Protected by signed cryptographic session tokens (`AUTH_SECRET`).
-- **Server-Side Session Revocation:** Tokens include unique session IDs (`sessionId.timestamp.signature`); on `/api/admin/logout`, session IDs are recorded in the revocation registry to invalidate intercepted or orphaned tokens.
+- **PostgreSQL Server-Side Session Tracking:** Sessions are persisted in the `admin_sessions` Supabase table upon login (`sessionId.timestamp.signature`); on `/api/admin/logout`, session tokens are marked revoked in the database and local memory cache, instantly invalidating them across all runtime instances.
 - **Timing-Safe Evaluation:** Password comparison employs timing-safe string matching algorithms (`crypto.timingSafeEqual`) to resist timing-attack side channels.
 - **Secure Cookie Flags:** Admin session cookies are configured with `HttpOnly`, `SameSite=Lax`, and `Secure` (in production).
+
 
 ### E. Database Security & Row-Level Security (RLS)
 - Supabase PostgreSQL tables (`leads`, `conversations`, `messages`, `analytics_events`, `admin_sessions`) have Row-Level Security (RLS) enabled and forced (`FORCE ROW LEVEL SECURITY`).
