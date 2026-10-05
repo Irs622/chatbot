@@ -1,0 +1,73 @@
+PROPRIETARY AND CONFIDENTIAL SOFTWARE LICENSE AGREEMENT
+
+Copyright (c) 2026 PT Inpartner Optima Integra. All rights reserved.
+Website: https://inpartner.id/
+Email: corporatesecretary@inpartner.id | info@inpartner.id
+
+IMPORTANT — READ CAREFULLY:
+This software code, architecture, user interface assets, proprietary consulting 
+models, prompt templates, knowledge bases, and documentation ("Software") are 
+the intellectual property and trade secrets of PT Inpartner Optima Integra ("Licensor").
+
+1. OWNERSHIP & PROPRIETARY RIGHTS
+The Software is licensed, not sold. All rights, title, copyright, and interest in 
+and to the Software (including but not limited to source code, algorithms, conversational 
+logic, RAG scoring engines, diagnostic prompts, and graphical design assets) are and 
+shall remain the sole and exclusive property of PT Inpartner Optima Integra.
+
+2. RESTRICTIONS ON USE
+Except as expressly authorized in writing by PT Inpartner Optima Integra:
+a. You may not copy, reproduce, modify, translate, distribute, sublicense, sell, 
+   lease, rent, transfer, or publicly display the Software or any portion thereof.
+b. You may not decompile, reverse engineer, disassemble, or attempt to derive source 
+   code or underlying trade secrets from compiled assets or production distributions.
+c. You may not remove, obscure, or alter any copyright notices, trademark legends, 
+   or proprietary rights markings affixed to or contained within the Software.
+d. You may not use this Software to train competing artificial intelligence models 
+   or operate an unauthorized commercial consultation service utilizing Inpartner's 
+   proprietary methodology and corporate materials.
+
+3. PERMITTED INTERNAL OPERATIONAL USE
+Authorized employees, engineering personnel, consultants, and contractors of 
+PT Inpartner Optima Integra are granted a limited, revocable, non-transferable, 
+non-exclusive license to access, deploy, and maintain the Software solely for 
+the purpose of operating the Inpartner AI Business Consultation Assistant and 
+associated CRM workflows across official Inpartner platforms (including inpartner.id 
+and designated subdomains).
+
+4. THIRD-PARTY OPEN-SOURCE DEPENDENCIES
+The Software incorporates and depends on certain third-party open-source components, 
+including:
+- Next.js (MIT License) - Copyright (c) Vercel, Inc.
+- React and React DOM (MIT License) - Copyright (c) Meta Platforms, Inc.
+- Supabase Client & SSR (Apache-2.0 / MIT License) - Copyright (c) Supabase, Inc.
+- Tailwind CSS (MIT License) - Copyright (c) Tailwind Labs, Inc.
+- Lucide React (ISC License) - Copyright (c) Lucide Contributors
+- Google Generative AI SDK (Apache-2.0 License) - Copyright (c) Google LLC
+
+Each third-party component remains governed by its respective open-source license. 
+Nothing in this Agreement restricts or overrides rights granted to licensees under 
+the applicable third-party licenses for those specific independent libraries.
+
+5. DISCLAIMER OF WARRANTY & LIMITATION OF LIABILITY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL PT INPARTNER OPTIMA INTEGRA 
+OR ITS DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER 
+LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
+OTHER DEALINGS IN THE SOFTWARE.
+
+6. GOVERNING LAW & DISPUTE RESOLUTION
+This Agreement shall be governed by and construed in accordance with the laws of 
+the Republic of Indonesia. Any disputes arising out of or in connection with this 
+Agreement shall be submitted to the exclusive jurisdiction of the competent courts 
+in Jakarta, Indonesia.
+
+7. CONTACT & LICENSING INQUIRIES
+For commercial licensing permissions, enterprise partnerships, or inquiries, please contact:
+PT Inpartner Optima Integra
+Pakuwon Tower, Unit J, 10th Floor
+Raya Casablanca Street, Kav. 88
+South Jakarta, DKI Jakarta, Indonesia
+Email: corporatesecretary@inpartner.id | info@inpartner.id
+Official Website: https://inpartner.id/
