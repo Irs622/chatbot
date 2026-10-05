@@ -1,25 +1,82 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 
-const url = 'https://vfcttowwcqzaqvioxrnq.supabase.co';
-const key = 'sb_publishable_lwHRse-eMn2iPGHL6n2Akg_XdmRVW9Z';
+// Load .env.local if present
+const envPath = path.resolve(process.cwd(), '.env.local');
+let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+let supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
-const supabase = createClient(url, key);
-
-async function check() {
-  console.log('Checking connection to Supabase at:', url);
-  try {
-    const { data, error } = await supabase.from('leads').select('*').limit(1);
-    if (error) {
-      console.log('Supabase Response Error:', error.message, '| Code:', error.code);
-      if (error.code === '42P01') {
-        console.log('NOTE: Table "leads" does not exist yet. Please run the SQL schema script in Supabase SQL Editor!');
-      }
-    } else {
-      console.log('SUCCESS! Connected to Supabase leads table. Rows:', data.length);
-    }
-  } catch (err) {
-    console.error('Connection failure:', err.message);
+if (fs.existsSync(envPath)) {
+  const content = fs.readFileSync(envPath, 'utf-8');
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const [k, ...v] = trimmed.split('=');
+    const key = k.trim();
+    const val = v.join('=').trim();
+    if (key === 'NEXT_PUBLIC_SUPABASE_URL' && !supabaseUrl) supabaseUrl = val;
+    if (key === 'SUPABASE_SERVICE_ROLE_KEY' && !supabaseKey) supabaseKey = val;
+    if (key === 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY' && !supabaseKey) supabaseKey = val;
+    if (key === 'NEXT_PUBLIC_SUPABASE_ANON_KEY' && !supabaseKey) supabaseKey = val;
   }
 }
 
-check();
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Supabase credentials missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local');
+  process.exit(1);
+}
+
+console.log('\n============================================================');
+console.log('  🔍 INPARTNER AI — SUPABASE DATABASE CONNECTIVITY CHECK');
+console.log('============================================================');
+console.log(`Endpoint Target : ${supabaseUrl}`);
+console.log(`API Key Format  : ${supabaseKey.substring(0, 14)}...`);
+
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false, autoRefreshToken: false }
+});
+
+const tables = ['leads', 'conversations', 'messages', 'analytics_events'];
+
+async function runCheck() {
+  let allHealthy = true;
+
+  for (const table of tables) {
+    const start = Date.now();
+    try {
+      const { data, count, error } = await supabase
+        .from(table)
+        .select('*', { count: 'exact' })
+        .limit(1);
+
+      const elapsed = Date.now() - start;
+
+      if (error) {
+        allHealthy = false;
+        console.log(`❌ [Table: ${table.padEnd(16)}] Error (${elapsed}ms): ${error.message} [Code: ${error.code || 'N/A'}]`);
+      } else {
+        console.log(`✅ [Table: ${table.padEnd(16)}] Connected (${elapsed}ms) | Total records: ${count ?? (data ? data.length : 0)}`);
+      }
+    } catch (err) {
+      allHealthy = false;
+      console.log(`❌ [Table: ${table.padEnd(16)}] Exception: ${err.message}`);
+    }
+  }
+
+  console.log('============================================================');
+  if (allHealthy) {
+    console.log('🎉 STATUS: ALL SUPABASE TABLES OPERATIONAL & VERIFIED!\n');
+    process.exit(0);
+  } else {
+    console.error('⚠️ STATUS: ONE OR MORE TABLES ENCOUNTERED AN ISSUE.\n');
+    process.exit(1);
+  }
+}
+
+runCheck();

@@ -88,8 +88,8 @@ For a dedicated consultation landing page (e.g. `/ai-consultation`):
                     (lib/ai.ts - Gemini / Offline RAG)
                                      │
                                      ▼
-                       [ Local Database & Analytics ]
-                      (data/db.json via lib/db.ts)
+                   [ Supabase Cloud Postgres & Analytics ]
+              (PostgreSQL via lib/supabaseClient.ts & lib/db.ts)
                                      │
          ┌───────────────────────────┴───────────────────────────┐
          ▼                                                       ▼
@@ -181,19 +181,29 @@ cp .env.local.example .env.local
 
 Configure production credentials:
 ```env
-# 1. Admin CRM Security & Authentication (Required for Production):
+# 1. Supabase PostgreSQL Database (Required):
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_or_anon_key
+
+# 2. Admin CRM Security & Authentication (Required for Production):
 ADMIN_PASSWORD=your_secure_password_here
 AUTH_SECRET=your_high_entropy_secret_here
 
-# 2. Generative AI Engine (Optional):
+# 3. Generative AI Engine (Optional):
 GEMINI_API_KEY=AIzaSy...
 
-# 3. Automated Sales Lead Alerts:
+# 4. Automated Sales Lead Alerts:
 LEAD_WEBHOOK_URL=https://...
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_CHAT_ID=...
 RESEND_API_KEY=re_...
 LEAD_NOTIFICATION_EMAIL=corporatesecretary@inpartner.id
+```
+
+### 4. Verify Database Connectivity
+```bash
+# Verify connection to all Supabase PostgreSQL tables:
+npm run db:check
 ```
 
 ---

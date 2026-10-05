@@ -12,6 +12,7 @@ import {
   logAnalyticsEvent,
   getAnalyticsSummary
 } from '../lib/db.ts';
+import { isSupabaseConfigured, checkSupabaseHealth } from '../lib/supabaseClient.ts';
 
 test('Database, CRM & Analytics Engine Suite', async (t) => {
   const testSessionId = `test_sess_${Date.now()}`;
@@ -110,5 +111,16 @@ test('Database, CRM & Analytics Engine Suite', async (t) => {
     assert.ok(summary.totals.events >= 1);
     assert.ok(Array.isArray(summary.hourlyDistribution));
     assert.equal(summary.hourlyDistribution.length, 24);
+  });
+
+  await t.test('Supabase client configuration and health verification', async () => {
+    // When environment variables are set, isSupabaseConfigured() must be true
+    assert.equal(typeof isSupabaseConfigured(), 'boolean');
+    if (isSupabaseConfigured()) {
+      const health = await checkSupabaseHealth();
+      assert.equal(health.configured, true);
+      assert.equal(health.ok, true);
+      assert.ok(typeof health.latencyMs === 'number');
+    }
   });
 });

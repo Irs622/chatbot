@@ -45,7 +45,12 @@ const startTime = Date.now();
 function runSuite(suite) {
   return new Promise((resolve) => {
     const start = Date.now();
-    const proc = spawn('node', ['--experimental-strip-types', '--test', suite.file], {
+    const envPath = path.resolve(process.cwd(), '.env.local');
+    const nodeArgs = fs.existsSync(envPath)
+      ? ['--env-file=.env.local', '--experimental-strip-types', '--test', suite.file]
+      : ['--experimental-strip-types', '--test', suite.file];
+
+    const proc = spawn('node', nodeArgs, {
       cwd: process.cwd(),
       env: { ...process.env, NODE_NO_WARNINGS: '1' }
     });

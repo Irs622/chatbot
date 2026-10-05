@@ -1,20 +1,42 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  '';
+export interface SupabaseCredentials {
+  url: string;
+  key: string;
+}
+
+export interface SupabaseHealthResult {
+  ok: boolean;
+  configured: boolean;
+  latencyMs?: number;
+  url?: string;
+  error?: string;
+}
 
 let supabaseInstance: SupabaseClient | null = null;
+let lastUsedKey: string = '';
+
+export function getSupabaseCredentials(): SupabaseCredentials {
+  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '').trim();
+  const key = (
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    ''
+  ).trim();
+
+  return { url, key };
+}
 
 export function isSupabaseConfigured(): boolean {
+  const { url, key } = getSupabaseCredentials();
   return Boolean(
-    supabaseUrl &&
-    supabaseKey &&
-    supabaseUrl.startsWith('https://') &&
-    !supabaseUrl.includes('xxxxxxxx')
+    url &&
+    key &&
+    url.startsWith('https://') &&
+    !url.includes('xxxxxxxx') &&
+    !url.includes('your-project-ref')
   );
 }
 
@@ -22,13 +44,74 @@ export function getSupabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) {
     return null;
   }
-  if (!supabaseInstance) {
-    supabaseInstance = createClient(supabaseUrl, supabaseKey, {
+
+  const { url, key } = getSupabaseCredentials();
+
+  // Re-instantiate if key changed (e.g. dynamically provided or swapped)
+  if (!supabaseInstance || lastUsedKey !== key) {
+    supabaseInstance = createClient(url, key, {
       auth: {
         persistSession: false,
         autoRefreshToken: false
       }
     });
+    lastUsedKey = key;
   }
+
   return supabaseInstance;
+}
+
+/**
+ * Validates real-time connectivity to Supabase by executing a lightweight HEAD check on the leads table.
+ */
+export async function checkSupabaseHealth(): Promise<SupabaseHealthResult> {
+  if (!isSupabaseConfigured()) {
+    return {
+      ok: false,
+      configured: false,
+      error: 'Supabase credentials not configured in environment'
+    };
+  }
+
+  const { url } = getSupabaseCredentials();
+  const client = getSupabase();
+  if (!client) {
+    return {
+      ok: false,
+      configured: false,
+      url,
+      error: 'Failed to initialize Supabase client instance'
+    };
+  }
+
+  const start = Date.now();
+  try {
+    const { error } = await client.from('leads').select('id', { count: 'exact', head: true });
+    const latencyMs = Date.now() - start;
+
+    if (error) {
+      return {
+        ok: false,
+        configured: true,
+        url,
+        latencyMs,
+        error: error.message
+      };
+    }
+
+    return {
+      ok: true,
+      configured: true,
+      url,
+      latencyMs
+    };
+  } catch (err: any) {
+    return {
+      ok: false,
+      configured: true,
+      url,
+      latencyMs: Date.now() - start,
+      error: err.message || 'Unknown network error'
+    };
+  }
 }
