@@ -56,18 +56,17 @@ Chatbot ini dirancang untuk melayani 3 profil utama calon klien:
 
 ## 5. Cakupan Layanan yang Dikuasai Chatbot
 
-Chatbot dibekali pengetahuan resmi seputar **4 Pilar Utama Inpartner**:
+Chatbot dibekali pengetahuan resmi seputar **5 Pilar Layanan Korporat Inpartner**:
 
 ```text
                                 INPARTNER AGENT
                                        │
         ┌──────────────┬───────────────┴───────────────┬──────────────┐
         ▼              ▼                               ▼              ▼
-   [ GROWTH ]     [ FUNDING ]                   [ PROFITABILITY ] [ CAPACITY ]
-Ekspansi Pasar,   Kesiapan Investasi,           Bedah Struktur    Program Pelatihan
-Riset Segmen,     Valuasi Wajar, &              Biaya, Pemotongan Eksekutif & Coaching
-Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim.
-                  (Bukan Pinjol / Bank)
+   [ STRATEGY ]   [ INVESTMENT ]     [ MARKET ACCESS ]   [ CROSS-BORDER ] [ HUMAN CAPITAL ]
+Perencanaan       Studi Kelayakan,   Ekspansi Pasar,     Alih Teknologi,  Executive Search,
+Korporat, M&A,    Valuasi Bisnis,    Distributor Match,  Joint Venture,   Leadership Coach,
+Restrukturisasi.  Kesiapan Investor. Penetrasi B2B.      Investasi Asing. Desain Organisasi.
 ```
 
 ---
@@ -103,7 +102,7 @@ Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim
 - Data ini langsung tersimpan rapi untuk ditindaklanjuti oleh tim Business Development.
 
 ### F. Tombol Cepat ke WhatsApp Resmi
-- Di setiap akhir percakapan, tersedia tombol 1-klik menuju **WhatsApp Resmi Inpartner** (`0896 2831 0192`) bagi calon klien yang ingin obrolan langsung manusia.
+- Di setiap akhir percakapan, tersedia tombol 1-klik menuju **WhatsApp Resmi Inpartner** (`+62 859 3454 8202`) bagi calon klien yang ingin obrolan langsung manusia.
 
 ### G. Notifikasi Otomatis Prospek Masuk (*Instant Lead Alerts*) — ✨ Fitur Baru
 - Setiap kali calon klien menekan tombol *"Kirim Informasi"* pada formulir konsultasi, sistem secara otomatis mengirimkan pemberitahuan seketika (*real-time*) ke tim internal tanpa perlu menunggu tim mengecek dashboard manual:
@@ -116,6 +115,11 @@ Roadmap Sales.    Akses Jejaring Investor.      Pemborosan Laba.  Manajerial Tim
 - Menggunakan enkripsi kriptografis HMAC-SHA256 dengan *secure HTTP-only session cookie* (berlaku 7 hari atau hingga *logout*).
 - Menjaga endpoint data sensitif (`/api/leads`, `/api/conversations`, `/api/analytics`) dari pencurian data oleh pihak luar, sementara formulir publik pengunjung website tetap dapat mengirimkan prospek secara aman.
 - Tersedia tombol *Logout* instan untuk membersihkan sesi keamanan di perangkat.
+
+### I. Basis Data Cloud Terintegrasi (*Supabase PostgreSQL Cloud*) — 🗄️ Fitur Baru
+- Seluruh riwayat obrolan (*conversations*), transkrip dialog (*messages*), pipeline prospek (*leads*), dan telemetri interaksi (*analytics*) tersimpan terpusat di **Supabase Cloud PostgreSQL**.
+- Menggunakan skema relasional terindeks cepat dengan proteksi keamanan **Row-Level Security (RLS)** dan sinkronisasi fail-safe lokal.
+- Dilengkapi endpoint pemantauan kesehatan sistem `/api/health` dan skrip audit berkala `npm run db:check`.
 
 ---
 

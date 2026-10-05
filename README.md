@@ -130,10 +130,11 @@ chatbot/
 │   ├── faq/faq.md                   # Engagement models & consulting FAQ
 │   ├── projects/projects.md         # Track record & corporate case studies
 │   ├── sectors/sectors.md           # 13 priority industry verticals
-│   └── services/                    # 4 core advisory pillars
+│   └── services/                    # 5 core advisory pillars
 ├── lib/
-│   ├── ai.ts                        # Gemini 1.5 Flash SSE streaming & fallback
-│   ├── db.ts                        # Database abstraction layer
+│   ├── ai.ts                        # Gemini & Grounded RAG multi-model reasoning
+│   ├── db.ts                        # Dual-mode database layer (Supabase + fallback)
+│   ├── supabaseClient.ts            # Dynamic Supabase client & health telemetry
 │   ├── notifications.ts             # Webhook, Telegram, and Resend email alerts
 │   ├── rag.ts                       # Markdown tokenizer, chunking, & scoring
 │   └── rateLimit.ts                 # Sliding-window IP rate limiter
@@ -141,9 +142,13 @@ chatbot/
 │   ├── widget.js                    # Universal lightweight script embed
 │   ├── demo-website.html            # Local testbed simulating host website
 │   └── chaboot.svg                  # Official brand geometric icon
+├── supabase/
+│   └── schema.sql                   # Supabase PostgreSQL DDL, indexes, and RLS policies
 ├── .env.local.example               # Template environment configuration
+├── DATABASE_GUIDE.md                # Supabase architecture, schema DDL & operations
 ├── INTEGRATION_GUIDE.md             # Technical handover guide for webmasters
 ├── KNOWLEDGE_BASE_GUIDE.md          # Internal guide for knowledge updates
+├── TESTING_GUIDE.md                 # 14-layer Quality Assurance & test runner suite
 ├── PRD.md                           # Product Requirements Document
 └── README.md                        # Primary project documentation
 ```

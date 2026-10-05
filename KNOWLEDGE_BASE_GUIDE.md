@@ -13,10 +13,11 @@ knowledge/
 ├── company/
 │   └── company-profile.md       # Official profile, vision, mission, values, ESG commitments
 ├── services/
-│   ├── growth.md                # Business Growth & Market Expansion advisory
-│   ├── funding.md               # Funding Readiness & Investment Advisory
-│   ├── profitability.md         # Profitability & Margin/Cost Structure Optimization
-│   └── capacity-building.md     # The Executive Business Program
+│   ├── strategy-corporate-advisory.md   # Strategy, M&A, Restructuring, Business Model
+│   ├── investment-project-advisory.md   # Feasibility, Investment Readiness, Valuation
+│   ├── market-access-expansion.md       # Market Entry, Distributor Matching, B2B Partnering
+│   ├── cross-border-technology.md       # Global JV, Tech Transfer, FDI Advisory
+│   └── human-capital-organization.md    # Executive Search, Leadership Coaching, Org Design
 ├── sectors/
 │   └── sectors.md               # 13 priority industrial advisory sectors
 ├── projects/
