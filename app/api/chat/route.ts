@@ -189,9 +189,10 @@ export async function POST(req: NextRequest) {
             }
           }
         } catch (err: any) {
-          console.error('Error during chat stream:', err);
+          const reqId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+          console.error(`[Error in chat stream] [ID: ${reqId}]:`, err);
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: 'error', error: err.message || 'Stream error' })}\n\n`)
+            encoder.encode(`data: ${JSON.stringify({ type: 'error', error: 'An error occurred while streaming response. Please try again.', requestId: reqId })}\n\n`)
           );
         } finally {
           controller.close();
@@ -208,9 +209,10 @@ export async function POST(req: NextRequest) {
       }
     });
   } catch (error: any) {
-    console.error('Error in /api/chat:', error);
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in /api/chat] [ID: ${requestId}]:`, error);
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', request_id: requestId },
       { status: 500 }
     );
   }

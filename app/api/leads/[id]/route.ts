@@ -37,7 +37,9 @@ export async function GET(
 
     return NextResponse.json({ success: true, lead, messages });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in GET /api/leads/[id]] [ID: ${requestId}]:`, error);
+    return NextResponse.json({ error: 'Internal server error', request_id: requestId }, { status: 500 });
   }
 }
 
@@ -74,7 +76,9 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, lead: updated });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in PATCH /api/leads/[id]] [ID: ${requestId}]:`, error);
+    return NextResponse.json({ error: 'Internal server error', request_id: requestId }, { status: 500 });
   }
 }
 
@@ -99,6 +103,8 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Lead deleted successfully' });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in DELETE /api/leads/[id]] [ID: ${requestId}]:`, error);
+    return NextResponse.json({ error: 'Internal server error', request_id: requestId }, { status: 500 });
   }
 }

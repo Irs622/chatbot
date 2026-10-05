@@ -243,11 +243,7 @@ export function retrieveKnowledge(query: string, topK: number = 4): RetrievedChu
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Return top results with positive score, or fallback to first few
+  // Return top results with positive score only
   const results = scored.filter((s) => s.score > 0).slice(0, topK);
-  if (results.length === 0) {
-    return scored.slice(0, topK);
-  }
-
   return results;
 }

@@ -19,8 +19,8 @@ Protected corporate endpoints require administrator privileges verified via eith
 All error responses adhere to standard HTTP status codes and return a consistent JSON payload:
 ```json
 {
-  "success": false,
-  "error": "Human-readable description of the error."
+  "error": "Internal server error",
+  "request_id": "req_1728100123_abc123"
 }
 ```
 
@@ -302,9 +302,24 @@ Logs interaction events (e.g. widget opened, nudge shown, consultation initiated
 ## 🩺 7. Health & Diagnostics Endpoints
 
 ### `GET /api/health`
-Probes application availability, Supabase PostgreSQL latency, and active AI engine candidates.
+Lightweight public liveness probe for load balancers and uptime monitoring.
 
 - **Access:** Public
+
+#### Response (`200 OK`)
+```json
+{
+  "status": "healthy",
+  "timestamp": "2026-10-05T10:45:00.000Z"
+}
+```
+
+---
+
+### `GET /api/admin/health`
+Comprehensive diagnostic probe inspecting Supabase PostgreSQL connectivity, round-trip latency, and Gemini API engine status.
+
+- **Access:** Protected (Admin only)
 
 #### Response (`200 OK`)
 ```json
@@ -317,8 +332,7 @@ Probes application availability, Supabase PostgreSQL latency, and active AI engi
     "provider": "supabase",
     "configured": true,
     "connected": true,
-    "latencyMs": 42,
-    "url": "https://your-project.supabase.co"
+    "latencyMs": 42
   },
   "timestamp": "2026-10-05T10:45:00.000Z"
 }

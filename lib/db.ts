@@ -105,6 +105,13 @@ export interface DatabaseSchema {
   analytics_events: AnalyticsEvent[];
 }
 
+/**
+ * ARCHITECTURAL PERSISTENCE MODEL:
+ * - Supabase PostgreSQL is the PRIMARY durability authority.
+ * - Local /tmp/db.json and memoryDb serve as TEMPORARY availability fallbacks
+ *   during initial bootstrap or transient network disruptions on serverless environments.
+ * - They do not guarantee multi-instance cross-container durability without Supabase.
+ */
 const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
 const DATA_DIR = isServerless ? '/tmp' : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
@@ -172,11 +179,27 @@ function saveDb(data: DatabaseSchema): void {
   }
 }
 
+async function withSupabaseRetry<T>(fn: () => PromiseLike<T>, maxRetries = 2, delayMs = 150): Promise<T | null> {
+  let lastError: any = null;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        await new Promise((res) => setTimeout(res, delayMs * attempt));
+      }
+    }
+  }
+  console.warn(`[Supabase Operation Exception after ${maxRetries} attempts]:`, lastError);
+  return null;
+}
+
 function asyncSupabaseSync(syncFn: (supabase: NonNullable<ReturnType<typeof getSupabase>>) => PromiseLike<any>): void {
   if (!isSupabaseConfigured()) return;
   const supabase = getSupabase();
   if (!supabase) return;
-  Promise.resolve(syncFn(supabase)).catch((err) => {
+  withSupabaseRetry(() => syncFn(supabase)).catch((err) => {
     console.warn('[Supabase Sync Exception]', err);
   });
 }
@@ -505,11 +528,10 @@ export async function createLeadAsync(data: Parameters<typeof createLead>[0]): P
   if (isSupabaseConfigured()) {
     const supabase = getSupabase();
     if (supabase) {
-      try {
-        await supabase.from('leads').upsert(lead);
-      } catch (err) {
-        console.warn('[Supabase Sync Exception in createLeadAsync]', err);
-      }
+      await withSupabaseRetry(async () => {
+        const { error } = await supabase.from('leads').upsert(lead);
+        if (error) throw error;
+      });
     }
   }
   return lead;

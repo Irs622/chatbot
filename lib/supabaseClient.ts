@@ -17,15 +17,21 @@ let supabaseInstance: SupabaseClient | null = null;
 let lastUsedKey: string = '';
 
 export function getSupabaseCredentials(): SupabaseCredentials {
-  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '').trim();
-  const key = (
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim();
+  const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  const anonKey = (
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.SUPABASE_ANON_KEY ||
     ''
   ).trim();
 
+  // In production backend runtime, service role key is strictly recommended
+  if (process.env.NODE_ENV === 'production' && !serviceKey && typeof window === 'undefined') {
+    console.warn('[SECURITY WARNING] SUPABASE_SERVICE_ROLE_KEY is not defined in backend runtime. Database access may fail under strict RLS policies.');
+  }
+
+  const key = serviceKey || anonKey;
   return { url, key };
 }
 

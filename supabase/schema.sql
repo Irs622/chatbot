@@ -1,6 +1,5 @@
 -- =========================================================================
--- INPARTNER AI & CRM - SUPABASE POSTGRESQL SCHEMA DDL
--- Project: https://vfcttowwcqzaqvioxrnq.supabase.co
+-- INPARTNER AI & CRM - SECURED SUPABASE POSTGRESQL SCHEMA DDL
 -- =========================================================================
 
 -- 1. Table: leads (Inbound corporate advisory inquiries & CRM pipeline)
@@ -59,6 +58,17 @@ CREATE TABLE IF NOT EXISTS public.analytics_events (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 5. Table: admin_sessions (Server-side Session Revocation Tracking)
+CREATE TABLE IF NOT EXISTS public.admin_sessions (
+  id TEXT PRIMARY KEY,
+  session_token_id TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL,
+  revoked_at TIMESTAMPTZ,
+  ip_address TEXT,
+  user_agent TEXT
+);
+
 -- =========================================================================
 -- INDEXES FOR HIGH-THROUGHPUT RETRIEVAL & SLA TRACKING
 -- =========================================================================
@@ -69,38 +79,32 @@ CREATE INDEX IF NOT EXISTS idx_messages_conversation ON public.messages(conversa
 CREATE INDEX IF NOT EXISTS idx_messages_created_at ON public.messages(created_at ASC);
 CREATE INDEX IF NOT EXISTS idx_analytics_created ON public.analytics_events(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_analytics_event_name ON public.analytics_events(event_name);
+CREATE INDEX IF NOT EXISTS idx_admin_sessions_token ON public.admin_sessions(session_token_id);
 
 -- =========================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
+-- Architecture Model:
+--   - Browser/Client talks exclusively to Next.js API Gateway.
+--   - Next.js Server uses SUPABASE_SERVICE_ROLE_KEY to perform CRM operations.
+--   - Public 'anon' role is strictly denied SELECT, UPDATE, DELETE on all CRM tables.
 -- =========================================================================
--- Enable RLS
+
+-- Enable and Force RLS
 ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_sessions ENABLE ROW LEVEL SECURITY;
 
--- Allow public anonymous inserts (for website visitor inquiries & chat)
-CREATE POLICY "Allow public insert on leads" ON public.leads
-  FOR INSERT WITH CHECK (true);
+ALTER TABLE public.leads FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.conversations FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.messages FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.analytics_events FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_sessions FORCE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow public insert on conversations" ON public.conversations
-  FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "Allow public insert on messages" ON public.messages
-  FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "Allow public insert on analytics_events" ON public.analytics_events
-  FOR INSERT WITH CHECK (true);
-
--- Allow public read/update/delete for chatbot and backend API access
-CREATE POLICY "Allow full access for service key and anon" ON public.leads
-  FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow full access on conversations" ON public.conversations
-  FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow full access on messages" ON public.messages
-  FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow full access on analytics_events" ON public.analytics_events
-  FOR ALL USING (true) WITH CHECK (true);
+-- Revoke all direct privileges on sensitive CRM tables from anon
+REVOKE ALL ON public.leads FROM anon;
+REVOKE ALL ON public.conversations FROM anon;
+REVOKE ALL ON public.messages FROM anon;
+REVOKE ALL ON public.analytics_events FROM anon;
+REVOKE ALL ON public.admin_sessions FROM anon;

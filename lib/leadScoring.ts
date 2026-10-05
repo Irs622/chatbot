@@ -1,6 +1,11 @@
 /**
- * INPARTNER AI — Automated Lead Scoring & Commercial Prioritization Engine
- * PT Inpartner Optima Integra • Business Development Matrix
+ * INPARTNER AI — Lead Priority Scoring & Commercial Triage Engine
+ * PT Inpartner Optima Integra • Business Development Operational SLA Matrix
+ *
+ * NOTE ON METHODOLOGY:
+ * This score is a deterministic rule-based HEURISTIC PRIORITY SCORE (0 - 100),
+ * not an empirical statistical deal closing probability.
+ * It qualifies inbound inquiries to assign BD response SLAs (e.g. Tier 1 < 2h, Tier 2 < 6h).
  */
 
 import type { CompanyScale, IndustrySector, ProjectTimeline } from './qualification.ts';
@@ -57,7 +62,7 @@ const PUBLIC_EMAIL_DOMAINS = new Set([
 const CORPORATE_SUFFIX_REGEX = /\b(pt|pt\.|cv|cv\.|corp|corporation|inc|incorporated|llc|ltd|limited|gmbh|bhd|holdings|holding|group|tbk|tbk\.|co\.|co|firm|enterprise|enterprises|주식회사|\(주\))\b/i;
 
 /**
- * Calculates an automated commercial lead score (0 - 100) and assigns a priority tier.
+ * Calculates a heuristic Lead Priority Score (0 - 100) and assigns an operational SLA triage tier.
  */
 export function calculateLeadScore(input: LeadScoringInput): LeadScoreResult {
   const factors: ScoreFactor[] = [];

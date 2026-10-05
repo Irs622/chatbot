@@ -81,20 +81,26 @@ flowchart TD
 - Prospek consultation data exported to CSV (`/api/admin/export`) is sanitized to neutralize malicious command execution in Microsoft Excel and Google Sheets.
 - Cell values starting with dangerous formula characters (`=`, `+`, `-`, `@`, `\t`, `\r`) are automatically prepended with a single quote (`'`), ensuring they render purely as harmless textual data.
 
-### C. Sliding-Window Rate Limiting
-- Built-in in-memory sliding window rate limiter protects public entry points from denial-of-service (DoS) and credential stuffing:
+### C. Sliding-Window & Edge Rate Limiting
+- Built-in sliding window rate limiter protects public entry points from denial-of-service (DoS) and brute-force attacks:
   - `/api/chat`: Max 30 requests per IP per minute.
-  - `/api/leads`: Max 10 submissions per IP per 5 minutes.
-  - `/api/admin/login`: Max 5 authentication attempts per IP per 10 minutes.
+  - `/api/leads`: Max 5 submissions per IP per 10 minutes.
+  - `/api/admin/login`: Max 5 authentication attempts per IP per 15 minutes.
+- Client IP resolution resolves edge proxy headers (`CF-Connecting-IP`, `True-Client-IP`, `X-Real-IP`, sanitized `X-Forwarded-For`).
+- Optional distributed rate limiting via Upstash Redis REST (`UPSTASH_REDIS_REST_URL`) for serverless deployments.
 
 ### D. Session & Authentication Security
-- **Admin CRM Access:** Protected by high-entropy cryptographic session tokens (`AUTH_SECRET`).
-- **Timing-Safe Evaluation:** Password comparison employs timing-safe string matching algorithms to resist timing-attack side channels.
+- **Admin CRM Access:** Protected by signed cryptographic session tokens (`AUTH_SECRET`).
+- **Server-Side Session Revocation:** Tokens include unique session IDs (`sessionId.timestamp.signature`); on `/api/admin/logout`, session IDs are recorded in the revocation registry to invalidate intercepted or orphaned tokens.
+- **Timing-Safe Evaluation:** Password comparison employs timing-safe string matching algorithms (`crypto.timingSafeEqual`) to resist timing-attack side channels.
 - **Secure Cookie Flags:** Admin session cookies are configured with `HttpOnly`, `SameSite=Lax`, and `Secure` (in production).
 
 ### E. Database Security & Row-Level Security (RLS)
-- Supabase PostgreSQL tables (`leads`, `conversations`, `messages`, `analytics_events`) have Row-Level Security (RLS) policies enabled.
-- Direct public table mutations without server-side validation are disallowed.
+- Supabase PostgreSQL tables (`leads`, `conversations`, `messages`, `analytics_events`, `admin_sessions`) have Row-Level Security (RLS) enabled and forced (`FORCE ROW LEVEL SECURITY`).
+- All direct Data API mutations and reads from the public anonymous role (`anon`) are revoked.
+- The Next.js server-side API Gateway acts as the trusted mediator via `SUPABASE_SERVICE_ROLE_KEY`, performing strict input validation, attribution sanitization, and business logic before persistence.
+- Public `/api/health` returns only minimal status without disclosing database URLs or AI model internals.
+- All API 500 errors are sanitized with a generic message and correlated `request_id` to eliminate error message leaks.
 
 ---
 
@@ -114,6 +120,8 @@ The application complies with **Undang-Undang Republik Indonesia Nomor 27 Tahun 
 Before launching into production, verify:
 - [ ] `ADMIN_PASSWORD` is changed from defaults to a strong, high-entropy password (minimum 16 characters).
 - [ ] `AUTH_SECRET` is generated via a cryptographically secure random generator (e.g. `openssl rand -hex 32`).
-- [ ] `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` point to the official production Supabase instance.
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` is configured in the backend environment and never exposed with `NEXT_PUBLIC_`.
+- [ ] `NEXT_PUBLIC_SUPABASE_URL` points to the official production Supabase instance.
+- [ ] Direct anon access on Supabase Data API is restricted via `supabase/schema.sql`.
 - [ ] HTTPS enforcement is active across both root domain and subdomains.
 - [ ] Custom CSP headers restrict `frame-ancestors` exclusively to `https://inpartner.id` and authorized subdomains.

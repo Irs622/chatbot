@@ -152,9 +152,10 @@ ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
 ```
 
 ### Praktik Terbaik Keamanan:
-- **Anon / Public Insert:** Pengunjung website publik hanya diizinkan melakukan `INSERT` data prospek dan pesan baru.
-- **Admin & Backend Operations:** Operasi `SELECT`, `UPDATE` status prospek, dan `DELETE` hanya dapat diakses melalui API backend yang dilindungi autentikasi sesi admin internal (`isAdminAuthenticated`).
-- **Pencegahan Kebocoran Kunci:** Kunci `SUPABASE_SERVICE_ROLE_KEY` hanya boleh diletakkan di environment backend server dan **tidak boleh** diawali dengan `NEXT_PUBLIC_`.
+- **Arsitektur API Gateway Backend:** Browser/Client tidak pernah berinteraksi langsung ke Supabase REST Data API. Seluruh interaksi disaring melalui API backend Next.js (`/api/chat`, `/api/leads`).
+- **Anon Direct Access Revoked:** Peran publik `anon` dicabut seluruh izinnya (`REVOKE ALL`) pada tabel CRM publik untuk mencegah ekstraksi data massal melalui client-side REST endpoint.
+- **Admin & Backend Operations:** Operasi database di backend dijalankan menggunakan `SUPABASE_SERVICE_ROLE_KEY` setelah validasi skema, sanitasi input, dan otorisasi sesi admin internal.
+- **Pencegahan Kebocoran Kunci:** Kunci `SUPABASE_SERVICE_ROLE_KEY` hanya diletakkan di environment backend server dan **wajib tidak** diawali dengan `NEXT_PUBLIC_`.
 
 ---
 
@@ -168,8 +169,8 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_publishable_or_anon_key
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_or_anon_key
 
-# 2. Opsional: Kunci Service Role untuk tugas backend intensif (bypass RLS):
-# SUPABASE_SERVICE_ROLE_KEY=your_secret_service_role_key
+# 2. Wajib untuk Produksi: Kunci Service Role Backend (Server-Side Persistence):
+SUPABASE_SERVICE_ROLE_KEY=your_secret_service_role_key
 
 # 3. Kredensial Keamanan Admin CRM:
 ADMIN_PASSWORD=your_secure_admin_password

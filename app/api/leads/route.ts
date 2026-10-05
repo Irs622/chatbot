@@ -5,6 +5,8 @@ import { isAdminAuthenticated } from '@/lib/auth';
 import { validatePhoneNumber, validateEmail } from '@/lib/validation';
 import { checkRateLimit } from '@/lib/rateLimit';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     if (!isAdminAuthenticated(req)) {
@@ -17,7 +19,9 @@ export async function GET(req: NextRequest) {
     const leads = await getAllLeadsAsync();
     return NextResponse.json({ success: true, count: leads.length, leads });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in GET /api/leads] [ID: ${requestId}]:`, error);
+    return NextResponse.json({ error: 'Internal server error', request_id: requestId }, { status: 500 });
   }
 }
 
@@ -151,24 +155,34 @@ export async function POST(req: NextRequest) {
     const refCode = generateConsultationRef(lead.id);
     const clientWhatsAppUrl = generateClientWhatsAppUrl(lead, refCode, body.lang || 'id');
 
-    // Dispatch real-time lead notifications (Webhook, Telegram, Internal Email, Client Confirmation Email)
-    const notificationResult = await sendLeadNotification(lead, {
-      lang: body.lang,
-      refCode
-    }).catch((err) => {
-      console.warn('Lead notification background error:', err);
-      return null;
-    });
+    // Dispatch real-time lead notifications asynchronously (Webhook, Telegram, Internal Email, Client Confirmation Email)
+    const dispatchNotifications = async () => {
+      try {
+        await sendLeadNotification(lead, {
+          lang: body.lang,
+          refCode
+        });
+      } catch (err) {
+        console.warn(`[Async Lead Notification Error] [Lead: ${lead.id}]:`, err);
+      }
+    };
+
+    if (typeof queueMicrotask !== 'undefined') {
+      queueMicrotask(dispatchNotifications);
+    } else {
+      setTimeout(dispatchNotifications, 0);
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Inquiry saved successfully. The Inpartner team will contact you promptly.',
       ref_code: refCode,
       whatsapp_url: clientWhatsAppUrl,
-      lead,
-      notification: notificationResult
-    });
+      lead
+    }, { status: 201 });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in POST /api/leads] [ID: ${requestId}]:`, error);
+    return NextResponse.json({ error: 'Internal server error', request_id: requestId }, { status: 500 });
   }
 }

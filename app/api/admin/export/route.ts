@@ -3,6 +3,8 @@ import { getAllLeads, getAllLeadsAsync } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 import { filterLeadsForExport, generateLeadsCsv } from '@/lib/exportCsv';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     if (!isAdminAuthenticated(req)) {
@@ -38,7 +40,9 @@ export async function GET(req: NextRequest) {
       }
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const requestId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    console.error(`[Error in GET /api/admin/export] [ID: ${requestId}]:`, error);
+    return NextResponse.json({ error: 'Internal server error', request_id: requestId }, { status: 500 });
   }
 }
 

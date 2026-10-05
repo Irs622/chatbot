@@ -28,23 +28,24 @@ flowchart TD
         ChatRoute["/api/chat (SSE Stream)"]
         LeadsRoute["/api/leads (CRUD & Export)"]
         AnalyticsRoute["/api/analytics (Telemetry)"]
-        HealthRoute["/api/health (System Diagnostics)"]
+        HealthRoute["/api/health (Sanitized Public Liveness)"]
+        AdminHealthRoute["/api/admin/health (Protected Diagnostics)"]
     end
 
     subgraph CoreEngine["Application Logic Layer (lib/)"]
         IntentEngine["lib/intent.ts (Trilingual NLP)"]
-        RAGEngine["lib/rag.ts (Chunking & BM25 Scoring)"]
-        AIEngine["lib/ai.ts (Gemini + Grounded Fallback)"]
-        ScoringEngine["lib/scoring.ts (Lead Prioritization)"]
+        RAGEngine["lib/rag.ts (Chunking & Lexical Retrieval)"]
+        AIEngine["lib/ai.ts (Confidence Gated Gemini + Grounded Fallback)"]
+        ScoringEngine["lib/leadScoring.ts (Lead Priority Matrix)"]
         AttributionEngine["lib/attribution.ts (UTM Tracking)"]
-        RateLimiter["lib/rateLimit.ts (Sliding Window)"]
+        RateLimiter["lib/rateLimit.ts (Sliding Window & Edge IP Resolution)"]
     end
 
     subgraph DataPersistence["Persistence & External Services"]
-        DBLayer["lib/db.ts (Dual-Mode Abstraction)"]
-        SupabaseCloud[("Supabase Cloud PostgreSQL")]
-        LocalFallback[("Local Cache: data/db.json")]
-        NotificationServices["Telegram Bot / Resend Email / Webhook"]
+        DBLayer["lib/db.ts (Durability & Retry Abstraction)"]
+        SupabaseCloud[("Supabase Cloud PostgreSQL (Authoritative Store)")]
+        LocalFallback[("Temporary Warm Fallback: /tmp/db.json")]
+        NotificationServices["Decoupled Async: Telegram / Resend / Webhook"]
     end
 
     BrowserVisitor --> WidgetLoader
@@ -62,10 +63,10 @@ flowchart TD
     LeadsRoute --> ScoringEngine
     LeadsRoute --> AttributionEngine
     LeadsRoute --> DBLayer
-    LeadsRoute --> NotificationServices
+    LeadsRoute -.->|Non-blocking Async Dispatch| NotificationServices
 
-    DBLayer -->|Primary (Online)| SupabaseCloud
-    DBLayer -.->|Fallback (Offline)| LocalFallback
+    DBLayer -->|Primary Authoritative Store| SupabaseCloud
+    DBLayer -.->|Temporary Container Fallback| LocalFallback
 ```
 
 ---

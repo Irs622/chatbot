@@ -5,6 +5,8 @@ import {
   validateAdminPassword,
   generateAdminSessionToken,
   verifyAdminSessionToken,
+  revokeAdminSession,
+  isSessionRevoked,
   DEFAULT_ADMIN_PASSWORD
 } from '../lib/auth.ts';
 
@@ -105,5 +107,15 @@ test('Validation, Security & Authentication Suite', async (t) => {
     assert.equal(verifyAdminSessionToken('not-a-valid-token'), false);
     assert.equal(verifyAdminSessionToken(''), false);
     assert.equal(verifyAdminSessionToken(null), false);
+  });
+
+  await t.test('Admin Session Token: server-side revocation on logout', () => {
+    const token = generateAdminSessionToken();
+    assert.equal(verifyAdminSessionToken(token), true);
+
+    // Revoke token
+    revokeAdminSession(token);
+    assert.equal(isSessionRevoked(token), true);
+    assert.equal(verifyAdminSessionToken(token), false);
   });
 });

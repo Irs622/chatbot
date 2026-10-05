@@ -27,7 +27,7 @@ export function generateConsultationRef(leadId?: string, date = new Date()): str
  * Generates a pre-filled WhatsApp handoff URL pre-populated with consultation reference code.
  */
 export function generateClientWhatsAppUrl(lead: { name: string; business_need: string }, refCode: string, lang: 'id' | 'en' | 'ko' = 'id'): string {
-  const phone = '6285934548202';
+  const phone = INPARTNER_CONFIG.whatsappNumber;
   let message = '';
 
   if (lang === 'ko') {

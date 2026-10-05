@@ -1,6 +1,7 @@
 import { detectIntent, IntentType } from './intent';
 import { retrieveKnowledge, RetrievedChunk } from './rag';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { INPARTNER_CONFIG, getWhatsAppUrl } from './config';
 
 export interface AIResponse {
   answer: string;
@@ -97,12 +98,11 @@ export async function* generateConsultationResponseStream(
   // Retrieve relevant knowledge chunks
   const retrievedChunks = retrieveKnowledge(query, 4);
 
-  // Check if query is completely unknown or gibberish
+  // Confidence & Context Sufficiency Gate (Mitigate Hallucination Cascade)
   const isQueryUnclear =
-    confidence < 0.15 &&
-    retrievedChunks.length > 0 &&
-    retrievedChunks[0].score < 0.8 &&
-    userMessage.trim().length > 3;
+    (retrievedChunks.length === 0 && (intent === 'unknown' || intent === 'other')) ||
+    (confidence < 0.25 && (retrievedChunks.length === 0 || (retrievedChunks[0] && retrievedChunks[0].score < 1.0)) && (intent === 'unknown' || intent === 'other')) ||
+    (confidence < 0.15 && retrievedChunks.length > 0 && retrievedChunks[0].score < 0.8 && userMessage.trim().length > 3);
 
   // Determine recommended service based on intent or retrieved topics
   let recommendedService: string | undefined;
@@ -274,9 +274,9 @@ export async function* generateConsultationResponseStream(
   let streamSucceeded = false;
   let activeModelUsed = '';
 
-  // 1. Try real Gemini API streaming if key is set in environment
+  // 1. Try real Gemini API streaming if key is set in environment and grounded context is sufficient
   const geminiApiKey = process.env.GEMINI_API_KEY;
-  if (geminiApiKey) {
+  if (geminiApiKey && !isQueryUnclear && retrievedChunks.length > 0) {
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey);
       const candidateModels = Array.from(
@@ -392,7 +392,7 @@ Untuk mendiskusikan kebutuhan serta tantangan bisnis perusahaan Anda secara meny
 Anda dapat:
 1. Memilih salah satu dari 5 layanan resmi Inpartner: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, atau **Human Capital & Organization**.
 2. Mengisi formulir konsultasi singkat di bawah ini agar tim Business Development kami dapat menindaklanjuti.
-3. Terhubung langsung dengan tim kami via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)** atau email **corporatesecretary@inpartner.id**.`
+3. Terhubung langsung dengan tim kami via WhatsApp di **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})** atau email **${INPARTNER_CONFIG.email}**.`
           : lang === 'ko'
           ? `죄송합니다. 인파트너 공식 지식 기반에 해당 구체적인 질문에 대한 충분한 문서 정보가 아직 등록되어 있지 않습니다.
 
@@ -401,7 +401,7 @@ Anda dapat:
 다음 옵션을 이용하실 수 있습니다:
 1. 인파트너의 5대 공식 자문 분야 선택: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, **Human Capital & Organization**.
 2. 하단 상담 양식에 기업 정보를 입력하여 사전 진단 세션 신청.
-3. 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)** 또는 이메일 **corporatesecretary@inpartner.id**로 직접 문의.`
+3. 공식 WhatsApp **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})** 또는 이메일 **${INPARTNER_CONFIG.email}**로 직접 문의.`
           : `I apologize, but I do not have sufficient official documentation regarding that specific question in the Inpartner knowledge base.
 
 To comprehensively address your specific business requirements, Inpartner senior consultants are available for a direct consultation.
@@ -409,7 +409,7 @@ To comprehensively address your specific business requirements, Inpartner senior
 You can:
 1. Select one of our 5 official advisory services: **Strategy & Corporate Advisory**, **Investment & Project Advisory**, **Market Access & Business Expansion**, **Cross-Border & Technology Advisory**, or **Human Capital & Organization**.
 2. Submit your contact details using the consultation form below.
-3. Directly connect with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)** or email **corporatesecretary@inpartner.id**.`)
+3. Directly connect with our advisory team on WhatsApp at **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})** or email **${INPARTNER_CONFIG.email}**.`)
       : buildGroundedAnswer(userMessage, intent, retrievedChunks, lang);
 
     if (simulateTyping) {
@@ -606,7 +606,7 @@ Kondisi di mana omzet meningkat namun margin keuntungan bersih justru tertekan a
 2. **Diagnostik Struktur Biaya & Unit Economics:** Membedah HPP (COGS) dan OPEX untuk mengisolasi sumber kebocoran margin laba.
 3. **Penyelarasan SDM, Proses & KPI:** Membangun *Dashboard KPI* dan SOP terukur agar skala ekonomi bisnis langsung terkonversi menjadi laba bersih yang sehat.
 
-Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan Anda. Anda dapat mengisi formulir konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
+Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan Anda. Anda dapat mengisi formulir konsultasi di bawah ini atau terhubung langsung via WhatsApp di **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})**.`;
     } else if (lang === 'ko') {
       return `물론입니다. **인파트너(Inpartner)는 '수익성 및 운영 혁신(Profitability & Operational Excellence)' 자문 필라를 통해 이 과제를 효과적으로 해결합니다.**
 
@@ -621,7 +621,7 @@ Tim konsultan senior Inpartner siap membantu memulihkan margin laba perusahaan A
 2. **원가 구조 및 유닛 이코노믹스 감사:** 매출원가(COGS)와 판관비(OPEX)를 분해하여 마진 누수 원인 격리.
 3. **인력, 프로세스, KPI 정렬:** 실시간 KPI 대시보드와 SOP를 구축하여 규모의 경제가 실질적인 순이익으로 전환되도록 개선.
 
-인파트너의 수석 컨설턴트 팀이 귀사의 지속 가능한 이익률 회복을 지원합니다. 하단 양식으로 문의를 남기시거나 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 직접 연락해 주십시오.`;
+인파트너의 수석 컨설턴트 팀이 귀사의 지속 가능한 이익률 회복을 지원합니다. 하단 양식으로 문의를 남기시거나 WhatsApp **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})**로 직접 연락해 주십시오.`;
     }
 
     return `Certainly, **Inpartner actively helps enterprises resolve this challenge** through our **Profitability & Operational Excellence** pillar.
@@ -637,7 +637,7 @@ A scenario where revenue rises while net profitability shrinks is a frequent cha
 2. **Cost Structure & Unit Economics Diagnostic:** Dissect COGS and OPEX drivers to isolate margin leakage sources.
 3. **Alignment of People, Process, Technology & Data:** Establish real-time KPI Dashboards and standardized operating procedures (SOPs) so economies of scale directly convert to healthy net profitability.
 
-Our senior advisory team is ready to assist your company in restoring sustainable profit margins. You can leave your details below or connect immediately with our advisory team via WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**.`;
+Our senior advisory team is ready to assist your company in restoring sustainable profit margins. You can leave your details below or connect immediately with our advisory team via WhatsApp at **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})**.`;
   }
 
   // 2. Funding queries
@@ -709,28 +709,28 @@ Is your company actively preparing for a capital raise or expansion round? Our a
 Pakuwon Tower, Unit J, Lantai 10, Jl. Raya Casablanca Kav. 88, Jakarta Selatan, Indonesia.
 
 📞 **Telepon & WhatsApp Resmi:**
-[+62 859 3454 8202](https://wa.me/6285934548202)
+[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})
 
 ✉️ **Email Resmi:**
-[corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
+[${INPARTNER_CONFIG.email}](mailto:${INPARTNER_CONFIG.email})
 
 🔗 **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
 
 🕒 **Jam Operasional:**
-Senin – Jumat, 09:00 – 17:00 WIB.
+${INPARTNER_CONFIG.operatingHours}.
 
 Untuk respon tercepat, Anda dapat langsung mengisi formulir konsultasi singkat di bawah ini atau menghubungi kami via WhatsApp. Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut.`;
     } else if (lang === 'ko') {
       return `**인파트너(PT Inpartner Optima Integra)** 공식 채널을 통해 본사 컨설팅 팀에 직접 문의하실 수 있습니다:
 
 📍 **자카르타 본사 (Jakarta Head Office):**
-Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia.
+${INPARTNER_CONFIG.addressJakarta}
 
 📞 **연락처 및 상담 채널:**
-• **공식 WhatsApp:** [+62 859 3454 8202](https://wa.me/6285934548202)
-• **대표 이메일:** corporatesecretary@inpartner.id
+• **공식 WhatsApp:** [${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})
+• **대표 이메일:** ${INPARTNER_CONFIG.email}
 • **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
-• **업무 시간:** 월요일 – 금요일 (09:00 – 17:00 WIB/UTC+7)
+• **업무 시간:** ${INPARTNER_CONFIG.operatingHours}
 
 신속한 상담 진행을 위해 하단 상담 양식을 작성해 주시거나 WhatsApp으로 문의해 주십시오. 인파트너 비즈니스 개발(BD) 팀에서 확인 후 즉시 연락드리겠습니다!`;
     }
@@ -738,13 +738,13 @@ Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakart
     return `You can reach the official team at **Inpartner (PT Inpartner Optima Integra)** through the following corporate channels:
 
 📍 **Jakarta Head Office:**
-Pakuwon Tower, Unit J, 10th Floor, Raya Casablanca Street, Kav. 88, South Jakarta, Indonesia.
+${INPARTNER_CONFIG.addressJakarta}
 
 📞 **Phone & WhatsApp:**
-[+62 859 3454 8202](https://wa.me/6285934548202)
+[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})
 
 ✉️ **Official Email:**
-[corporatesecretary@inpartner.id](mailto:corporatesecretary@inpartner.id)
+[${INPARTNER_CONFIG.email}](mailto:${INPARTNER_CONFIG.email})
 
 🔗 **LinkedIn:** [linkedin.com/company/inpartner](https://www.linkedin.com/company/inpartner/)
 
@@ -929,7 +929,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 Inpartner mendampingi klien korporasi dengan pendekatan holistik menyelaraskan strategi bisnis, proses operasional, kapabilitas SDM, dan teknologi.
 
-Untuk pembahasan yang disesuaikan dengan prioritas bisnis perusahaan Anda, silakan ajukan konsultasi melalui formulir di bawah ini atau terhubung langsung via WhatsApp di **[+62 859 3454 8202](https://wa.me/6285934548202)**. Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut.`;
+Untuk pembahasan yang disesuaikan dengan prioritas bisnis perusahaan Anda, silakan ajukan konsultasi melalui formulir di bawah ini atau terhubung langsung via WhatsApp di **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})**. Tim Business Development kami akan segera menghubungi Anda untuk koordinasi lebih lanjut.`;
     } else if (lang === 'ko') {
       return `인파트너의 공식 자문 문서 **${topChunk.title}**에 따르면:
 
@@ -937,7 +937,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 인파트너는 기업 전략, 운영 프로세스, 인적 역량, 기술을 유기적으로 정렬하는 총체적(Holistic) 접근법을 통해 고객사를 자문합니다.
 
-귀사의 우선 과제에 맞춘 상세한 상담을 원하시면 하단 상담 양식을 작성해 주시거나 공식 WhatsApp **[+62 859 3454 8202](https://wa.me/6285934548202)**로 문의해 주십시오. 인파트너 비즈니스 개발(BD) 팀에서 확인 후 즉시 연락드리겠습니다.`;
+귀사의 우선 과제에 맞춘 상세한 상담을 원하시면 하단 상담 양식을 작성해 주시거나 공식 WhatsApp **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})**로 문의해 주십시오. 인파트너 비즈니스 개발(BD) 팀에서 확인 후 즉시 연락드리겠습니다.`;
     }
 
     return `Based on official Inpartner advisory documentation regarding **${topChunk.title}**:
@@ -946,7 +946,7 @@ ${topChunk.content.substring(0, 450).trim()}...
 
 Inpartner partners with client enterprises using a holistic advisory approach aligning corporate strategy, operational processes, people, and technology.
 
-For a comprehensive discussion tailored to your company's immediate priorities, feel free to submit an inquiry through the consultation form below or connect directly with our advisory team on WhatsApp at **[+62 859 3454 8202](https://wa.me/6285934548202)**. Our Business Development team will follow up promptly for further coordination.`;
+For a comprehensive discussion tailored to your company's immediate priorities, feel free to submit an inquiry through the consultation form below or connect directly with our advisory team on WhatsApp at **[${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})**. Our Business Development team will follow up promptly for further coordination.`;
   }
 
   if (lang === 'id') {

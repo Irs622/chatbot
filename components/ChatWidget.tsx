@@ -870,10 +870,10 @@ export default function ChatWidget({
           id: `err_${Date.now()}`,
           sender: 'bot',
           text: lang === 'id'
-            ? 'Mohon maaf, terjadi gangguan koneksi ke server. Silakan coba kembali atau hubungi konsultan kami via WhatsApp di [+62 859 3454 8202](https://wa.me/6285934548202).'
+            ? `Mohon maaf, terjadi gangguan koneksi ke server. Silakan coba kembali atau hubungi konsultan kami via WhatsApp di [${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()}).`
             : lang === 'ko'
-            ? '죄송합니다. 서버 연결에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주시거나 공식 WhatsApp [+62 859 3454 8202](https://wa.me/6285934548202)로 직접 문의해 주십시오.'
-            : 'We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [+62 859 3454 8202](https://wa.me/6285934548202).',
+            ? `죄송합니다. 서버 연결에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주시거나 공식 WhatsApp [${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()})로 직접 문의해 주십시오.`
+            : `We apologize, but a connection error occurred while reaching the server. Please try again or reach our team directly via WhatsApp at [${INPARTNER_CONFIG.whatsappDisplay}](${getWhatsAppUrl()}).`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isFallback: true,
           isStreaming: false
@@ -1056,7 +1056,7 @@ export default function ChatWidget({
       }
 
       const refCode = data.ref_code || `INP-${Date.now().toString(36).toUpperCase()}`;
-      const waLink = data.whatsapp_url || `https://wa.me/6285934548202?text=${encodeURIComponent(`Halo tim Inpartner, saya telah mengajukan konsultasi di website (No. Ref: ${refCode}) mengenai ${leadForm.businessNeed}.`)}`;
+      const waLink = data.whatsapp_url || getWhatsAppUrl(`Halo tim Inpartner, saya telah mengajukan konsultasi di website (No. Ref: ${refCode}) mengenai ${leadForm.businessNeed}.`);
 
       setSubmittedSuccessInfo({
         refCode,
