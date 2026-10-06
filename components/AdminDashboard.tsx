@@ -22,7 +22,6 @@ import {
   SlidersHorizontal,
   ChevronDown,
   ChevronUp,
-  Award,
   AlertTriangle,
   Compass,
   Globe,
@@ -32,7 +31,7 @@ import {
   Layers
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
-import { calculateLeadScore, getPriorityBadgeInfo, PriorityTier, LeadScoreResult } from '@/lib/leadScoring';
+import { calculateLeadScore, PriorityTier } from '@/lib/leadScoring';
 import { getCompanyScaleLabel, getIndustryLabel, getTimelineLabel } from '@/lib/qualification';
 import { PIPELINE_STAGES, checkLeadSlaStatus, getLeadStatusLabel, PipelineStageConfig } from '@/lib/crmPipeline';
 import { generateLeadsCsv } from '@/lib/exportCsv';
@@ -67,7 +66,6 @@ export default function AdminDashboard() {
   const [internalNote, setInternalNote] = useState('');
   const [savingNote, setSavingNote] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [showScoreFactors, setShowScoreFactors] = useState(false);
   const [transcriptMessages, setTranscriptMessages] = useState<Array<{ id?: string; sender: string; text: string; created_at?: string }>>([]);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
   
@@ -340,29 +338,6 @@ export default function AdminDashboard() {
     URL.revokeObjectURL(url);
   };
 
-  const selectedLeadScoring: LeadScoreResult = useMemo(() => {
-    if (!selectedLead) {
-      return { score: 0, priority_tier: 'tier_3', tier_label: 'Tier 3', target_sla: '24h', factors: [] };
-    }
-    return calculateLeadScore({
-      name: selectedLead.name,
-      company: selectedLead.company,
-      job_title: selectedLead.job_title,
-      company_scale: selectedLead.company_scale,
-      industry: selectedLead.industry,
-      timeline: selectedLead.timeline,
-      email: selectedLead.email,
-      phone: selectedLead.phone,
-      business_need: selectedLead.business_need,
-      notes: selectedLead.notes,
-      diagnostic_summary: selectedLead.diagnostic_summary,
-      has_completed_diagnostic: Boolean(selectedLead.diagnostic_data || selectedLead.diagnostic_summary),
-      conversation_messages: transcriptMessages
-    });
-  }, [selectedLead, transcriptMessages]);
-
-  const selectedBadgeInfo = getPriorityBadgeInfo(selectedLeadScoring.priority_tier);
-
   // Reusable Dossier Component for both Table and Kanban Views
   const renderDossierContent = (isModal = false) => {
     if (!selectedLead) {
@@ -382,13 +357,8 @@ export default function AdminDashboard() {
         {/* Fixed Header */}
         <div className="flex items-start justify-between border-b border-slate-100 pb-3 shrink-0">
           <div>
-            <h3 className="font-bold text-slate-900 text-base flex items-center gap-1.5">
-              <span>{selectedLead.name}</span>
-              {selectedLeadScoring.priority_tier === 'tier_1' && (
-                <span className="px-2 py-0.5 rounded bg-slate-900 text-white text-[9.5px] font-semibold tracking-wide">
-                  Tier 1
-                </span>
-              )}
+            <h3 className="font-bold text-slate-900 text-base">
+              {selectedLead.name}
             </h3>
             <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
               <Building className="w-3.5 h-3.5 text-slate-400" />
@@ -432,70 +402,6 @@ export default function AdminDashboard() {
 
         {/* Scrollable Dossier Content Body */}
         <div className="flex-1 overflow-y-auto space-y-3 py-2 pr-1 text-xs">
-          {/* Commercial Lead Score Card */}
-          <div className={`p-3 rounded-xl border ${selectedBadgeInfo.border} ${selectedBadgeInfo.bg} space-y-2`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Award className={`w-4 h-4 ${selectedBadgeInfo.text}`} />
-                <span className={`font-bold text-xs ${selectedBadgeInfo.text}`}>
-                  {selectedLeadScoring.tier_label}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-lg font-black text-slate-900">{selectedLeadScoring.score}</span>
-                <span className="text-[10px] text-slate-400 font-bold">/100</span>
-              </div>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  selectedLeadScoring.score >= 70
-                    ? 'bg-[#0779D1]'
-                    : selectedLeadScoring.score >= 40
-                    ? 'bg-slate-700'
-                    : 'bg-slate-400'
-                }`}
-                style={{ width: `${selectedLeadScoring.score}%` }}
-              />
-            </div>
-
-            <div className="flex items-center justify-between text-[11px] pt-1">
-              <span className="text-slate-600 flex items-center gap-1">
-                <Clock className="w-3 h-3 text-slate-500" />
-                <span>Target SLA:</span>
-              </span>
-              <span className="font-bold text-slate-800">{selectedLeadScoring.target_sla}</span>
-            </div>
-
-            {/* Collapsible Factor Breakdown */}
-            <div className="pt-1.5 border-t border-slate-200/60">
-              <button
-                onClick={() => setShowScoreFactors(!showScoreFactors)}
-                className="w-full flex items-center justify-between text-[10px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
-              >
-                <span>Scoring Factors Breakdown ({selectedLeadScoring.factors.length} criteria)</span>
-                {showScoreFactors ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              </button>
-
-              {showScoreFactors && (
-                <div className="mt-2 space-y-1.5 text-[11px] bg-white p-2.5 rounded-lg border border-slate-200">
-                  {selectedLeadScoring.factors.map((f, i) => (
-                    <div key={i} className="flex items-start justify-between gap-2 border-b border-slate-50 pb-1 last:border-none">
-                      <div className="pr-1">
-                        <span className="font-medium text-slate-800 block">{f.factor}</span>
-                        <span className="text-[10px] text-slate-500">{f.description}</span>
-                      </div>
-                      <span className="font-mono font-bold text-slate-700 shrink-0">
-                        +{f.score}/{f.max}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
 
           {/* Contact Phone & Email */}
           <div className="space-y-1.5 bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -853,22 +759,6 @@ export default function AdminDashboard() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
           <div className="text-xs text-slate-500 font-medium flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-[#0779D1]" />
-              <span>Tier 1 Inquiries</span>
-            </span>
-            {stats.tier1Hot > 0 && (
-              <span className="text-[10px] bg-slate-900 text-white font-medium px-2 py-0.5 rounded-full">
-                &lt; 2h SLA
-              </span>
-            )}
-          </div>
-          <div className="text-2xl font-bold text-slate-900">{stats.tier1Hot}</div>
-          <div className="text-[11px] text-slate-400">High priority enterprise deals</div>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
-          <div className="text-xs text-slate-500 font-medium flex items-center justify-between">
             <span>Needs Reply / Intake</span>
             {stats.new > 0 && <span className="w-2 h-2 rounded-full bg-blue-600" />}
           </div>
@@ -884,9 +774,15 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
-          <div className="text-xs text-slate-500 font-medium">In Pipeline / Won</div>
-          <div className="text-2xl font-bold text-slate-900">{stats.contacted + stats.inProgress + stats.proposal + stats.converted}</div>
-          <div className="text-[11px] text-slate-400">{stats.proposal} in proposal, {stats.converted} retained</div>
+          <div className="text-xs text-slate-500 font-medium">In Discussion &amp; Proposals</div>
+          <div className="text-2xl font-bold text-slate-900">{stats.contacted + stats.inProgress + stats.proposal}</div>
+          <div className="text-[11px] text-slate-400">{stats.proposal} active proposals</div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
+          <div className="text-xs text-slate-500 font-medium">Retained / Won</div>
+          <div className="text-2xl font-bold text-slate-900">{stats.converted}</div>
+          <div className="text-[11px] text-slate-400">Successfully closed advisory clients</div>
         </div>
       </div>
 
@@ -915,9 +811,9 @@ export default function AdminDashboard() {
             className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none cursor-pointer"
           >
             <option value="all">All Priorities</option>
-            <option value="tier_1">🔥 Tier 1 • Hot (&ge;70)</option>
-            <option value="tier_2">⚡ Tier 2 • Warm (40-69)</option>
-            <option value="tier_3">📋 Tier 3 • Standard (&lt;40)</option>
+            <option value="tier_1">High Priority</option>
+            <option value="tier_2">Strategic / Warm</option>
+            <option value="tier_3">Standard</option>
           </select>
 
           {/* Status Filter */}
@@ -960,7 +856,7 @@ export default function AdminDashboard() {
                 <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 sticky top-0 z-10">
                   <tr>
                     <th className="py-2.5 px-3.5">Client &amp; Company</th>
-                    <th className="py-2.5 px-2 text-center">Score / Tier</th>
+                    <th className="py-2.5 px-2 text-center">Priority</th>
                     <th className="py-2.5 px-3">Advisory Need</th>
                     <th className="py-2.5 px-3">Status / SLA</th>
                     <th className="py-2.5 px-3 text-right">Action</th>
@@ -979,7 +875,6 @@ export default function AdminDashboard() {
                       const waLink = getWhatsAppUrl(lead.phone, lead.name, lead.business_need);
                       const score = lead.score !== undefined ? lead.score : 50;
                       const tier = lead.priority_tier || (score >= 70 ? 'tier_1' : score >= 40 ? 'tier_2' : 'tier_3');
-                      const badge = getPriorityBadgeInfo(tier);
                       const sla = checkLeadSlaStatus(lead.created_at, lead.status);
 
                       return (
@@ -993,11 +888,6 @@ export default function AdminDashboard() {
                           <td className="py-3 px-3.5">
                             <div className="font-semibold text-slate-900 flex items-center gap-1.5">
                               <span>{lead.name}</span>
-                              {tier === 'tier_1' && (
-                                <span className="text-[9.5px] px-1.5 py-0.2 bg-slate-900 text-white rounded font-medium">
-                                  T1
-                                </span>
-                              )}
                             </div>
                             {lead.job_title && (
                               <div className="text-[10px] text-slate-500 font-medium truncate max-w-[160px]">
@@ -1024,16 +914,17 @@ export default function AdminDashboard() {
                           </td>
 
                           <td className="py-3 px-2 text-center whitespace-nowrap">
-                            <div className="inline-flex flex-col items-center">
-                              <span
-                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${badge.bg} ${badge.text} ${badge.border}`}
-                              >
-                                {score} pts
-                              </span>
-                              <span className="text-[9px] text-slate-400 font-mono mt-0.5">
-                                {badge.shortLabel}
-                              </span>
-                            </div>
+                            <span
+                              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
+                                tier === 'tier_1'
+                                  ? 'bg-rose-50 text-rose-800 border-rose-200'
+                                  : tier === 'tier_2'
+                                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                  : 'bg-slate-50 text-slate-600 border-slate-200'
+                              }`}
+                            >
+                              {tier === 'tier_1' ? 'High' : tier === 'tier_2' ? 'Medium' : 'Standard'}
+                            </span>
                           </td>
 
                           <td className="py-3 px-3 text-slate-600">
@@ -1188,7 +1079,6 @@ export default function AdminDashboard() {
                       stageLeads.map((lead) => {
                         const score = lead.score !== undefined ? lead.score : 50;
                         const tier = lead.priority_tier || (score >= 70 ? 'tier_1' : score >= 40 ? 'tier_2' : 'tier_3');
-                        const badge = getPriorityBadgeInfo(tier);
                         const sla = checkLeadSlaStatus(lead.created_at, lead.status);
                         const waLink = getWhatsAppUrl(lead.phone, lead.name, lead.business_need);
                         const isSelected = selectedLead?.id === lead.id;
@@ -1205,7 +1095,7 @@ export default function AdminDashboard() {
                                 : 'border-slate-200 hover:border-slate-300'
                             }`}
                           >
-                            {/* Card Top: Client Name & Score Pill */}
+                            {/* Card Top: Client Name & Priority Pill */}
                             <div className="flex items-start justify-between gap-1.5">
                               <div>
                                 <h4 className="font-bold text-xs text-slate-900 group-hover:text-[#0779D1] transition-colors leading-tight">
@@ -1218,9 +1108,15 @@ export default function AdminDashboard() {
                               </div>
 
                               <span
-                                className={`px-2 py-0.5 rounded-full text-[9.5px] font-bold border shrink-0 ${badge.bg} ${badge.text} ${badge.border}`}
+                                className={`px-2 py-0.5 rounded-full text-[9.5px] font-semibold border shrink-0 ${
+                                  tier === 'tier_1'
+                                    ? 'bg-rose-50 text-rose-800 border-rose-200'
+                                    : tier === 'tier_2'
+                                    ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                    : 'bg-slate-50 text-slate-600 border-slate-200'
+                                }`}
                               >
-                                {score} pts
+                                {tier === 'tier_1' ? 'High' : tier === 'tier_2' ? 'Medium' : 'Standard'}
                               </span>
                             </div>
 
@@ -1242,11 +1138,6 @@ export default function AdminDashboard() {
                               {lead.company_scale && (
                                 <span className="px-1.5 py-0.2 bg-slate-100 text-slate-700 border border-slate-200 rounded font-medium">
                                   {getCompanyScaleLabel(lead.company_scale)}
-                                </span>
-                              )}
-                              {tier === 'tier_1' && (
-                                <span className="px-1.5 py-0.2 bg-slate-900 text-white rounded font-medium">
-                                  T1
                                 </span>
                               )}
                               {lead.attribution && (

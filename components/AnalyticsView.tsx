@@ -22,8 +22,7 @@ import {
   Compass,
   ArrowRight,
   Filter,
-  Layers,
-  Award
+  Layers
 } from 'lucide-react';
 
 interface FunnelStage {
@@ -231,15 +230,15 @@ export default function AnalyticsView() {
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
           <div className="text-xs text-slate-500 font-medium flex items-center justify-between">
             <span className="flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-[#0779D1]" />
-              <span>Tier 1 Inquiries</span>
+              <PhoneCall className="w-3.5 h-3.5 text-[#0779D1]" />
+              <span>Consultant Handoffs</span>
             </span>
-            <span className="text-[10px] bg-slate-900 text-white font-medium px-2 py-0.5 rounded-full">
-              Avg {totals.avgScore} pts
+            <span className="text-[10px] bg-slate-100 text-slate-700 font-medium px-2 py-0.5 rounded-full border border-slate-200">
+              {kpis.humanHandoffRate}% rate
             </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">{totals.hotLeads}</div>
-          <div className="text-[11px] text-slate-400">Score &ge; 70 (&lt; 2h SLA)</div>
+          <div className="text-2xl font-bold text-slate-900">{totals.leads}</div>
+          <div className="text-[11px] text-slate-400">Direct WhatsApp consultation connects</div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
