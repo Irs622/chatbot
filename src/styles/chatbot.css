@@ -1,0 +1,28 @@
+/* =========================================================================
+ * Inpartner AI Advisory Assistant & Lead Generation Engine
+ * Scoped Tailwind Stylesheet for Bootstrap 5 Host Harmony
+ * Target Host: inpartner (Next.js 13.2.4 / Bootstrap 5.2.3)
+ * ========================================================================= */
+
+@tailwind components;
+@tailwind utilities;
+
+/* Isolated Box-Sizing & Typography Scope inside Chatbot Container */
+#inpartner-chatbot-container {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #0f172a;
+  line-height: 1.5;
+}
+
+#inpartner-chatbot-container *,
+#inpartner-chatbot-container *::before,
+#inpartner-chatbot-container *::after {
+  box-sizing: border-box;
+}
+
+/* Ensure Chatbot floating launcher and modal display safely above Bootstrap modals/navbars */
+#inpartner-chatbot-container .z-50 {
+  z-index: 99999 !important;
+}
+

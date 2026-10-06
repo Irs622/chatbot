@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*", "./src/*"],
+      "@components/*": ["./src/components/*", "./components/*"],
+      "@/chatbot/*": ["./src/chatbot/*", "./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

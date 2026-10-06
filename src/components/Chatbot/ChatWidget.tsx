@@ -23,7 +23,7 @@ import {
   Check,
   Copy
 } from 'lucide-react';
-import { INPARTNER_CONFIG, getWhatsAppUrl, PROACTIVE_TRIGGER_CONFIG } from '@/lib/config';
+import { INPARTNER_CONFIG, getWhatsAppUrl, PROACTIVE_TRIGGER_CONFIG } from '../../chatbot/lib/config';
 import {
   NudgeTriggerType,
   canShowProactiveNudge,
@@ -31,16 +31,16 @@ import {
   markNudgeShown,
   recordVisitorSession,
   getNudgeMessage
-} from '@/lib/proactiveNudge';
-import { captureMarketingAttribution } from '@/lib/attribution';
-import type { AttributionData } from '@/lib/db';
-import ChatbotIcon from '@/components/ChatbotIcon';
-import { validatePhoneNumber, validateEmail } from '@/lib/validation';
+} from '../../chatbot/lib/proactiveNudge';
+import { captureMarketingAttribution } from '../../chatbot/lib/attribution';
+import type { AttributionData } from '../../chatbot/lib/db';
+import ChatbotIcon from './ChatbotIcon';
+import { validatePhoneNumber, validateEmail } from '../../chatbot/lib/validation';
 import {
   COMPANY_SCALE_OPTIONS,
   INDUSTRY_OPTIONS,
   TIMELINE_OPTIONS
-} from '@/lib/qualification';
+} from '../../chatbot/lib/qualification';
 import {
   DiagnosticPillarKey,
   DiagnosticPillarTree,
@@ -49,7 +49,7 @@ import {
   getAllDiagnosticPillars,
   detectDiagnosticPillar,
   generateScopingSummary
-} from '@/lib/diagnostic';
+} from '../../chatbot/lib/diagnostic';
 
 export interface ActiveDiagnosticSession {
   pillarKey: DiagnosticPillarKey;
