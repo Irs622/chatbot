@@ -3,3 +3,4 @@
 *.md
 !README.md
 data/db.json
+src/pages/api/
