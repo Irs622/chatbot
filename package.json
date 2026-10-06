@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "test:report": "node scripts/test-runner.mjs",
+    "build:css": "tailwindcss -i src/styles/chatbot.src.css -o src/styles/chatbot.css --config tailwind.config.js",
     "db:migrate": "node scripts/migrate-to-supabase.mjs",
     "db:check": "node scripts/check-supabase.mjs"
   },

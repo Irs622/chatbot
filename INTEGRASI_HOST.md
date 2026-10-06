@@ -97,16 +97,20 @@ Jika melakukan penyalinan manual (atau `git cherry-pick`), salin folder-folder b
 
 ---
 
-## Langkah 3: Konfigurasi Tailwind Scoped di `tailwind.config.js`
+## Langkah 3: Konfigurasi Styling (CSS Terisolasi)
 
-Pastikan file `tailwind.config.js` di website `inpartner` memuat konfigurasi isolasi berikut agar **tidak menimpa Bootstrap 5**:
+File `src/styles/chatbot.css` telah **di-compile secara mandiri (standalone)** dengan prefix `#inpartner-chatbot-container` dan tanpa `preflight`. 
+
+Artinya:
+- Website `inpartner` **TIDAK PERLU** memasang atau mengkonfigurasi build Tailwind khusus jika tidak diinginkan!
+- Cukup salin `src/styles/chatbot.css` dan import di `_app.tsx`.
+- Namun jika website `inpartner` ingin mengompilasi ulang Tailwind sendiri, gunakan konfigurasi `tailwind.config.js` berikut:
 
 ```javascript
 // inpartner/tailwind.config.js
 module.exports = {
   content: [
     './src/components/Chatbot/**/*.{js,ts,jsx,tsx}',
-    // biarkan path konten website yang sudah ada tetap ada
   ],
   corePlugins: {
     preflight: false, // WAJIB FALSE agar tidak merusak CSS reset Bootstrap 5!
@@ -157,9 +161,15 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
 ---
 
-## Langkah 5: Konfigurasi Environment Variables (`.env`)
+## Langkah 5: Konfigurasi Environment Variables & Supabase DDL
+ 
+1. **Jalankan Skema Database di Supabase:**
+   - Buka SQL Editor di dashboard Supabase proyek Anda.
+   - Buka file `supabase/schema.sql` pada modul ini, salin isinya, lalu jalankan (**Run**).
+   - Tabel `leads`, `conversations`, `messages`, dan `analytics_events` akan terbuat secara instan lengkap dengan RLS (Row Level Security).
 
-Tambahkan variabel berikut ke file `.env` atau `.env.local` server `inpartner`:
+2. **Tambahkan Environment Variables ke `.env` / `.env.local`:**
+   Tambahkan variabel berikut ke file `.env` server `inpartner`:
 
 ```ini
 # ==========================================
