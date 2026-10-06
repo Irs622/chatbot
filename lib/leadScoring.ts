@@ -349,36 +349,36 @@ export function getPriorityBadgeInfo(tier?: PriorityTier) {
     case 'tier_1':
       return {
         label: 'Tier 1 • Urgent',
-        shortLabel: 'T1 Hot',
+        shortLabel: 'T1 Urgent',
         sla: '< 2h SLA',
-        bg: 'bg-rose-50',
-        text: 'text-rose-700',
+        bg: 'bg-rose-50/70',
+        text: 'text-rose-800',
         border: 'border-rose-200',
-        badgeBg: 'bg-rose-600',
-        ring: 'ring-rose-500/20'
+        badgeBg: 'bg-slate-900',
+        ring: 'ring-slate-900/10'
       };
     case 'tier_2':
       return {
         label: 'Tier 2 • Strategic',
-        shortLabel: 'T2 Warm',
+        shortLabel: 'T2 Strategic',
         sla: '< 12h SLA',
-        bg: 'bg-amber-50',
-        text: 'text-amber-700',
+        bg: 'bg-amber-50/70',
+        text: 'text-amber-800',
         border: 'border-amber-200',
-        badgeBg: 'bg-amber-600',
-        ring: 'ring-amber-500/20'
+        badgeBg: 'bg-slate-700',
+        ring: 'ring-slate-700/10'
       };
     case 'tier_3':
     default:
       return {
         label: 'Tier 3 • Standard',
-        shortLabel: 'T3 Normal',
+        shortLabel: 'T3 Standard',
         sla: '24h SLA',
         bg: 'bg-slate-50',
         text: 'text-slate-600',
         border: 'border-slate-200',
         badgeBg: 'bg-slate-500',
-        ring: 'ring-slate-500/20'
+        ring: 'ring-slate-500/10'
       };
   }
 }

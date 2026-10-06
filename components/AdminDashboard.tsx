@@ -17,8 +17,7 @@ import {
   ChevronLeft,
   RefreshCw,
   Trash2,
-  Flame,
-  Zap,
+  ShieldCheck,
   ShieldAlert,
   SlidersHorizontal,
   ChevronDown,
@@ -30,8 +29,7 @@ import {
   Table as TableIcon,
   Kanban as KanbanIcon,
   ArrowRight,
-  Layers,
-  Sparkles
+  Layers
 } from 'lucide-react';
 import { Lead, LeadStatus } from '@/lib/db';
 import { calculateLeadScore, getPriorityBadgeInfo, PriorityTier, LeadScoreResult } from '@/lib/leadScoring';
@@ -387,8 +385,8 @@ export default function AdminDashboard() {
             <h3 className="font-bold text-slate-900 text-base flex items-center gap-1.5">
               <span>{selectedLead.name}</span>
               {selectedLeadScoring.priority_tier === 'tier_1' && (
-                <span className="px-1.5 py-0.5 rounded bg-rose-600 text-white text-[9px] font-bold">
-                  HOT
+                <span className="px-2 py-0.5 rounded bg-slate-900 text-white text-[9.5px] font-semibold tracking-wide">
+                  Tier 1
                 </span>
               )}
             </h3>
@@ -450,13 +448,13 @@ export default function AdminDashboard() {
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-white/80 rounded-full h-2 overflow-hidden border border-slate-200/50">
+            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
                   selectedLeadScoring.score >= 70
-                    ? 'bg-rose-600'
+                    ? 'bg-[#0779D1]'
                     : selectedLeadScoring.score >= 40
-                    ? 'bg-amber-500'
+                    ? 'bg-slate-700'
                     : 'bg-slate-400'
                 }`}
                 style={{ width: `${selectedLeadScoring.score}%` }}
@@ -562,14 +560,14 @@ export default function AdminDashboard() {
 
           {/* Consultative Discovery Scoping Card */}
           {(selectedLead.diagnostic_summary || selectedLead.diagnostic_data) && (
-            <div className="space-y-2 bg-gradient-to-br from-emerald-50/70 via-sky-50/40 to-slate-50 p-3 rounded-xl border border-emerald-200/80 shadow-2xs">
+            <div className="space-y-2 bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 shadow-2xs">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-[#0779D1]" />
                   Consultative Discovery Scoping
                 </span>
-                <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-emerald-100/90 text-emerald-800 rounded-full border border-emerald-200">
-                  Verified Scoping
+                <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-white text-slate-700 rounded-md border border-slate-200">
+                  Verified
                 </span>
               </div>
               {selectedLead.diagnostic_summary && (
@@ -602,13 +600,13 @@ export default function AdminDashboard() {
 
           {/* Marketing Attribution & Acquisition Telemetry Card */}
           {selectedLead.attribution && (
-            <div className="space-y-2 bg-gradient-to-br from-indigo-50/70 via-sky-50/40 to-slate-50 p-3 rounded-xl border border-indigo-200/80 shadow-2xs">
+            <div className="space-y-2 bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 shadow-2xs">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5 text-indigo-600" />
+                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-slate-500" />
                   Marketing Attribution &amp; Acquisition Channel
                 </span>
-                <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-indigo-100/90 text-indigo-800 rounded-full border border-indigo-200">
+                <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-white text-slate-700 rounded-md border border-slate-200">
                   {formatAttributionBadge(selectedLead.attribution)}
                 </span>
               </div>
@@ -763,10 +761,10 @@ export default function AdminDashboard() {
             href={getWhatsAppUrl(selectedLead.phone, selectedLead.name, selectedLead.business_need)}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
+            className="w-full flex items-center justify-center gap-2 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
           >
-            <Phone className="w-3.5 h-3.5" />
-            <span>Chat Client on WhatsApp ({formatPhone(selectedLead.phone)})</span>
+            <Phone className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Open WhatsApp Consultation ({formatPhone(selectedLead.phone)})</span>
           </a>
         </div>
       </div>
@@ -782,14 +780,14 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-slate-900 tracking-tight">Client Inquiries &amp; BD Pipeline</h2>
-            <span className="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-              <Flame className="w-3 h-3 text-rose-600" />
-              <span>Lead Scoring Active</span>
+            <span className="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
+              <span>Prioritization Active</span>
             </span>
             {stats.overdueCount > 0 && (
-              <span className="bg-rose-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
-                <AlertTriangle className="w-3 h-3" />
-                <span>{stats.overdueCount} SLA Overdue</span>
+              <span className="bg-rose-50 text-rose-800 border border-rose-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3 text-rose-600" />
+                <span>{stats.overdueCount} Overdue</span>
               </span>
             )}
           </div>
@@ -827,8 +825,8 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span>Live Sync (10s)</span>
           </span>
 
@@ -853,31 +851,31 @@ export default function AdminDashboard() {
           <div className="text-[11px] text-slate-400">All inbound leads across lifecycle</div>
         </div>
 
-        <div className="bg-white rounded-xl border border-rose-200 p-4 shadow-xs h-[105px] flex flex-col justify-between bg-gradient-to-br from-white to-rose-50/30">
-          <div className="text-xs text-rose-700 font-bold flex items-center justify-between">
-            <span className="flex items-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-rose-600" />
-              <span>Tier 1 Hot Leads</span>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
+          <div className="text-xs text-slate-500 font-medium flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Award className="w-3.5 h-3.5 text-[#0779D1]" />
+              <span>Tier 1 Inquiries</span>
             </span>
             {stats.tier1Hot > 0 && (
-              <span className="text-[10px] bg-rose-600 text-white font-bold px-1.5 py-0.2 rounded-full">
+              <span className="text-[10px] bg-slate-900 text-white font-medium px-2 py-0.5 rounded-full">
                 &lt; 2h SLA
               </span>
             )}
           </div>
-          <div className="text-2xl font-bold text-rose-700">{stats.tier1Hot}</div>
-          <div className="text-[11px] text-rose-600/80 font-medium">High priority enterprise deals</div>
+          <div className="text-2xl font-bold text-slate-900">{stats.tier1Hot}</div>
+          <div className="text-[11px] text-slate-400">High priority enterprise deals</div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
-          <div className="text-xs text-amber-600 font-medium flex items-center justify-between">
+          <div className="text-xs text-slate-500 font-medium flex items-center justify-between">
             <span>Needs Reply / Intake</span>
-            {stats.new > 0 && <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />}
+            {stats.new > 0 && <span className="w-2 h-2 rounded-full bg-blue-600" />}
           </div>
           <div className="flex items-baseline gap-2">
-            <div className="text-2xl font-bold text-amber-600">{stats.new}</div>
+            <div className="text-2xl font-bold text-slate-900">{stats.new}</div>
             {stats.overdueCount > 0 && (
-              <span className="text-[10px] text-rose-700 font-bold bg-rose-100 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-rose-800 font-medium bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded">
                 {stats.overdueCount} overdue
               </span>
             )}
@@ -886,7 +884,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
-          <div className="text-xs text-emerald-600 font-medium">In Pipeline / Won</div>
+          <div className="text-xs text-slate-500 font-medium">In Pipeline / Won</div>
           <div className="text-2xl font-bold text-slate-900">{stats.contacted + stats.inProgress + stats.proposal + stats.converted}</div>
           <div className="text-[11px] text-slate-400">{stats.proposal} in proposal, {stats.converted} retained</div>
         </div>
@@ -996,8 +994,8 @@ export default function AdminDashboard() {
                             <div className="font-semibold text-slate-900 flex items-center gap-1.5">
                               <span>{lead.name}</span>
                               {tier === 'tier_1' && (
-                                <span title="Tier 1 Hot Opportunity">
-                                  <Flame className="w-3.5 h-3.5 text-rose-600 inline shrink-0" />
+                                <span className="text-[9.5px] px-1.5 py-0.2 bg-slate-900 text-white rounded font-medium">
+                                  T1
                                 </span>
                               )}
                             </div>
@@ -1016,10 +1014,10 @@ export default function AdminDashboard() {
                             )}
                             {lead.attribution && (
                               <span
-                                className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded font-medium mt-0.5 ml-1"
+                                className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 bg-slate-100 text-slate-700 border border-slate-200 rounded font-medium mt-0.5 ml-1"
                                 title={`Acquisition: ${formatAttributionBadge(lead.attribution)}`}
                               >
-                                <Globe className="w-2.5 h-2.5 text-indigo-500 shrink-0" />
+                                <Globe className="w-2.5 h-2.5 text-slate-500 shrink-0" />
                                 <span>{formatAttributionBadge(lead.attribution)}</span>
                               </span>
                             )}
@@ -1042,8 +1040,8 @@ export default function AdminDashboard() {
                             <div className="flex flex-col gap-0.5">
                               <span className="line-clamp-1 max-w-[150px] font-medium text-slate-800">{lead.business_need}</span>
                               {lead.diagnostic_summary && (
-                                <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-semibold" title={lead.diagnostic_summary}>
-                                  <Compass className="w-3 h-3 text-emerald-600 shrink-0" />
+                                <span className="inline-flex items-center gap-1 text-[10px] text-slate-600 font-medium" title={lead.diagnostic_summary}>
+                                  <Compass className="w-3 h-3 text-[#0779D1] shrink-0" />
                                   <span>Scoped</span>
                                 </span>
                               )}
@@ -1055,34 +1053,34 @@ export default function AdminDashboard() {
                               {lead.status === 'new' && (
                                 <>
                                   {sla.isOverdue ? (
-                                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1 animate-pulse">
+                                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-200 flex items-center gap-1">
                                       <AlertTriangle className="w-3 h-3 text-rose-600" />
                                       <span>Overdue ({sla.ageHours}h)</span>
                                     </span>
                                   ) : (
-                                    <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200">
+                                    <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                                       Needs Reply
                                     </span>
                                   )}
                                 </>
                               )}
                               {lead.status === 'contacted' && (
-                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                                   Contacted
                                 </span>
                               )}
                               {lead.status === 'in_progress' && (
-                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#0779D1]/10 text-[#0779D1] border border-[#0779D1]/20">
+                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-800 border border-blue-200">
                                   Discussion
                                 </span>
                               )}
                               {lead.status === 'proposal' && (
-                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                                   Proposal &amp; ToR
                                 </span>
                               )}
                               {lead.status === 'converted' && (
-                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
                                   Retained
                                 </span>
                               )}
@@ -1099,10 +1097,10 @@ export default function AdminDashboard() {
                               href={waLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-medium transition-colors shadow-2xs"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium transition-colors shadow-2xs"
                               title="Chat on WhatsApp"
                             >
-                              <Phone className="w-3 h-3" />
+                              <Phone className="w-3 h-3 text-emerald-600" />
                               <span>WA</span>
                             </a>
                           </td>
@@ -1171,9 +1169,9 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between mt-1">
                       <p className="text-[10px] text-slate-500 truncate">{stage.subtitle}</p>
                       {stageOverdueCount > 0 && (
-                        <span className="text-[9.5px] font-bold px-1.5 py-0.2 bg-rose-600 text-white rounded-full shrink-0 flex items-center gap-0.5">
-                          <AlertTriangle className="w-2.5 h-2.5" />
-                          {stageOverdueCount} Overdue
+                        <span className="text-[9.5px] font-semibold px-2 py-0.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-full shrink-0 flex items-center gap-0.5">
+                          <AlertTriangle className="w-2.5 h-2.5 text-rose-600" />
+                          <span>{stageOverdueCount} Overdue</span>
                         </span>
                       )}
                     </div>
@@ -1228,7 +1226,7 @@ export default function AdminDashboard() {
 
                             {/* SLA Overdue Warning on Card */}
                             {lead.status === 'new' && sla.isOverdue && (
-                              <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-bold animate-pulse">
+                              <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-rose-50 border border-rose-200 text-rose-800 text-[10px] font-semibold">
                                 <AlertTriangle className="w-3 h-3 text-rose-600 shrink-0" />
                                 <span>SLA Overdue ({sla.ageHours}h &gt; 24h)</span>
                               </div>
@@ -1242,33 +1240,32 @@ export default function AdminDashboard() {
                                 </span>
                               )}
                               {lead.company_scale && (
-                                <span className="px-1.5 py-0.2 bg-sky-50 text-sky-700 border border-sky-100 rounded font-medium">
+                                <span className="px-1.5 py-0.2 bg-slate-100 text-slate-700 border border-slate-200 rounded font-medium">
                                   {getCompanyScaleLabel(lead.company_scale)}
                                 </span>
                               )}
                               {tier === 'tier_1' && (
-                                <span className="px-1.5 py-0.2 bg-rose-50 text-rose-700 border border-rose-100 rounded font-bold flex items-center gap-0.5">
-                                  <Flame className="w-2.5 h-2.5 text-rose-600" />
-                                  HOT
+                                <span className="px-1.5 py-0.2 bg-slate-900 text-white rounded font-medium">
+                                  T1
                                 </span>
                               )}
                               {lead.attribution && (
                                 <span
-                                  className="px-1.5 py-0.2 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded font-medium flex items-center gap-0.5 truncate max-w-[120px]"
+                                  className="px-1.5 py-0.2 bg-slate-100 text-slate-700 border border-slate-200 rounded font-medium flex items-center gap-0.5 truncate max-w-[120px]"
                                   title={`Source: ${formatAttributionBadge(lead.attribution)}`}
                                 >
-                                  <Globe className="w-2.5 h-2.5 text-indigo-500 shrink-0" />
+                                  <Globe className="w-2.5 h-2.5 text-slate-500 shrink-0" />
                                   <span className="truncate">{formatAttributionBadge(lead.attribution)}</span>
                                 </span>
                               )}
                             </div>
 
                             {/* Advisory Topic & Diagnostic Pill */}
-                            <div className="text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-100 leading-tight">
+                            <div className="text-[11px] text-slate-700 bg-slate-50/70 p-2 rounded border border-slate-100 leading-tight">
                               <p className="line-clamp-2">{lead.business_need}</p>
                               {lead.diagnostic_summary && (
-                                <div className="mt-1 pt-1 border-t border-slate-200/50 flex items-center gap-1 text-[9.5px] text-emerald-700 font-semibold truncate">
-                                  <Compass className="w-3 h-3 text-emerald-600 shrink-0" />
+                                <div className="mt-1 pt-1 border-t border-slate-200/50 flex items-center gap-1 text-[9.5px] text-slate-600 font-medium truncate">
+                                  <Compass className="w-3 h-3 text-[#0779D1] shrink-0" />
                                   <span>{lead.diagnostic_summary}</span>
                                 </div>
                               )}
@@ -1280,10 +1277,10 @@ export default function AdminDashboard() {
                                 href={waLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium transition-colors shadow-2xs"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded font-medium transition-colors shadow-2xs"
                                 title="Chat on WhatsApp"
                               >
-                                <Phone className="w-2.5 h-2.5" />
+                                <Phone className="w-2.5 h-2.5 text-emerald-600" />
                                 <span>WA</span>
                               </a>
 

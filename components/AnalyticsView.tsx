@@ -16,17 +16,14 @@ import {
   ChevronUp,
   Copy,
   Check,
-  Sparkles,
   BarChart2,
   Globe,
   Building2,
   Compass,
-  Flame,
   ArrowRight,
   Filter,
   Layers,
-  Award,
-  Zap
+  Award
 } from 'lucide-react';
 
 interface FunnelStage {
@@ -190,8 +187,8 @@ export default function AnalyticsView() {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-slate-900 tracking-tight">Real-Time Inbound Analytics</h2>
-            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <span>Live Telemetry Engine</span>
             </span>
           </div>
@@ -201,8 +198,8 @@ export default function AnalyticsView() {
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span>Live Sync (10s)</span>
           </span>
           <button
@@ -226,23 +223,23 @@ export default function AnalyticsView() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
-          <div className="text-xs text-emerald-600 font-medium">Advisory Inquiries</div>
-          <div className="text-2xl font-bold text-emerald-600">{totals.leads}</div>
+          <div className="text-xs text-slate-500 font-medium">Advisory Inquiries</div>
+          <div className="text-2xl font-bold text-slate-900">{totals.leads}</div>
           <div className="text-[11px] text-slate-400">{kpis.leadCaptureRate}% capture rate</div>
         </div>
 
-        <div className="bg-white rounded-xl border border-rose-200 p-4 shadow-xs h-[105px] flex flex-col justify-between bg-gradient-to-br from-white to-rose-50/30">
-          <div className="text-xs text-rose-700 font-bold flex items-center justify-between">
-            <span className="flex items-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-rose-600" />
-              <span>Hot Opportunities (T1)</span>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
+          <div className="text-xs text-slate-500 font-medium flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Award className="w-3.5 h-3.5 text-[#0779D1]" />
+              <span>Tier 1 Inquiries</span>
             </span>
-            <span className="text-[10px] bg-rose-600 text-white font-bold px-1.5 py-0.2 rounded-full">
+            <span className="text-[10px] bg-slate-900 text-white font-medium px-2 py-0.5 rounded-full">
               Avg {totals.avgScore} pts
             </span>
           </div>
-          <div className="text-2xl font-bold text-rose-700">{totals.hotLeads}</div>
-          <div className="text-[11px] text-rose-600/80 font-medium">Score &ge; 70 (&lt; 2h SLA)</div>
+          <div className="text-2xl font-bold text-slate-900">{totals.hotLeads}</div>
+          <div className="text-[11px] text-slate-400">Score &ge; 70 (&lt; 2h SLA)</div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs h-[105px] flex flex-col justify-between">
@@ -284,10 +281,10 @@ export default function AnalyticsView() {
               const stepColors = [
                 'bg-slate-700',
                 'bg-[#0779D1]',
-                'bg-indigo-600',
-                'bg-amber-600',
-                'bg-emerald-600',
-                'bg-rose-600'
+                'bg-slate-800',
+                'bg-blue-600',
+                'bg-slate-600',
+                'bg-[#005DAD]'
               ];
               const color = stepColors[idx % stepColors.length];
 
@@ -316,7 +313,7 @@ export default function AnalyticsView() {
                   {idx > 0 && stage.dropoffPct > 0 && (
                     <div className="text-[10px] text-slate-400 flex items-center justify-end gap-1">
                       <span>Step drop-off:</span>
-                      <span className="text-rose-500 font-medium font-mono">-{stage.dropoffPct}%</span>
+                      <span className="text-slate-500 font-medium font-mono">-{stage.dropoffPct}%</span>
                     </div>
                   )}
                 </div>
@@ -326,8 +323,8 @@ export default function AnalyticsView() {
 
           {/* Funnel Footer */}
           <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-100 text-[11px] text-slate-600 shrink-0 flex items-center justify-between">
-            <span className="flex items-center gap-1 text-slate-500">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
+            <span className="flex items-center gap-1.5 text-slate-500">
+              <TrendingUp className="w-3.5 h-3.5 text-[#0779D1]" />
               <span>Conversion Optimization:</span>
             </span>
             <span className="font-bold text-slate-800">
@@ -381,10 +378,10 @@ export default function AnalyticsView() {
             </span>
             <div className="grid grid-cols-3 gap-1.5 text-xs">
               {languageDistribution.map((lang: LanguageStat) => (
-                <div key={lang.code} className="p-2 rounded-lg bg-slate-50 border border-slate-100 text-center">
-                  <div className="text-base mb-0.5">{lang.flag}</div>
+                <div key={lang.code} className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-center">
+                  <div className="text-[11px] font-mono font-bold text-slate-800 mb-0.5">{lang.code.toUpperCase()}</div>
                   <span className="font-bold text-slate-900 block text-xs">{lang.pct}%</span>
-                  <span className="text-[9px] text-slate-400 block truncate">{lang.code.toUpperCase()}</span>
+                  <span className="text-[9.5px] text-slate-500 block truncate">{lang.label}</span>
                 </div>
               ))}
             </div>
@@ -495,7 +492,7 @@ export default function AnalyticsView() {
               <div key={loc.code || idx} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1.5 font-medium text-slate-900 truncate">
-                    <span className="text-sm">{loc.flag}</span>
+                    <span className="text-[10px] font-mono font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700">{loc.code || 'INTL'}</span>
                     <span className="truncate">{loc.country}</span>
                     <span className="text-[10px] text-slate-400 font-normal truncate">({loc.region})</span>
                   </div>
@@ -511,11 +508,11 @@ export default function AnalyticsView() {
                       idx === 0
                         ? 'bg-[#0779D1]'
                         : idx === 1
-                        ? 'bg-emerald-600'
+                        ? 'bg-slate-700'
                         : idx === 2
-                        ? 'bg-rose-600'
+                        ? 'bg-blue-600'
                         : idx === 3
-                        ? 'bg-indigo-600'
+                        ? 'bg-slate-600'
                         : 'bg-slate-400'
                     }`}
                     style={{ width: `${Math.max(loc.pct, loc.inquiries > 0 ? 8 : 0)}%` }}
@@ -528,7 +525,7 @@ export default function AnalyticsView() {
           {/* Geographic Summary Footer */}
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 text-xs text-slate-600 shrink-0 space-y-1">
             <strong className="text-slate-900 block text-[11px] font-semibold">
-              🌐 Inbound Telemetry Summary:
+              Inbound Telemetry Summary:
             </strong>
             <p className="text-[11px] leading-relaxed text-slate-500">
               Data reflects real-time telemetry from active client inquiries, regional contact codes, and trilingual chat interactions.
@@ -666,8 +663,8 @@ export default function AnalyticsView() {
         {/* Fixed Footer */}
         <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between shrink-0">
           <span>Showing {filteredQuestions.length} of {data?.questions?.length || 0} client inquiries</span>
-          <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Live Visitor Stream
           </span>
         </div>
