@@ -68,7 +68,7 @@ inpartner/
 │   └── styles/
 │       └── chatbot.css                  # CSS Tailwind terisolasi (No Preflight)
 │
-└── tailwind.config.js                   # Konfigurasi Tailwind Scoped
+└── tailwind.host.config.js              # Template Konfigurasi Tailwind Scoped Host
 ```
 
 ---

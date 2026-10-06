@@ -1114,7 +1114,7 @@ export default function ChatWidget({
   }
 
   return (
-    <div id="inpartner-chatbot-container">
+    <>
       {/* Floating Launcher Button & Proactive Teaser Bubble (Standalone Mode) */}
       {!embeddedMode && (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
@@ -2278,7 +2278,7 @@ export default function ChatWidget({
       </div>
     </div>
   )}
-    </div>
+    </>
   );
 }
 
