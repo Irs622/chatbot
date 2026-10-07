@@ -1,6 +1,12 @@
 .git
 .github
+.agents/
+
+# Ignore documentation markdown except README and RAG knowledge base
 *.md
 !README.md
+!knowledge/**
+!src/chatbot/knowledge/**
+
+# Local fallback data cache
 data/db.json
-src/pages/api/
